@@ -9,6 +9,9 @@ import { ContextModule } from '@main/integrations/context/context.module';
 import { LoggerModule } from '@main/integrations/logger/logger.module';
 import { ServerModule } from '@main/modules/server/server.module';
 import { Module } from '@nestjs/common';
+import { LeagueClientModule } from './integrations/league-client/league-client.module';
+import { LobbyModule } from './modules/lobby/lobby.module';
+
 
 @Module({
   providers: [...providerConfig, AppService],
@@ -21,6 +24,8 @@ import { Module } from '@nestjs/common';
     ContextModule,
     LoggerModule,
     ServerModule,
+    LeagueClientModule,
+    LobbyModule
   ],
 })
 export class AppModule {}

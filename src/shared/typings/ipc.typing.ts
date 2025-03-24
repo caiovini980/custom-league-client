@@ -3,11 +3,17 @@ type RVoid = (...arg: never[]) => void;
 export interface IpcFunction {
   server: {
     sendInfo: (status: string) => void;
-  };
+    
+  }
+
+  lobby: {
+    createAram: () => void;
+  }
 }
 
 export interface IpcMainToRenderer extends Record<string, RVoid> {
-  serverUp: (up: boolean) => void;
+  serverUp: (up: boolean) => void,
+  isClientConnected: (isConnected: boolean) => void;
 }
 
 export type IpcFunctionParameters = {

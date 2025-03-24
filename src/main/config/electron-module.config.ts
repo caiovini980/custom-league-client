@@ -11,7 +11,7 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
       function createWindow() {
         const isDev = !app.isPackaged;
         const win = new BrowserWindow({
-          title: 'Electron Template',
+          title: 'League Client Helper',
           width: 1024,
           height: 768,
           show: false,
@@ -24,12 +24,14 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
         });
 
         win.setMenu(null);
-
+      
         win.on('closed', () => {
           win.destroy();
         });
 
         if (isDev) {
+          win.webContents.openDevTools()
+          
           if (process.platform === 'win32') {
             process.on('message', (data) => {
               if (data === 'graceful-exit') app.quit();

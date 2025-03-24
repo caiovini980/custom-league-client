@@ -16,7 +16,7 @@ interface SnackBarProps extends OptionsObject {
 export const useSnackNotification = () => {
   const propsDefault: SnackBarProps = {
     message: 'Ação realizada com sucesso',
-    duration: 3000,
+    duration: 5000,
     variant: 'success',
   };
   const { enqueueSnackbar, closeSnackbar } = snackbar();

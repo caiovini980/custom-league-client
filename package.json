@@ -35,6 +35,7 @@
     "class-validator": "^0.14.1",
     "cls-hooked": "^4.2.2",
     "date-fns": "^4.1.0",
+    "league-connect": "^6.0.0-rc13",
     "lodash": "^4.17.21",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",

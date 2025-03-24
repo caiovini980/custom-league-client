@@ -13,17 +13,17 @@ export const messagesUtil = {
 
 export const constraintsErrors: ConstraintsErrosData = {
   isEmail: {
-    message: 'deve ser um email',
+    message: 'Must be an Email',
   },
   isLength: {
     message: 'deve ser maior ou igual {0} caracteres',
     regexFilterParam: '.* must be longer than or equal to (.*) characters',
   },
   isNotEmpty: {
-    message: 'não deve ser vazio',
+    message: 'Must not be empty',
   },
   isString: {
-    message: 'Deve ser uma string',
+    message: 'Must be a string',
   },
 };
 

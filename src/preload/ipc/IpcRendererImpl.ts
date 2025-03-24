@@ -6,11 +6,15 @@ export class IpcRendererImpl {
   static init() {
     const ipcFunctionObjectMapper: IpcFunctionObjectMapper = {
       server: {
-        sendInfo: null
+        sendInfo: null,
+      },
+      lobby: {
+        createAram: null
       }
     }
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
-      serverUp: null
+      serverUp: null,
+      isClientConnected: null
     }
 
     const ipcRendererInvoke: Record<string, unknown> = {}
