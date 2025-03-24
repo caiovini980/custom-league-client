@@ -1,0 +1,30 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": ["electron.vite.config.*", "src/main/**/*", "src/shared/**/*"],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@main/*": ["src/main/*"],
+      "@main/ipc": ["src/main/integrations/ipc/index"],
+      "@main/typings/*": ["src/main/typings/*"],
+      "@main/config/*": ["src/main/config/*"],
+      "@main/modules/*": ["src/main/modules/*"],
+      "@main/utils/*": ["src/main/utils/*"],
+      "@main/context/*": ["src/main/integrations/context/*"],
+      "@main/logger/*": ["src/main/integrations/logger/*"],
+      "@main/abstracts/*": ["src/main/abstract/*"],
+      "@main/exceptions/*": ["src/main/exceptions/*"],
+      "@main/enums/*": ["src/main/enums/*"],
+      "@main/decorators/*": ["src/main/decorators/*"],
+      "@main/guards/*": ["src/main/guards/*"]
+    },
+    "types": ["electron-vite/node"]
+  }
+}

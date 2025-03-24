@@ -1,0 +1,44 @@
+{
+  "appId": "com.electron.{name}",
+  "productName": "electron-template",
+  "directories": {
+    "buildResources": "build"
+  },
+  "npmRebuild": false,
+  "files": [
+    "!**/.vscode/*",
+    "!**/.idea/**/*",
+    "!.db/*",
+    "!.chromium/**/*",
+    "!src/*",
+    "!electron.vite.config.{js,ts,mjs,cjs}",
+    "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}",
+    "!{.env,.env.*,.npmrc,pnpm-lock.yaml}",
+    "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+  ],
+  "asarUnpack": ["resources/**", "out/main/chunks/*.node"],
+  "publish": {
+    "provider": "generic",
+    "url": "https://example.com/auto-updates"
+  },
+  "win": {
+    "target": "nsis",
+    "verifyUpdateCodeSignature": false
+  },
+  "linux": {
+    "category": "Utility",
+    "target": "deb"
+  },
+  "nsis": {
+    "artifactName": "${name}-${version}-setup.${ext}",
+    "shortcutName": "${productName}",
+    "uninstallDisplayName": "${productName} ${version}",
+    "createDesktopShortcut": "always"
+  },
+  "appImage": {
+    "artifactName": "${name}-${version}.${ext}"
+  },
+  "dmg": {
+    "artifactName": "${name}-${version}.${ext}"
+  }
+}
