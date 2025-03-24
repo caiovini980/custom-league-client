@@ -46,7 +46,7 @@ export class IpcRendererImpl {
 
     Object.keys(ipcFunctionFromMain).forEach((key) => {
       ipcRendererListen[key] = (cb: (...args: unknown[]) => void) => {
-        const ipcCb = (_: Electron.IpcRendererEvent, ...args: any[]) => cb(...args)
+        const ipcCb = (_: Electron.IpcRendererEvent, ...args: unknown[]) => cb(...args)
         const tt = ipcRenderer.on(key as string, ipcCb)
         return {
           unsubscribe: () => tt.removeListener(key as string, ipcCb)

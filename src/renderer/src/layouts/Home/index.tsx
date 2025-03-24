@@ -16,7 +16,9 @@ export const Home = (): JSX.Element => {
       snackSuccess(data ? 'Server NestJS is ok!' : 'Error NestJS');
     });
 
-    server.sendInfo('ok');
+    server.sendInfo('ok').then((data) => {
+      console.log(data)
+    });
 
     return () => {
       unsubscribe();
