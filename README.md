@@ -1,6 +1,6 @@
 # electroon-template
 
-An Electron application with React, NestJS and TypeScript
+An Electron application with React, NestJS, TypeScript and [LeagueConnect](https://github.com/junlarsen/league-connect)
 
 ## Project Setup
 
