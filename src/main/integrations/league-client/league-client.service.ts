@@ -1,55 +1,89 @@
-import { ServiceAbstract } from "@main/abstract/service.abstract";
-import { Service } from "@main/decorators/service.decorator";
-import { OnApplicationBootstrap, OnApplicationShutdown } from "@nestjs/common";
-import { authenticate, Credentials, LeagueClient, createHttp1Request, HttpRequestOptions } from 'league-connect'
-import { method } from "lodash";
+import { ServiceAbstract } from '@main/abstract/service.abstract';
+import { Service } from '@main/decorators/service.decorator';
+import { OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
+import {
+  Credentials,
+  HttpRequestOptions,
+  LeagueClient,
+  authenticate,
+  createHttp1Request,
+} from 'league-connect';
 
 @Service()
-export class LeagueClientService extends ServiceAbstract implements OnApplicationBootstrap, OnApplicationShutdown {
-    private newCredentials: Credentials
-    private client: LeagueClient
-    private isConnected: boolean
+export class LeagueClientService
+  extends ServiceAbstract
+  implements OnApplicationBootstrap, OnApplicationShutdown
+{
+  private newCredentials!: Credentials;
+  private client!: LeagueClient;
+  private isConnected = false;
 
-    async onApplicationBootstrap() {
-        this.logger.info("Initiating League Client Service...")
+  async onApplicationBootstrap() {
+    this.logger.info('Initiating League Client Service...');
+    this.startAuthenticate();
+  }
 
-        const credentials = await authenticate()
-        const client = new LeagueClient(credentials)
-        
-        this.newCredentials = credentials
-        this.client = client
-        
-        this.setupConnection()
-        this.client.start()
+  startAuthenticate() {
+    authenticate({
+      awaitConnection: true,
+    })
+      .then((credentials) => {
+        const client = new LeagueClient(credentials);
+        this.newCredentials = credentials;
+        this.client = client;
+
+        this.setupConnection();
+        this.client.start();
+        this.changeConnectState(true);
+      })
+      .catch((err: Error) => {
+        this.logger.error(err.message);
+        this.changeConnectState(false);
+      });
+  }
+
+  onApplicationShutdown(signal?: string) {
+    this.logger.info('Stopping League Client Service...');
+    this.client.stop();
+  }
+
+  setupConnection(): void {
+    this.client.on('connect', (newCredentials) => {
+      this.newCredentials = newCredentials;
+      this.changeConnectState(true);
+    });
+
+    this.client.on('disconnect', () => {
+      this.changeConnectState(false);
+    });
+  }
+
+  isLeagueClientConnected() {
+    return this.isConnected;
+  }
+
+  private changeConnectState(isConnected: boolean) {
+    this.isConnected = isConnected;
+    this.sendMsgToRender('isClientConnected', isConnected);
+    if (isConnected) {
+      this.logger.info('Client instance connected.');
+    } else {
+      this.logger.info('Client instance disconnected.');
     }
+  }
 
-    onApplicationShutdown(signal?: string) {
-        this.logger.info("Stopping League Client Service...")
-        this.client.stop()
-    }
-
-    setupConnection(): void {
-        this.client.on('connect', (newCredentials) => { 
-            this.logger.info("[League Client Service] Client instance connected.")
-            this.newCredentials = newCredentials
-            this.isConnected = true
-            this.sendMsgToRender('isClientConnected', true)
-        })
-          
-        this.client.on('disconnect', () => {
-            this.logger.info("[League Client Service] Client instance disconnected.")
-            this.isConnected = false
-            this.sendMsgToRender('isClientConnected', false)
-        })
-    }
-
-    async handleEndpoint(method: HttpRequestOptions["method"], url: string, body: unknown) {
-        const response = await createHttp1Request({
-            method: method,
-            url: url,
-            body: body
-        }, this.newCredentials)
-
-        return response
-    }
+  async handleEndpoint(
+    method: HttpRequestOptions['method'],
+    url: string,
+    body: unknown,
+  ) {
+    return await createHttp1Request(
+      {
+        method: method,
+        url: url,
+        body: body,
+      },
+      this.newCredentials,
+    );
+  }
 }

@@ -7,11 +7,11 @@ import { typeormModuleConfig } from '@main/config/typeorm-module.config';
 import { BrowserWindowRegisterModule } from '@main/integrations/browser-window-register/browser-window-register.module';
 import { ContextModule } from '@main/integrations/context/context.module';
 import { LoggerModule } from '@main/integrations/logger/logger.module';
+import { ClientModule } from '@main/modules/client/client.module';
 import { ServerModule } from '@main/modules/server/server.module';
 import { Module } from '@nestjs/common';
 import { LeagueClientModule } from './integrations/league-client/league-client.module';
 import { LobbyModule } from './modules/lobby/lobby.module';
-
 
 @Module({
   providers: [...providerConfig, AppService],
@@ -25,7 +25,8 @@ import { LobbyModule } from './modules/lobby/lobby.module';
     LoggerModule,
     ServerModule,
     LeagueClientModule,
-    LobbyModule
+    LobbyModule,
+    ClientModule,
   ],
 })
 export class AppModule {}
