@@ -1,6 +1,6 @@
-# electroon-template
-
-An Electron application with React, NestJS, TypeScript and [LeagueConnect](https://github.com/junlarsen/league-connect)
+# Custom League Client
+A custom League client controller to improve the client's usage and, possibly, automation.
+Build with Electron, React, NestJS, TypeScript and [LeagueConnect](https://github.com/junlarsen/league-connect)
 
 ## Project Setup
 
