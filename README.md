@@ -1,5 +1,5 @@
 # Custom League Client
-A custom League client controller to improve the client's usage and, possibly, automation.
+A custom League client controller to improve the client's usage and, possibly, automation.<br>
 Build with Electron, React, NestJS, TypeScript and [LeagueConnect](https://github.com/junlarsen/league-connect)
 
 ## Project Setup
