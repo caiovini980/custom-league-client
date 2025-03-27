@@ -29,12 +29,20 @@ export class AbstractMigration implements MigrationInterface {
   private async runSql(queryRunner: QueryRunner, sqlname: string) {
     const i = await import(`./migrations/${sqlname}/migration.sql`);
     const sqlScript = i.default as string;
-    sqlScript
-      .trim()
+    await queryRunner.startTransaction();
+    const querySql = sqlScript
       .split(';')
-      .filter(Boolean)
-      .forEach((s) => {
-        queryRunner.query(s);
-      });
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    for (const q of querySql) {
+      try {
+        await queryRunner.query(q);
+      } catch (e) {
+        await queryRunner.rollbackTransaction();
+        throw e;
+      }
+    }
+    await queryRunner.commitTransaction();
   }
 }

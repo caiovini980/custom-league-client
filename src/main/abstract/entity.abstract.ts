@@ -2,12 +2,12 @@ import { BeforeUpdate, Column } from 'typeorm';
 
 export abstract class EntityAbstract {
   @Column({
-    type: 'timestamptz',
+    type: 'text',
   })
   createdAt = new Date();
 
   @Column({
-    type: 'timestamptz',
+    type: 'text',
   })
   updatedAt = new Date();
 
