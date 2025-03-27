@@ -1,0 +1,9 @@
+import { Module } from '@nestjs/common';
+{{module-imports}}
+
+@Module({
+  imports: [{{imports}}],
+  providers: [{{providers}}],
+  controllers: [{{controllers}}],
+})
+export class {{module-pascal-case}} {}

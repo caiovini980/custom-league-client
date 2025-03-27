@@ -1,0 +1,9 @@
+import { ServiceAbstract } from '@main/abstracts/service.abstract';
+import { Service } from '@main/decorators/service.decorator';
+
+@Service()
+export class {{service-pascal-case}} extends ServiceAbstract {
+  async getServiceName() {
+    return '{{service-pascal-case}}';
+  }
+}

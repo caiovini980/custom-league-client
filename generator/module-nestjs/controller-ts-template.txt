@@ -1,0 +1,12 @@
+import { Controller, Get } from '@nestjs/common';
+import { {{service-pascal-case}} } from './{{module-name}}.service';
+
+@Controller('{{module-name}}')
+export class {{controller-pascal-case}} {
+  constructor(private readonly {{service-camel-case}}: {{service-pascal-case}}) {}
+
+  @Get()
+  async getServiceName() {
+    return await this.{{service-camel-case}}.getServiceName();
+  }
+}

@@ -17,7 +17,9 @@
     "build:unpack": "npm run build && electron-builder --config ./electron-builder.json --dir",
     "build:win": "npm run build && electron-builder --config ./electron-builder.json --win",
     "build:mac": "npm run build && electron-builder --config ./electron-builder.json --mac",
-    "build:linux": "npm run build && electron-builder --config ./electron-builder.json --linux"
+    "build:linux": "npm run build && electron-builder --config ./electron-builder.json --linux",
+    "generator": "ts-node generator",
+    "g": "npm run generator"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -35,7 +37,6 @@
     "class-validator": "^0.14.1",
     "cls-hooked": "^4.2.2",
     "date-fns": "^4.1.0",
-    "electron-store": "^10.0.1",
     "league-connect": "^6.0.0-rc13",
     "lodash": "^4.17.21",
     "passport": "^0.7.0",
@@ -52,6 +53,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^4.1.3",
+    "@inquirer/prompts": "^7.4.0",
     "@mui/material": "^7.0.0",
     "@optimize-lodash/rollup-plugin": "^5.0.2",
     "@swc/core": "^1.11.13",

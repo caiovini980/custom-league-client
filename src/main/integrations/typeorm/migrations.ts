@@ -1,3 +1,6 @@
-import { Initial20230902145504 } from './migrations/20230902145504-initial'
+import { AppConfig20250326223652 } from '@main/integrations/typeorm/migrations/20250326223652-app-config';
 
-export const migration = [Initial20230902145504]
+export const migration = [
+  // Dont remove
+  AppConfig20250326223652,
+];
