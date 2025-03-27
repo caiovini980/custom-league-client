@@ -4,6 +4,7 @@ import { ElectronIpcTransport } from '@main/ipc';
 import { NestFactory } from '@nestjs/core';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 import { app } from 'electron';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 
 process.on('message', (data) => {
@@ -11,13 +12,13 @@ process.on('message', (data) => {
 });
 
 async function bootstrap() {
+  initializeTransactionalContext();
   app.on('before-quit', async () => {
     await nestApp.close();
   });
 
   await app.whenReady();
   const log = new WinstonLoggerService();
-
   const nestApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {

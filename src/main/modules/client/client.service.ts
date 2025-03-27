@@ -2,10 +2,14 @@ import { spawn } from 'node:child_process';
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
+import { AppConfigService } from '@main/modules/app-config/app-config.service';
 
 @Service()
 export class ClientService extends ServiceAbstract {
-  constructor(private leagueClientService: LeagueClientService) {
+  constructor(
+    private leagueClientService: LeagueClientService,
+    private appConfigService: AppConfigService,
+  ) {
     super();
   }
 
@@ -14,11 +18,10 @@ export class ClientService extends ServiceAbstract {
   }
 
   async startLeagueClient() {
-    //TODO: be configurable
-    const RIOT_CLIENT_PATH =
-      'D:\\Riot Games\\Riot Client\\RiotClientServices.exe';
+    const riotClientPath = await this.appConfigService.getRiotClientPath();
+    if (!riotClientPath?.value) return;
     spawn(
-      RIOT_CLIENT_PATH,
+      `${riotClientPath.value}\\RiotClientServices.exe`,
       ['--launch-product=league_of_legends', '--launch-patchline=live'],
       {
         detached: true,

@@ -1,4 +1,3 @@
-import { dataSourceOptions } from '@main/integrations/typeorm/typeorm-datasource.config';
 import { DynamicModule, Injectable } from '@nestjs/common';
 import {
   TypeOrmModule,
@@ -6,14 +5,19 @@ import {
   TypeOrmOptionsFactory,
 } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { dataSourceOptions } from './typeorm-datasource.config';
 
 export const typeOrmModuleOptions = (
   dataSource: DataSourceOptions,
 ): TypeOrmModuleOptions => {
   return {
     ...dataSource,
+    logging: true,
     retryAttempts: 3,
     autoLoadEntities: true,
+    namingStrategy: new SnakeNamingStrategy(),
   };
 };
 
@@ -25,12 +29,12 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   }
 }
 
-export const typeormModuleConfig: DynamicModule = TypeOrmModule.forRootAsync({
+export const typeormModule: DynamicModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
   dataSourceFactory: async (options) => {
     if (!options) {
       throw new Error('Error options dataSourceFactory');
     }
-    return new DataSource(options);
+    return addTransactionalDataSource(new DataSource(options));
   },
 });

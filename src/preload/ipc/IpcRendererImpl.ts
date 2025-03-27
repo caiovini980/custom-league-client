@@ -11,6 +11,10 @@ export class IpcRendererImpl {
       server: {
         sendInfo: null,
       },
+      appConfig: {
+        getConfig: null,
+        setRiotPath: null,
+      },
       client: {
         getIsClientConnected: null,
         startAuthenticate: null,

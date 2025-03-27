@@ -4,6 +4,10 @@ export interface IpcFunction {
   server: {
     sendInfo: (status: string) => void;
   };
+  appConfig: {
+    getConfig: () => { name: string; value: unknown }[];
+    setRiotPath: () => void;
+  };
   client: {
     startAuthenticate: () => void;
     startLeagueClient: () => void;

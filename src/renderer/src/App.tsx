@@ -1,3 +1,5 @@
+import { Box, Stack } from '@mui/material';
+import { BottomBar } from '@render/layouts/BottomBar';
 import { CheckLeagueClient } from '@render/layouts/CheckLeagueClient';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import { Home } from '@render/layouts/Home';
@@ -17,10 +19,15 @@ export const App = (): JSX.Element => {
       <CustomThemeProvider>
         <HashRouter>
           <CheckLeagueClient />
-          <Routes>
-            <Route path={'/home'} Component={Home} />
-            <Route path={'/'} Component={LoadingLeagueClient} />
-          </Routes>
+          <Stack direction={'column'} height={'100vh'}>
+            <Box overflow={'auto'} height={'100%'}>
+              <Routes>
+                <Route path={'/home'} Component={Home} />
+                <Route path={'/'} Component={LoadingLeagueClient} />
+              </Routes>
+            </Box>
+            <BottomBar />
+          </Stack>
         </HashRouter>
       </CustomThemeProvider>
     </SnackbarProvider>

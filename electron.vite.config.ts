@@ -40,7 +40,7 @@ export default defineConfig({
   main: {
     build: {
       watch: {
-        buildDelay: 200,
+        buildDelay: 1500,
       },
     },
     plugins: [
@@ -59,7 +59,7 @@ export default defineConfig({
   preload: {
     build: {
       watch: {
-        buildDelay: 200,
+        buildDelay: 1500,
       },
     },
     plugins: [
@@ -71,7 +71,6 @@ export default defineConfig({
       }),
       optimizeLodashImports(),
       bytecodePlugin(),
-      checkerTs('./tsconfig.json'),
     ],
   },
   renderer: {

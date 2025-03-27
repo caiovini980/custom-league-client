@@ -9,4 +9,4 @@ create table app_config (
 
 
 insert into app_config (id, value, created_at, updated_at)
-values ('RIOT_PATH', null, datetime(), datetime());
+values ('RIOT_CLIENT_PATH', null, datetime(), datetime());
