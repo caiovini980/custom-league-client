@@ -5,7 +5,7 @@ interface FnHelper<T extends keyof ElectronFunction> {
   ipc: ElectronFunction[T];
 }
 
-const useMakeIpc = <T extends keyof ElectronFunction, R>(
+const makeIpc = <T extends keyof ElectronFunction, R>(
   controller: T,
   fn: (method: FnHelper<T>) => R,
 ) => {
@@ -16,4 +16,4 @@ const useMakeIpc = <T extends keyof ElectronFunction, R>(
   };
 };
 
-export { useMakeIpc };
+export { makeIpc };

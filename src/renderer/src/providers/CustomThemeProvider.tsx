@@ -1,12 +1,12 @@
-import { JSX, PropsWithChildren } from 'react'
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import { useCustomTheme } from '@render/styles/useCustomTheme'
-import { GlobalStyles } from '@render/styles/GlobalStyles'
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { GlobalStyles } from '@render/styles/GlobalStyles';
+import { useCustomTheme } from '@render/styles/useCustomTheme';
+import { JSX, PropsWithChildren } from 'react';
 
 export const CustomThemeProvider = ({
-  children
+  children,
 }: PropsWithChildren<Record<never, never>>): JSX.Element => {
-  const theme = useCustomTheme()
+  const theme = useCustomTheme();
 
   return (
     <ThemeProvider theme={theme}>
@@ -14,5 +14,5 @@ export const CustomThemeProvider = ({
       <GlobalStyles />
       {children}
     </ThemeProvider>
-  )
-}
+  );
+};

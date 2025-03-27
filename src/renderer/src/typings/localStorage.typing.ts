@@ -1,1 +1,1 @@
-export interface LocalStorageItemData {}
+export type LocalStorageItemData = Record<string, string>;

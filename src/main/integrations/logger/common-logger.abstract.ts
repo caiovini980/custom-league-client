@@ -1,26 +1,24 @@
-import { LoggerService } from '@nestjs/common'
+import { LoggerService } from '@nestjs/common';
 
 export abstract class CommonLogger implements LoggerService {
-  abstract debug(message: any, ...optionalParams: any[]): any
+  abstract debug(message: unknown, ...optionalParams: unknown[]): unknown;
 
-  abstract error(message: any, ...optionalParams: any[]): any
+  abstract error(message: unknown, ...optionalParams: unknown[]): unknown;
 
-  abstract log(message: any, ...optionalParams: any[]): any
+  abstract log(message: unknown, ...optionalParams: unknown[]): unknown;
 
-  abstract verbose(message: any, ...optionalParams: any[]): any
+  abstract verbose(message: unknown, ...optionalParams: unknown[]): unknown;
 
-  abstract warn(message: any, ...optionalParams: any[]): any
+  abstract warn(message: unknown, ...optionalParams: unknown[]): unknown;
 
-  abstract info(message: any, ...optionalParam: any[]): any
+  abstract info(message: unknown, ...optionalParam: unknown[]): unknown;
 
-  abstract setContext(context: string): void
+  abstract setContext(context: string): void;
 
-  protected buildWithOptionalParam(message: any, optionalParam: any[]) {
-    if (typeof message === 'string') {
-      optionalParam.forEach((param) => {
-        message = message.replace('{}', param)
-      })
-    }
-    return message
+  protected buildWithOptionalParam(message: unknown, optionalParam: unknown[]) {
+    return optionalParam.reduce<string>(
+      (prev, curr) => `${prev} ${curr}`,
+      String(message),
+    );
   }
 }

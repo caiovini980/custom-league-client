@@ -1,24 +1,24 @@
-import React from 'react'
-import { Box, Paper, Typography } from '@mui/material'
-import { FaExclamationTriangle, FaInfo } from 'react-icons/fa'
-import { AlertBoxProps, AlertType } from './types'
-import useStyles from './styles'
-import { FaExclamationCircle } from 'react-icons/fa'
+import { Box, Paper, Typography } from '@mui/material';
+import React from 'react';
+import { FaExclamationTriangle, FaInfo } from 'react-icons/fa';
+import { FaExclamationCircle } from 'react-icons/fa';
+import useStyles from './styles';
+import { AlertBoxProps, AlertType } from './types';
 
 export const AlertBox = ({
   type,
   message,
   fullWidth = false,
   align = 'center',
-  isBlank = false
+  isBlank = false,
 }: AlertBoxProps) => {
-  const classes = useStyles({ type, fullWidth, align, isBlank })
+  const classes = useStyles({ type, fullWidth, align, isBlank });
 
   const getIcon: { [key in AlertType]: React.ReactNode } = {
     info: <FaInfo />,
     warning: <FaExclamationTriangle />,
-    error: <FaExclamationCircle />
-  }
+    error: <FaExclamationCircle />,
+  };
 
   return (
     <Paper variant={'outlined'} elevation={0} sx={classes('paper')}>
@@ -27,5 +27,5 @@ export const AlertBox = ({
         <Typography sx={classes('alertText')}>{message}</Typography>
       </Box>
     </Paper>
-  )
-}
+  );
+};

@@ -8,3 +8,4 @@ out
 .db
 .idea
 .vscode
+*.tsbuildinfo

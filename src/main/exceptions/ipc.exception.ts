@@ -1,15 +1,15 @@
-import { messagesUtil, MessagesUtilKeys } from '@main/utils/messages.util'
+import { MessagesUtilKeys, messagesUtil } from '@main/utils/messages.util';
 
 export class IpcException extends Error {
-  code: string
-  private readonly description: string
+  code: string;
+  private readonly description: string;
 
   constructor(code: MessagesUtilKeys, description?: string) {
-    super(messagesUtil[code])
-    this.code = code
-    this.description = description ?? ''
-    this.name = new.target.name
-    Object.setPrototypeOf(this, new.target.prototype)
+    super(messagesUtil[code]);
+    this.code = code;
+    this.description = description ?? '';
+    this.name = new.target.name;
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 
   toJson() {
@@ -17,7 +17,7 @@ export class IpcException extends Error {
       name: IpcException.name,
       message: this.message,
       code: this.code,
-      description: this.description
-    }
+      description: this.description,
+    };
   }
 }

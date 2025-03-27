@@ -23,6 +23,7 @@ export class AllExceptionsFilter implements RpcExceptionFilter {
       return throwError(() => exception);
     }
 
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const exceptionList: Record<string, (ex: any) => IpcException> = {
       NotFoundException: this.notFoundException,
       ValidationErrorException: this.classValidationException,

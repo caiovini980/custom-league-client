@@ -1,16 +1,16 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react';
 
 const useFirstRender = () => {
-  const firstUpdate = useRef(true)
+  const firstUpdate = useRef(true);
   useLayoutEffect(() => {
     if (firstUpdate.current) {
-      firstUpdate.current = false
+      firstUpdate.current = false;
     }
-  })
+  });
 
   return {
-    isFirstRender: firstUpdate.current
-  }
-}
+    isFirstRender: firstUpdate.current,
+  };
+};
 
-export default useFirstRender
+export default useFirstRender;

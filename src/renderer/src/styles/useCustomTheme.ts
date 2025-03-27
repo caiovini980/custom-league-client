@@ -1,5 +1,5 @@
-import { createTheme, responsiveFontSizes } from '@mui/material'
-import { useMemo } from 'react'
+import { createTheme, responsiveFontSizes } from '@mui/material';
+import { useMemo } from 'react';
 
 export const useCustomTheme = () => {
   return useMemo(
@@ -9,44 +9,44 @@ export const useCustomTheme = () => {
           palette: {
             mode: 'dark',
             primary: {
-              main: '#00a0c7'
+              main: '#00a0c7',
             },
             secondary: {
-              main: '#95160C'
+              main: '#95160C',
             },
             text: {
-              primary: '#e5e5e5'
+              primary: '#e5e5e5',
             },
             background: {
               default: '#212121',
-              paper: '#2c2c2c'
+              paper: '#2c2c2c',
             },
             error: {
-              main: '#e05252'
-            }
+              main: '#e05252',
+            },
           },
           typography: {
-            fontFamily: 'Nunito'
+            fontFamily: 'Nunito',
           },
           components: {
             MuiButton: {
               styleOverrides: {
                 root: {
                   fontSize: '0.9rem',
-                  textTransform: 'unset'
-                }
-              }
+                  textTransform: 'unset',
+                },
+              },
             },
             MuiTab: {
               styleOverrides: {
                 root: {
-                  textTransform: 'unset'
-                }
-              }
-            }
-          }
-        })
+                  textTransform: 'unset',
+                },
+              },
+            },
+          },
+        }),
       ),
-    []
-  )
-}
+    [],
+  );
+};

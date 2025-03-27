@@ -1,8 +1,7 @@
 import { ContextKeys } from '@main/typings/context.typings';
-import { NullOrUndefined } from '@main/typings/generic.typing';
 import { Injectable, Scope } from '@nestjs/common';
+import type { NullOrUndefined } from '@shared/typings/generic.typing';
 import { format } from 'date-fns';
-import process from 'process';
 import * as winston from 'winston';
 import { ContextUtil } from '../context/context.util';
 import { CommonLogger } from './common-logger.abstract';
@@ -128,7 +127,7 @@ export class WinstonLoggerService extends CommonLogger {
     this.info(msg);
   }
 
-  fatal(message: any, ...optionalParams: any[]): any {
+  fatal(message: unknown, ...optionalParams: unknown[]) {
     this.error(message, optionalParams);
   }
 

@@ -1,6 +1,6 @@
 import { ElectronFunction } from '@render/env';
 
-type PromiseFn = (...args: any[]) => Promise<any>;
+type PromiseFn = (...args: unknown[]) => Promise<unknown>;
 
 export const electronHandle = window.electron.handle;
 export const electronListen = window.electron.listen;
@@ -17,7 +17,7 @@ export const useElectronHandle = () => {
         return {
           // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
           ...prev,
-          [key]: (...args: any[]) =>
+          [key]: (...args: unknown[]) =>
             fn(...args).catch((err) => {
               throw err;
             }),

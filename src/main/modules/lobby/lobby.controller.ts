@@ -16,7 +16,7 @@ export class LobbyController {
 
   @IpcHandle('createAram')
   async getServerInfo(
-    @Payload() payload: IpcSessionsParam['createAram'],
+    @Payload() _payload: IpcSessionsParam['createAram'],
   ): Promise<IpcSessionsReturn['createAram']> {
     return this.lobbyService.createAram();
   }

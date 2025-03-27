@@ -42,7 +42,7 @@ export class LeagueClientService
       });
   }
 
-  onApplicationShutdown(signal?: string) {
+  onApplicationShutdown(_signal?: string) {
     this.logger.info('Stopping League Client Service...');
     this.client.stop();
   }

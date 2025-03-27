@@ -1,6 +1,7 @@
-import { Null, Undefined } from '@shared/typings/generic.typing';
+import type { Null, Undefined } from '@shared/typings/generic.typing';
 
-export type ClassType<C> = new (...args: unknown[]) => C;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type ClassType<C, P = any> = new (...args: P[]) => C;
 export type AbstractClassType<C> = abstract new (...args: unknown[]) => C;
 export type MultiClassType<C> = ClassType<C> | AbstractClassType<C>;
 

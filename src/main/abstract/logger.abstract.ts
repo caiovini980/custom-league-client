@@ -1,5 +1,5 @@
-import { CommonLogger } from '@main/logger/common-logger.abstract'
+import { CommonLogger } from '@main/logger/common-logger.abstract';
 
 export abstract class LoggerAbstract {
-  protected logger!: CommonLogger
+  protected logger!: CommonLogger;
 }

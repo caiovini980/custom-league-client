@@ -2,9 +2,9 @@ import { SystemConfig } from '@main/config/system.config';
 import { IpcException } from '@main/exceptions/ipc.exception';
 import { ContextUtil } from '@main/integrations/context/context.util';
 import { AppContextType, ContextKeys } from '@main/typings/context.typings';
-import { Undefined } from '@main/typings/generic.typing';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { Undefined } from '@shared/typings/generic.typing';
 
 @Injectable()
 export class ContextService {

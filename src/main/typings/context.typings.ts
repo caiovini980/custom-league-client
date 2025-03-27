@@ -1,4 +1,4 @@
-import { Undefined } from '@main/typings/generic.typing';
+import { Undefined } from '@shared/typings/generic.typing';
 
 const context = ['ipc'] as const;
 

@@ -7,5 +7,4 @@ import { Module } from '@nestjs/common';
   providers: [LobbyService],
   exports: [LobbyService],
 })
-
 export class LobbyModule {}

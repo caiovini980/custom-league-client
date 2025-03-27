@@ -1,5 +1,5 @@
-import { IpcRendererImpl } from './ipc/IpcRendererImpl'
+import { IpcRendererImpl } from './ipc/IpcRendererImpl';
 
-IpcRendererImpl.init()
+IpcRendererImpl.init();
 
-console.log('preload loaded')
+console.log('preload loaded');

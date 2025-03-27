@@ -8,4 +8,4 @@ declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {}
 }
 
-export {}
+export {};

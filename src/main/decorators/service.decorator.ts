@@ -12,9 +12,9 @@ import { Injectable, ScopeOptions } from '@nestjs/common';
 import { BrowserWindow } from 'electron';
 
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ServiceClassDecorator<C extends ServiceAbstract> = (
   constructor: ClassType<ServiceAbstract>,
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ) => any;
 
 const ServiceDecorator = <C extends ServiceAbstract>(
@@ -38,7 +38,7 @@ const ServiceDecorator = <C extends ServiceAbstract>(
         ctx: ContextService,
         browserWindowRegisterService: BrowserWindowRegisterService,
         win: BrowserWindow,
-        ...args: any[]
+        ...args: unknown[]
       ) {
         super(...args);
         this.ctx = ctx;

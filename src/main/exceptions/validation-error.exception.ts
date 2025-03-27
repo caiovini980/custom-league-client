@@ -1,64 +1,64 @@
-import { AbstractException } from '@main/exceptions/abstract-exception'
-import { ValidationError } from 'class-validator'
-import { Undefined } from '@main/typings/generic.typing'
-import { constraintsErrors } from '@main/utils/messages.util'
+import { AbstractException } from '@main/exceptions/abstract-exception';
+import { constraintsErrors } from '@main/utils/messages.util';
+import type { Undefined } from '@shared/typings/generic.typing';
+import { ValidationError } from 'class-validator';
 
 export class ValidationErrorException extends AbstractException {
-  public erros: ValidationError[]
+  public erros: ValidationError[];
 
   constructor(errors: ValidationError[]) {
-    super('validationError')
-    this.erros = errors
+    super('validationError');
+    this.erros = errors;
   }
 
   parse() {
-    const parseError: Record<string, string[]> = {}
+    const parseError: Record<string, string[]> = {};
 
     this.erros.forEach((err) => {
-      parseError[err.property] = this.buildArrayErrors(err.constraints)
-    })
+      parseError[err.property] = this.buildArrayErrors(err.constraints);
+    });
 
-    return parseError
+    return parseError;
   }
 
   private buildArrayErrors(constraints: Undefined<Record<string, string>>) {
-    if (!constraints) return []
+    if (!constraints) return [];
 
-    const errors: string[] = []
+    const errors: string[] = [];
 
     Object.entries(constraints).forEach(([key, value]) => {
       if (value.startsWith('*')) {
-        errors.push(value.substring(1))
+        errors.push(value.substring(1));
       } else {
-        errors.push(this.parseMessageError(key, value))
+        errors.push(this.parseMessageError(key, value));
       }
-    })
+    });
 
-    return errors
+    return errors;
   }
 
   private parseMessageError(constraints: string, value: string) {
-    const parseMessage = constraintsErrors[constraints]
+    const parseMessage = constraintsErrors[constraints];
 
     if (!parseMessage) {
-      return value
+      return value;
     }
 
-    let message = parseMessage.message
-    const regexFilterParam = parseMessage.regexFilterParam
+    let message = parseMessage.message;
+    const regexFilterParam = parseMessage.regexFilterParam;
 
-    if (!regexFilterParam) return message
+    if (!regexFilterParam) return message;
 
-    const regex = new RegExp(regexFilterParam, 'g')
+    const regex = new RegExp(regexFilterParam, 'g');
 
-    const params = regex.exec(value)
+    const params = regex.exec(value);
     if (params) {
-      params.shift()
+      params.shift();
       params.forEach((param, index) => {
-        message = message.replace(`{${index}}`, param)
-      })
+        message = message.replace(`{${index}}`, param);
+      });
     }
 
-    return message
+    return message;
   }
 }

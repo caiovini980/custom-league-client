@@ -1,6 +1,6 @@
 export interface ConstraintsErrosData {
   [key: string]: {
-    message: string
-    regexFilterParam?: string
-  }
+    message: string;
+    regexFilterParam?: string;
+  };
 }

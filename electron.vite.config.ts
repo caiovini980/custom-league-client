@@ -7,6 +7,7 @@ import {
   swcPlugin,
 } from 'electron-vite';
 import { Plugin } from 'vite';
+import checker from 'vite-plugin-checker';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 const sql = (): Plugin => {
@@ -23,6 +24,17 @@ const sql = (): Plugin => {
     },
   };
 };
+
+const checkerTs = (tsconfigPath: string) =>
+  checker({
+    typescript: {
+      tsconfigPath,
+    },
+    biome: {
+      command: 'check',
+      flags: '--write',
+    },
+  });
 
 export default defineConfig({
   main: {
@@ -41,6 +53,7 @@ export default defineConfig({
         exclude: ['better-sqlite3'],
       }),
       bytecodePlugin(),
+      checkerTs('./tsconfig.node.json'),
     ],
   },
   preload: {
@@ -58,6 +71,7 @@ export default defineConfig({
       }),
       optimizeLodashImports(),
       bytecodePlugin(),
+      checkerTs('./tsconfig.json'),
     ],
   },
   renderer: {
@@ -67,6 +81,7 @@ export default defineConfig({
       }),
       optimizeLodashImports(),
       react(),
+      checkerTs('./tsconfig.web.json'),
     ],
   },
 });

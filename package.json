@@ -19,7 +19,10 @@
     "build:mac": "npm run build && electron-builder --config ./electron-builder.json --mac",
     "build:linux": "npm run build && electron-builder --config ./electron-builder.json --linux",
     "generator": "ts-node generator",
-    "g": "npm run generator"
+    "g": "npm run generator",
+    "lint:main": "biome check --write --error-on-warnings ./src/main",
+    "lint:preload": "biome check --write --error-on-warnings ./src/preload",
+    "lint:renderer": "biome check --write --error-on-warnings ./src/renderer"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -76,6 +79,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "vite": "^6.2.3",
+    "vite-plugin-checker": "^0.9.1",
     "vite-tsconfig-paths": "^5.1.4",
     "zod": "^3.24.2",
     "zustand": "^4.4.7",

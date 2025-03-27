@@ -12,6 +12,7 @@ import { Module } from '@nestjs/common';
 
 // Modules
 
+import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
 import { LobbyModule } from '@main/modules/lobby/lobby.module';
 import { ServerModule } from '@main/modules/server/server.module';
@@ -30,6 +31,7 @@ import { ServerModule } from '@main/modules/server/server.module';
     LeagueClientModule,
     LobbyModule,
     ClientModule,
+    AppConfigModule,
   ],
 })
 export class AppModule {}
