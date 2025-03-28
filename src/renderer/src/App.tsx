@@ -3,6 +3,7 @@ import { BottomBar } from '@render/layouts/BottomBar';
 import { CheckLeagueClient } from '@render/layouts/CheckLeagueClient';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import { Home } from '@render/layouts/Home';
+import { LeagueClientEvent } from '@render/layouts/LeagueClientEvent';
 import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
 import { JSX } from 'react';
@@ -19,6 +20,7 @@ export const App = (): JSX.Element => {
       <CustomThemeProvider>
         <HashRouter>
           <CheckLeagueClient />
+          <LeagueClientEvent />
           <Stack direction={'column'} height={'100vh'}>
             <Box overflow={'auto'} height={'100%'}>
               <Routes>

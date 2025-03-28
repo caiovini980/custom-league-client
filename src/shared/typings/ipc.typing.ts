@@ -1,3 +1,8 @@
+import {
+  GetAppConfigResponse,
+  SetAppConfigData,
+} from '@shared/typings/ipc-function/handle/app-config.typing';
+
 type RVoid = (...arg: never[]) => void;
 
 export interface IpcFunction {
@@ -5,8 +10,8 @@ export interface IpcFunction {
     sendInfo: (status: string) => void;
   };
   appConfig: {
-    getConfig: () => { name: string; value: unknown }[];
-    setRiotPath: () => void;
+    getConfig: () => GetAppConfigResponse;
+    setConfig: (data: SetAppConfigData) => void;
   };
   client: {
     startAuthenticate: () => void;
@@ -21,6 +26,8 @@ export interface IpcFunction {
 export interface IpcMainToRenderer extends Record<string, RVoid> {
   serverUp: (up: boolean) => void;
   isClientConnected: (isConnected: boolean) => void;
+  onChangeAppConfig: (configs: GetAppConfigResponse) => void;
+  onLeagueClientEvent: (data: unknown) => void;
 }
 
 export type IpcFunctionParameters = {

@@ -7,6 +7,7 @@ import {
   LeagueClient,
   authenticate,
   createHttp1Request,
+  createWebSocketConnection,
 } from 'league-connect';
 
 @Service()
@@ -40,6 +41,20 @@ export class LeagueClientService
         this.logger.error(err.message);
         this.changeConnectState(false);
       });
+
+    createWebSocketConnection({
+      authenticationOptions: {
+        awaitConnection: true,
+      },
+      pollInterval: -1,
+    }).then((ws) => {
+      ws.on('message', (message) => {
+        this.sendMsgToRender(
+          'onLeagueClientEvent',
+          Buffer.from(message as Buffer).toString('utf-8'),
+        );
+      });
+    });
   }
 
   onApplicationShutdown(_signal?: string) {

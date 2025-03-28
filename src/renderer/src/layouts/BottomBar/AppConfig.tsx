@@ -1,31 +1,22 @@
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { useEffect, useState } from 'react';
+import { useStore } from '@render/zustand/store';
+import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 
 export const AppConfig = () => {
   const { appConfig } = useElectronHandle();
-
-  const [config, setConfig] = useState<{ name: string; value: unknown }[]>([]);
-
-  const loadConfig = () => {
-    appConfig.getConfig().then((config) => {
-      setConfig(config);
-    });
-  };
+  const config = useStore().leagueClient.appConfig();
 
   const onClickChangeRiotPath = () => {
-    appConfig.setRiotPath().then(() => {
-      loadConfig();
+    appConfig.setConfig({
+      name: 'RIOT_CLIENT_PATH',
+      value: null,
     });
   };
 
-  const getConfig = (key: string) => {
-    return (config.find((c) => c.name === key)?.value as string) ?? '-';
+  const getConfig = (key: keyof GetAppConfigResponse) => {
+    return config?.[key] ?? '-';
   };
-
-  useEffect(() => {
-    loadConfig();
-  }, []);
 
   return (
     <List>
@@ -33,7 +24,7 @@ export const AppConfig = () => {
         <ListItemButton onClick={onClickChangeRiotPath}>
           <ListItemText
             primary={'Change Riot Client Path'}
-            secondary={getConfig('RIOT_PATH')}
+            secondary={getConfig('RIOT_CLIENT_PATH')}
           />
         </ListItemButton>
       </ListItem>

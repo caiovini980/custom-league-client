@@ -1,38 +1,50 @@
 import { ServiceRepoAbstract } from '@main/abstracts/service-repo.abstract';
 import { ServiceRepo } from '@main/decorators/service-repo.decorator';
-import { AppConfigKeysEnum } from '@main/exceptions/app-config-keys.enum';
+import { AppConfigEnum } from '@main/enums/app-config.enum';
 import { AppConfigEntity } from '@main/modules/app-config/app-config.entity';
 import { AppConfigRepository } from '@main/modules/app-config/app-config.repository';
+import {
+  GetAppConfigResponse,
+  type SetAppConfigData,
+} from '@shared/typings/ipc-function/handle/app-config.typing';
 import { dialog } from 'electron';
 
 @ServiceRepo(AppConfigRepository)
 export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
-  async getAppConfig() {
+  async getAppConfig(): Promise<GetAppConfigResponse> {
     const configList = await this.repository.find();
-    return configList.map((c) => {
-      return {
-        name: c.id.name,
-        value: c.id.convertValue(c.value),
-      };
-    });
+    return configList.reduce((prev, curr) => {
+      return Object.assign(prev, {
+        [curr.id.name]: curr.id.convertValue(curr.value),
+      });
+    }, {} as GetAppConfigResponse);
   }
 
-  async setRiotClientPath() {
-    const paths = dialog.showOpenDialogSync(this.mainWin, {
-      properties: ['openDirectory'],
-    });
-    if (!paths) return;
+  async setAppConfig(data: SetAppConfigData) {
+    switch (data.name) {
+      case 'RIOT_CLIENT_PATH': {
+        const paths = dialog.showOpenDialogSync(this.mainWin, {
+          properties: ['openDirectory'],
+        });
+        if (!paths) return;
 
+        await this.saveConfig(data.name, paths[0]);
+
+        break;
+      }
+    }
+
+    this.sendMsgToRender('onChangeAppConfig', await this.getAppConfig());
+  }
+
+  private async saveConfig<K extends keyof GetAppConfigResponse>(
+    name: K,
+    value: GetAppConfigResponse[K],
+  ) {
     const ent = new AppConfigEntity();
-    ent.id = AppConfigKeysEnum.RIOT_CLIENT_PATH;
-    ent.value = paths[0];
+    ent.id = AppConfigEnum.valueByName(name);
+    ent.value = value;
 
     await this.repository.save(ent);
-  }
-
-  async getRiotClientPath() {
-    return await this.repository.findOneBy({
-      id: AppConfigKeysEnum.RIOT_CLIENT_PATH,
-    });
   }
 }

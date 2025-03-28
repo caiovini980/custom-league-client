@@ -1,14 +1,12 @@
 import { EnumAbstract } from '@main/abstract/enum.abstract';
 import { Null } from '@shared/typings/generic.typing';
-import { Enum } from 'ts-jenum';
+import { Enum, EnumConstNames } from 'ts-jenum';
 
 type Converter<V> = (value: Null<string>) => V;
 
 @Enum()
-export class AppConfigKeysEnum<
-  V = unknown,
-> extends EnumAbstract<AppConfigKeysEnum> {
-  static RIOT_CLIENT_PATH = new AppConfigKeysEnum('Riot Client Path', (v) => {
+export class AppConfigEnum<V = unknown> extends EnumAbstract<AppConfigEnum> {
+  static RIOT_CLIENT_PATH = new AppConfigEnum('Riot Client Path', (v) => {
     return v;
   });
 
@@ -19,3 +17,5 @@ export class AppConfigKeysEnum<
     this.convertValue = converter;
   }
 }
+
+export type AppConfigKeys = EnumConstNames<typeof AppConfigEnum>;

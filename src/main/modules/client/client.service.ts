@@ -18,10 +18,9 @@ export class ClientService extends ServiceAbstract {
   }
 
   async startLeagueClient() {
-    const riotClientPath = await this.appConfigService.getRiotClientPath();
-    if (!riotClientPath?.value) return;
+    const appConfig = await this.appConfigService.getAppConfig();
     spawn(
-      `${riotClientPath.value}\\RiotClientServices.exe`,
+      `${appConfig.RIOT_CLIENT_PATH}\\RiotClientServices.exe`,
       ['--launch-product=league_of_legends', '--launch-patchline=live'],
       {
         detached: true,

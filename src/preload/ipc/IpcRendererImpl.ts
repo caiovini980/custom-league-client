@@ -13,7 +13,7 @@ export class IpcRendererImpl {
       },
       appConfig: {
         getConfig: null,
-        setRiotPath: null,
+        setConfig: null,
       },
       client: {
         getIsClientConnected: null,
@@ -27,6 +27,8 @@ export class IpcRendererImpl {
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
       serverUp: null,
       isClientConnected: null,
+      onChangeAppConfig: null,
+      onLeagueClientEvent: null,
     };
 
     const ipcRendererInvoke: Record<string, unknown> = {};
