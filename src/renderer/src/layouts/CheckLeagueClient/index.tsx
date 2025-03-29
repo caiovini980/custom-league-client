@@ -1,16 +1,26 @@
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
   electronListen,
   useElectronHandle,
 } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { PropsWithChildren, useEffect } from 'react';
 
-export const CheckLeagueClient = () => {
-  const navigate = useNavigate();
+export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const { client } = useElectronHandle();
-  const { isConnected: setIsConnected } = storeActions.leagueClient;
+  const { isConnected: setIsConnected, isAvailable: setIsAvailable } =
+    storeActions.leagueClient;
   const isConnected = useStore().leagueClient.isConnected();
+
+  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
+    setIsAvailable(data.isAvailable);
+  });
+
+  useLeagueClientEvent('/riotclient/pre-shutdown/begin', () => {
+    setIsConnected(false);
+    setIsAvailable(false);
+  });
 
   useEffect(() => {
     const isClientConnectedEvent = electronListen.isClientConnected(
@@ -29,8 +39,14 @@ export const CheckLeagueClient = () => {
   }, []);
 
   useEffect(() => {
-    navigate(isConnected ? '/home' : '/');
+    if (!isConnected) {
+      setIsAvailable(false);
+    }
   }, [isConnected]);
 
-  return <></>;
+  if (!isConnected) {
+    return <LoadingLeagueClient />;
+  }
+
+  return <>{children}</>;
 };

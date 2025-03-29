@@ -32,7 +32,6 @@ const checkerTs = (tsconfigPath: string) =>
     },
     biome: {
       command: 'check',
-      flags: '--write',
     },
   });
 

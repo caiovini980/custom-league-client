@@ -1,38 +1,39 @@
-import { Button, Container, Stack, Typography } from '@mui/material';
-import AlertBox from '@render/components/AlertBox';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { JSX } from 'react';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import { useStore } from '@render/zustand/store';
+import { PropsWithChildren } from 'react';
 
-export const Home = (): JSX.Element => {
-  const { lobby } = useElectronHandle();
-
-  function OnFindAramButtonClicked() {
-    console.log('Finding ARAM...');
-    lobby.createAram();
-  }
-
-  function OnFindNormalGameButtonClicked() {
-    console.log('Finding Normal Game...');
-  }
+export const Home = ({ children }: PropsWithChildren) => {
+  const isAvailable = useStore().leagueClient.isAvailable();
 
   return (
-    <Container sx={{ height: '100%' }}>
-      <Stack
-        direction={'column'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        height={'inherit'}
-        rowGap={2}
-      >
-        <Typography>Welcome to League Client Helper</Typography>
-        <Button variant="contained" onClick={OnFindAramButtonClicked}>
-          Find ARAM
-        </Button>
-        <Button variant="contained" onClick={OnFindNormalGameButtonClicked}>
-          Find Normal Game
-        </Button>
-        <AlertBox type={'info'} message={'Server info'} />
+    <Box overflow={'auto'} height={'100%'} width={'100%'}>
+      <Stack direction={'row'} height={'inherit'}>
+        <Box overflow={'auto'} height={'100%'} width={'100%'}>
+          {isAvailable ? (
+            children
+          ) : (
+            <Stack
+              direction={'column'}
+              rowGap={2}
+              justifyContent={'center'}
+              alignItems={'center'}
+              height={'100%'}
+              width={'100%'}
+            >
+              <Typography>Loading...</Typography>
+              <CircularProgress />
+            </Stack>
+          )}
+        </Box>
+        <Box
+          overflow={'auto'}
+          height={'100%'}
+          width={250}
+          borderLeft={(t) => `1px solid ${t.palette.divider}`}
+        >
+          profile
+        </Box>
       </Stack>
-    </Container>
+    </Box>
   );
 };

@@ -2,6 +2,10 @@ import {
   GetAppConfigResponse,
   SetAppConfigData,
 } from '@shared/typings/ipc-function/handle/app-config.typing';
+import {
+  ClientMakeRequestPayload,
+  ClientMakeRequestResponse,
+} from '@shared/typings/ipc-function/handle/client.typing';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -17,6 +21,9 @@ export interface IpcFunction {
     startAuthenticate: () => void;
     startLeagueClient: () => void;
     getIsClientConnected: () => boolean;
+    makeRequest: <R = unknown>(
+      data: ClientMakeRequestPayload,
+    ) => ClientMakeRequestResponse<R>;
   };
   lobby: {
     createAram: () => void;

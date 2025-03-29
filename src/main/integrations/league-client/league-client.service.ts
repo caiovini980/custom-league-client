@@ -49,10 +49,16 @@ export class LeagueClientService
       pollInterval: -1,
     }).then((ws) => {
       ws.on('message', (message) => {
-        this.sendMsgToRender(
-          'onLeagueClientEvent',
-          Buffer.from(message as Buffer).toString('utf-8'),
-        );
+        try {
+          const msgString = Buffer.from(message as Buffer)
+            .toString('utf-8')
+            .trim();
+          if (!msgString) return;
+          const msgParsed = JSON.parse(msgString);
+          this.sendMsgToRender('onLeagueClientEvent', msgParsed);
+        } catch (e) {
+          console.error(e);
+        }
       });
     });
   }
@@ -92,7 +98,7 @@ export class LeagueClientService
     url: string,
     body: unknown,
   ) {
-    return await createHttp1Request(
+    const response = await createHttp1Request(
       {
         method: method,
         url: url,
@@ -100,5 +106,11 @@ export class LeagueClientService
       },
       this.newCredentials,
     );
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      body: response.json(),
+    };
   }
 }

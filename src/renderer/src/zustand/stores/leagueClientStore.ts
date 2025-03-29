@@ -4,11 +4,13 @@ import { createStore } from 'zustand-x';
 
 export interface LeagueClientState {
   isConnected: boolean;
+  isAvailable: boolean;
   appConfig: Null<GetAppConfigResponse>;
 }
 
 const initialState: LeagueClientState = {
   isConnected: false,
+  isAvailable: false,
   appConfig: null,
 };
 

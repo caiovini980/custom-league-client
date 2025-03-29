@@ -1,16 +1,9 @@
-import { electronListen } from '@render/utils/electronFunction.util';
-import { useEffect } from 'react';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 
 export const LeagueClientEvent = () => {
-  useEffect(() => {
-    const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
-      console.log(message);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  useLeagueClientEvent('all', (data, event) => {
+    console.log(event, data);
+  });
 
   return <></>;
 };

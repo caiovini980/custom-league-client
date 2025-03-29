@@ -1,5 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "formatter": {
+    "lineEnding": "lf"
+  },
   "organizeImports": {
     "enabled": true
   },
@@ -17,7 +20,8 @@
       },
       "complexity": {
         "noForEach": "off",
-        "noStaticOnlyClass": "off"
+        "noStaticOnlyClass": "off",
+        "noBannedTypes": "off"
       },
       "style": {
         "noParameterAssign": "off",

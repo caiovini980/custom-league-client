@@ -7,15 +7,9 @@ export const LoadingLeagueClient = () => {
   const [waitLeague, setWaitLeague] = useState(false);
 
   const onClickStartLeagueClient = () => {
-    setWaitLeague(true);
-    client
-      .startLeagueClient()
-      .then(() => {
-        console.log('OK');
-      })
-      .finally(() => {
-        setWaitLeague(false);
-      });
+    client.startLeagueClient().finally(() => {
+      setWaitLeague(false);
+    });
   };
 
   return (
