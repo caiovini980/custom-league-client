@@ -1,4 +1,11 @@
-import { Avatar, Box, LinearProgress, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  LinearProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { storeActions, useStore } from '@render/zustand/store';
@@ -31,6 +38,7 @@ export const Profile = () => {
       width={'100%'}
       alignItems={'center'}
       px={1}
+      component={ButtonBase}
     >
       <Avatar src={profileIcon(currentSummoner.profileIconId)} />
       <Stack

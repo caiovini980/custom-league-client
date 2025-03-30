@@ -93,7 +93,7 @@ export class LeagueClientService
     }
   }
 
-  async handleEndpoint(
+  async handleEndpoint<T = unknown>(
     method: HttpRequestOptions['method'],
     url: string,
     body: unknown,
@@ -118,7 +118,7 @@ export class LeagueClientService
     return {
       ok: response.ok,
       status: response.status,
-      body: response.json(),
+      body: response.json() as T,
     };
   }
 }

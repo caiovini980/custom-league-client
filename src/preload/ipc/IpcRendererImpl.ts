@@ -20,6 +20,7 @@ export class IpcRendererImpl {
         startAuthenticate: null,
         startLeagueClient: null,
         makeRequest: null,
+        getVersion: null,
       },
       lobby: {
         createAram: null,

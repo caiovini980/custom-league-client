@@ -7,6 +7,8 @@ import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
+import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
+import axios from 'axios';
 
 @Service()
 export class ClientService extends ServiceAbstract {
@@ -47,5 +49,24 @@ export class ClientService extends ServiceAbstract {
       data.uri,
       data.data,
     );
+  }
+
+  async getVersion() {
+    const regionLocale =
+      await this.leagueClientService.handleEndpoint<RiotClientRegionLocale>(
+        'GET',
+        '/riotclient/region-locale',
+        undefined,
+      );
+    if (!regionLocale.ok) {
+      throw new Error('Region error');
+    }
+
+    const regionData = await axios({
+      method: 'GET',
+      url: `https://ddragon.leagueoflegends.com/realms/${regionLocale.body?.webRegion}.json`,
+    });
+
+    return regionData.data.dd as string;
   }
 }

@@ -28,6 +28,7 @@ export interface IpcFunction {
     makeRequest: <K extends ClientEndpointKeys>(
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
+    getVersion: () => string;
   };
   lobby: {
     createAram: () => void;

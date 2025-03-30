@@ -6,11 +6,21 @@ import {
   Typography,
 } from '@mui/material';
 import { Profile } from '@render/layouts/Home/Profile';
-import { useStore } from '@render/zustand/store';
-import { PropsWithChildren } from 'react';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
+import { storeActions, useStore } from '@render/zustand/store';
+import { PropsWithChildren, useEffect } from 'react';
 
 export const Home = ({ children }: PropsWithChildren) => {
+  const { client } = useElectronHandle();
+
   const isAvailable = useStore().leagueClient.isAvailable();
+  const { version: setVersion } = storeActions.leagueClient;
+
+  useEffect(() => {
+    client.getVersion().then((version) => {
+      setVersion(version);
+    });
+  }, []);
 
   return (
     <Box overflow={'auto'} height={'100%'} width={'100%'}>

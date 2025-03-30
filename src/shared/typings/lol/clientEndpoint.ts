@@ -3,6 +3,7 @@ import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolSummonerV1CurrentSummoner } from '@shared/typings/lol/response/lolSummonerV1CurrentSummoner';
 import { PatcherV1ProductsLeagueOfLegendState } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
+import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -16,6 +17,7 @@ type EndpointEmpty = EndpointData<undefined, undefined>;
 interface ClientEndpoint {
   // Riot Client
   '/riotclient/pre-shutdown/begin': EndpointEmpty;
+  '/riotclient/region-locale': EndpointOnlyResponse<RiotClientRegionLocale>;
   // Lol Summoner
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
   // Lol Game Flow
