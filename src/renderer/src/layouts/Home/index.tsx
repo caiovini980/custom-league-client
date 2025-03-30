@@ -1,4 +1,11 @@
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { Profile } from '@render/layouts/Home/Profile';
 import { useStore } from '@render/zustand/store';
 import { PropsWithChildren } from 'react';
 
@@ -25,14 +32,17 @@ export const Home = ({ children }: PropsWithChildren) => {
             </Stack>
           )}
         </Box>
-        <Box
+        <Stack
+          direction={'column'}
           overflow={'auto'}
           height={'100%'}
           width={250}
           borderLeft={(t) => `1px solid ${t.palette.divider}`}
         >
-          profile
-        </Box>
+          <Profile />
+          <Divider />
+          chat
+        </Stack>
       </Stack>
     </Box>
   );

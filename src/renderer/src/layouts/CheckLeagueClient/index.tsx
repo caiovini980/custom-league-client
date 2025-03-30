@@ -17,10 +17,16 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     setIsAvailable(data.isAvailable);
   });
 
-  useLeagueClientEvent('/riotclient/pre-shutdown/begin', () => {
-    setIsConnected(false);
-    setIsAvailable(false);
-  });
+  useLeagueClientEvent(
+    '/riotclient/pre-shutdown/begin',
+    () => {
+      setIsConnected(false);
+      setIsAvailable(false);
+    },
+    {
+      makeInitialRequest: false,
+    },
+  );
 
   useEffect(() => {
     const isClientConnectedEvent = electronListen.isClientConnected(

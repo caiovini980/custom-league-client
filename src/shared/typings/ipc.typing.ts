@@ -6,6 +6,10 @@ import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
+import {
+  ClientEndpointKeys,
+  ClientEndpointResponse,
+} from '@shared/typings/lol/clientEndpoint';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -21,9 +25,9 @@ export interface IpcFunction {
     startAuthenticate: () => void;
     startLeagueClient: () => void;
     getIsClientConnected: () => boolean;
-    makeRequest: <R = unknown>(
-      data: ClientMakeRequestPayload,
-    ) => ClientMakeRequestResponse<R>;
+    makeRequest: <K extends ClientEndpointKeys>(
+      data: ClientMakeRequestPayload<K>,
+    ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
   };
   lobby: {
     createAram: () => void;

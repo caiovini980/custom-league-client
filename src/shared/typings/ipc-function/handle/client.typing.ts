@@ -1,9 +1,15 @@
-import { ClientEndpointResponse } from '@shared/typings/lol/clientEndpointResponse';
+import { ClientEndpointRequest } from '@shared/typings/lol/clientEndpoint';
 
-export interface ClientMakeRequestPayload {
-  method: 'POST' | 'GET' | 'DELETE' | 'PUT';
-  uri: keyof ClientEndpointResponse;
-  data: unknown;
+export type ClientMakeRequestMethod = 'POST' | 'GET' | 'DELETE' | 'PUT';
+
+export interface ClientMakeRequestPayload<
+  K extends keyof ClientEndpointRequest | string,
+> {
+  method: ClientMakeRequestMethod;
+  uri: K;
+  data: K extends keyof ClientEndpointRequest
+    ? ClientEndpointRequest[K]
+    : unknown;
 }
 
 export interface ClientMakeRequestResponse<T = unknown> {

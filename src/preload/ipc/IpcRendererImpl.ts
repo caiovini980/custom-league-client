@@ -51,7 +51,7 @@ export class IpcRendererImpl {
         merge(ipcRendererInvoke, {
           [controller]: {
             [path]: async (...args: unknown[]) => {
-              const { error, result } = await ipcRenderer.invoke(key, args[0]);
+              const { error, result } = await ipcRenderer.invoke(key, ...args);
               if (error) {
                 console.log('ipc-error', error);
                 const { name, ...extra } = error;

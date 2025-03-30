@@ -6,14 +6,25 @@ import {
   EventMessage,
   EventMessageMap,
 } from '@shared/typings/lol/eventMessage';
-import { DependencyList, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+
+interface Options {
+  makeInitialRequest: boolean;
+}
 
 export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   event: K,
   cb: (data: EventMessageMap[K], event: K) => void,
-  deps: DependencyList = [],
+  options?: Partial<Options>,
 ) => {
   const { client } = useElectronHandle();
+
+  const currentOptions = Object.assign(
+    {
+      makeInitialRequest: true,
+    } as Options,
+    options,
+  );
 
   const readMessage = useCallback(
     (eventData: EventMessage) => {
@@ -22,7 +33,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         cb(eventData.data, eventData.uri);
       }
     },
-    [...deps, cb],
+    [cb],
   );
 
   useEffect(() => {
@@ -30,12 +41,12 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       // @ts-ignore
       readMessage(message[2]);
     });
-    if (event !== 'all') {
+    if (event !== 'all' && currentOptions?.makeInitialRequest) {
       client
         .makeRequest({
           method: 'GET',
           uri: event,
-          data: {},
+          data: undefined,
         })
         .then((res) => {
           if (res.ok) {
@@ -51,5 +62,5 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     return () => {
       unsubscribe();
     };
-  }, [readMessage]);
+  }, [readMessage, currentOptions?.makeInitialRequest]);
 };

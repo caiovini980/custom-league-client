@@ -3,12 +3,14 @@ import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-co
 import { createStore } from 'zustand-x';
 
 export interface LeagueClientState {
+  version: string;
   isConnected: boolean;
   isAvailable: boolean;
   appConfig: Null<GetAppConfigResponse>;
 }
 
 const initialState: LeagueClientState = {
+  version: '',
   isConnected: false,
   isAvailable: false,
   appConfig: null,

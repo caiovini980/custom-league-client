@@ -98,6 +98,14 @@ export class LeagueClientService
     url: string,
     body: unknown,
   ) {
+    if (!this.isConnected) {
+      this.logger.info('Client not connected');
+      return {
+        ok: false,
+        status: -1,
+        body: undefined,
+      };
+    }
     const response = await createHttp1Request(
       {
         method: method,

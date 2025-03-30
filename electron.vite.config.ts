@@ -70,7 +70,6 @@ export default defineConfig({
       }),
       optimizeLodashImports(),
       bytecodePlugin(),
-      checkerTs('./tsconfig.json'),
     ],
   },
   renderer: {

@@ -24,7 +24,7 @@ export class ClientController {
   }
 
   @IpcHandle('makeRequest')
-  async makeRequest(@Payload() payload: ClientMakeRequestPayload) {
+  async makeRequest(@Payload() payload: ClientMakeRequestPayload<string>) {
     return this.clientService.makeRequest(payload);
   }
 }

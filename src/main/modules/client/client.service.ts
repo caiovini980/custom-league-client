@@ -39,8 +39,9 @@ export class ClientService extends ServiceAbstract {
   }
 
   async makeRequest(
-    data: ClientMakeRequestPayload,
+    data: ClientMakeRequestPayload<string>,
   ): Promise<ClientMakeRequestResponse> {
+    this.logger.debug(`make request: ${JSON.stringify(data)}`);
     return await this.leagueClientService.handleEndpoint(
       data.method,
       data.uri,
