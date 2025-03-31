@@ -3,7 +3,8 @@ import { WinstonLoggerService } from '@main/integrations/logger/winston-logger.s
 import { ElectronIpcTransport } from '@main/ipc';
 import { NestFactory } from '@nestjs/core';
 import type { MicroserviceOptions } from '@nestjs/microservices';
-import { app } from 'electron';
+import { net, app, protocol } from 'electron';
+import fs from 'fs-extra';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 
@@ -17,7 +18,25 @@ async function bootstrap() {
     await nestApp.close();
   });
 
+  protocol.registerSchemesAsPrivileged([
+    {
+      scheme: 'media',
+      privileges: {
+        secure: true,
+        supportFetchAPI: true,
+        bypassCSP: true,
+      },
+    },
+  ]);
+
   await app.whenReady();
+
+  protocol.handle('media', (request) => {
+    const urlS = request.url.replace('media://', '');
+    fs.existsSync(request.url);
+    return net.fetch(`file://${app.getPath('userData')}/${urlS}`);
+  });
+
   const log = new WinstonLoggerService();
   const nestApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,

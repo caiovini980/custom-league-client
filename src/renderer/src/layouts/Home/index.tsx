@@ -20,8 +20,11 @@ export const Home = ({ children }: PropsWithChildren) => {
   const profileModal = useRef<ProfileModalRef>(null);
 
   const isAvailable = useStore().leagueClient.isAvailable();
-  const { version: setVersion, language: setLanguage } =
-    storeActions.leagueClient;
+  const {
+    version: setVersion,
+    language: setLanguage,
+    filePath: setFilePath,
+  } = storeActions.leagueClient;
   const { champions: setChampions } = storeActions.champion;
 
   const [loadingGameData, setLoadingGameData] = useState(true);
@@ -34,6 +37,7 @@ export const Home = ({ children }: PropsWithChildren) => {
         setVersion(data.version);
         setLanguage(data.language);
         setChampions(data.championData);
+        setFilePath(data.filePath);
         setLoadingGameData(false);
       })
       .catch((err) => {

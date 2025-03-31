@@ -1,4 +1,5 @@
 export interface LoadGameDataResponse {
+  filePath: string;
   version: string;
   language: string;
   championData: LoadGameDataChampionDataResponse[];

@@ -6,27 +6,23 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
-import { useEffect } from 'react';
 
 interface SummonerInfoProps {
   onClick: (summonerId: number) => void;
 }
 
 export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
-  const { summoner } = useElectronHandle();
   const { profileIcon } = useLeagueImage();
 
-  const { data: setCurrentSummoner } = storeActions.currentSummoner;
-  const currentSummoner = useStore().currentSummoner.data();
+  const { info: setCurrentSummoner } = storeActions.currentSummoner;
+  const currentSummoner = useStore().currentSummoner.info();
 
-  useEffect(() => {
-    summoner.getCurrentSummoner().then((data) => {
-      setCurrentSummoner(data);
-    });
-  }, []);
+  useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
+    setCurrentSummoner(data);
+  });
 
   if (!currentSummoner) return <Box height={60} />;
 
@@ -38,9 +34,9 @@ export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
       alignItems={'center'}
       px={1}
       component={ButtonBase}
-      onClick={() => onClick(currentSummoner.info.summonerId)}
+      onClick={() => onClick(currentSummoner.summonerId)}
     >
-      <Avatar src={profileIcon(currentSummoner.info.profileIconId)} />
+      <Avatar src={profileIcon(currentSummoner.profileIconId)} />
       <Stack
         direction={'column'}
         width={'100%'}
@@ -48,11 +44,11 @@ export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
         px={1}
       >
         <Typography textAlign={'center'}>
-          {currentSummoner.info.gameName} ({currentSummoner.info.summonerLevel})
+          {currentSummoner.gameName} ({currentSummoner.summonerLevel})
         </Typography>
         <LinearProgress
           variant={'determinate'}
-          value={currentSummoner.info.percentCompleteForNextLevel}
+          value={currentSummoner.percentCompleteForNextLevel}
         />
       </Stack>
     </Stack>

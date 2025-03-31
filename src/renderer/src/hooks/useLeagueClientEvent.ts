@@ -35,7 +35,10 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
         return prev.replace(curr, regexMap[curr]);
       }, event);
-      if (new RegExp(eventParsed).test(eventData.uri) || event === 'all') {
+      if (
+        new RegExp(`^${eventParsed}$`).test(eventData.uri) ||
+        event === 'all'
+      ) {
         // @ts-ignore
         cb(eventData.data, eventData.uri);
       }
@@ -73,7 +76,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   }, [readMessage, currentOptions?.makeInitialRequest]);
 };
 
-export const buildEvent = <K extends keyof EventMessageMap>(
+export const buildEventUrl = <K extends keyof EventMessageMap>(
   url: K,
   ...params: (string | number)[]
 ) => {

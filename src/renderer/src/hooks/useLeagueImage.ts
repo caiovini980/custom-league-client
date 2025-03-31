@@ -1,11 +1,16 @@
 import { useStore } from '@render/zustand/store';
 
 export const useLeagueImage = () => {
-  const version = useStore().leagueClient.version();
+  const filePath = useStore().leagueClient.filePath();
   const championList = useStore().champion.champions();
 
+  const getFileLocal = () => {
+    if (filePath) return `media://${filePath}`;
+    return 'https://raw.communitydragon.org/latest';
+  };
+
   const profileIcon = (id: string | number) => {
-    return `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${id}.png`;
+    return `${getFileLocal()}/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${id}.jpg`;
   };
 
   const championSplash = (championKey: string, splashId: string) => {
@@ -15,7 +20,7 @@ export const useLeagueImage = () => {
   };
 
   const lolGameDataImg = (url: string) => {
-    return `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${url.replace('/lol-game-data/assets/', '').toLowerCase()}`;
+    return `${getFileLocal()}/plugins/rcp-be-lol-game-data/global/default/${url.replace('/lol-game-data/assets/', '').toLowerCase()}`;
   };
 
   return {

@@ -1,6 +1,6 @@
 import { Avatar, Stack, Typography } from '@mui/material';
 import {
-  buildEvent,
+  buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -29,7 +29,10 @@ export const ProfileView = ({ summonerId }: ProfileViewProps) => {
   }, [summonerId]);
 
   useLeagueClientEvent(
-    buildEvent('/lol-collections/v1/inventories/{digits}/backdrop', summonerId),
+    buildEventUrl(
+      '/lol-collections/v1/inventories/{digits}/backdrop',
+      summonerId,
+    ),
     (data) => {
       setBackgroundUrl(lolGameDataImg(data.backdropImage));
     },

@@ -61,9 +61,12 @@ export class GameDataService extends ServiceAbstract {
 
     await this.gameDataInfoRepository.save(info);
 
+    const filePath = await this.loadFromCommunityDragon();
+
     return {
       version,
       language,
+      filePath,
       championData: await this.getChampionData(version, language),
     };
   }
@@ -150,7 +153,7 @@ export class GameDataService extends ServiceAbstract {
         .map((line: string) => line.trim())
         .filter(Boolean);
     } catch (error) {
-      console.error('Erro ao baixar lista:', error);
+      console.error('Error at download list:', error);
       return [];
     }
   }
@@ -173,13 +176,41 @@ export class GameDataService extends ServiceAbstract {
       const fileName = path.basename(url);
       const outputPath = path.join(outputDir, fileName);
 
+      if (await fs.pathExists(outputPath)) {
+        console.log(`File already exist, ignoring: ${fileName}`);
+        return;
+      }
+
       const { data } = await axios.get(url, { responseType: 'arraybuffer' });
       await fs.outputFile(outputPath, data);
 
-      console.log(`Baixado: ${fileName}`);
+      console.log(`Downloaded: ${fileName}`);
     } catch (error) {
-      console.error(`Erro ao baixar ${url}:`, error);
+      console.error(`Download error ${url}:`, error);
     }
+  }
+
+  private async downloadInBatches(
+    urls: string[],
+    version: string,
+    batchSize: number,
+    output: string,
+  ) {
+    for (let i = 0; i < urls.length; i += batchSize) {
+      const batch = urls.slice(i, i + batchSize);
+      console.log(
+        `Downloading files ${i + 1}-${i + batch.length} de ${urls.length}...`,
+      );
+      await Promise.all(
+        batch.map((url) =>
+          this.downloadFile(
+            `https://raw.communitydragon.org/${version}/${url}`,
+            path.join(output, path.dirname(url)),
+          ),
+        ),
+      );
+    }
+    this.logger.info('Download completed');
   }
 
   // @ts-ignore
@@ -205,12 +236,14 @@ export class GameDataService extends ServiceAbstract {
 
     const filterAllow = [
       /plugins\/rcp-be-lol-game-data\/global\/default\/assets\/characters/,
+      /plugins\/rcp-be-lol-game-data\/global\/default\/v1\/profile-icons/,
       new RegExp(
         `plugins/rcp-be-lol-game-data/global/${regionLocale.body.locale.toLowerCase()}/v1/champions`,
       ),
     ];
     const filterDeny = [
       /plugins\/rcp-be-lol-game-data\/global\/default\/assets\/characters\/tft.*/,
+      /.*\.(webm|ogg)$/,
     ];
     const urls = await this.fetchFileList(
       this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('latest', version),
@@ -220,14 +253,11 @@ export class GameDataService extends ServiceAbstract {
       filterDeny,
       true,
     );
-    const output = path.join(app.getPath('userData'), 'Resources', version);
-    console.log(output);
+    const resourcePath = `resources/${version}`;
+    const output = path.join(app.getPath('userData'), resourcePath);
     await fs.ensureDir(output);
-    for (const url of filteredUrls) {
-      await this.downloadFile(
-        `https://raw.communitydragon.org/${version}/${url}`,
-        path.join(output, path.dirname(url)),
-      );
-    }
+    await this.downloadInBatches(filteredUrls, version, 250, output);
+
+    return resourcePath;
   }
 }
