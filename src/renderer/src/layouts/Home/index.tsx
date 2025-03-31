@@ -5,45 +5,37 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Home/Profile/ProfileModal';
 import { SummonerInfo } from '@render/layouts/Home/SummonerInfo';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const { gameData } = useElectronHandle();
-
   const profileModal = useRef<ProfileModalRef>(null);
 
   const isAvailable = useStore().leagueClient.isAvailable();
-  const {
-    version: setVersion,
-    language: setLanguage,
-    filePath: setFilePath,
-  } = storeActions.leagueClient;
-  const { champions: setChampions } = storeActions.champion;
+  const version = useStore().leagueClient.version();
+  const language = useStore().leagueClient.language();
+  const { version: setVersion, language: setLanguage } =
+    storeActions.leagueClient;
 
   const [loadingGameData, setLoadingGameData] = useState(true);
 
+  useLeagueClientEvent('/riotclient/region-locale', (data) => {
+    setLanguage(data.locale);
+  });
+
+  useLeagueClientEvent('/system/v1/builds', (data) => {
+    setVersion(data.version.substring(0, 4));
+  });
+
   useEffect(() => {
-    setLoadingGameData(true);
-    gameData
-      .loadGameData()
-      .then((data) => {
-        setVersion(data.version);
-        setLanguage(data.language);
-        setChampions(data.championData);
-        setFilePath(data.filePath);
-        setLoadingGameData(false);
-      })
-      .catch((err) => {
-        console.log('game data err', err);
-      });
-  }, []);
+    setLoadingGameData(!(!!version && !!language));
+  }, [version, language]);
 
   if (loadingGameData) {
     return (
@@ -54,7 +46,7 @@ export const Home = ({ children }: PropsWithChildren) => {
         justifyContent={'center'}
         alignItems={'center'}
       >
-        <Typography>Loading game data...</Typography>
+        <Typography>Loading...</Typography>
         <CircularProgress />
       </Stack>
     );

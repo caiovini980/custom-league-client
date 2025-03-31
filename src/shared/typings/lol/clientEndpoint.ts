@@ -7,6 +7,7 @@ import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSu
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { PatcherV1ProductsLeagueOfLegendState } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
+import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -34,6 +35,8 @@ interface ClientEndpoint {
   '/lol-lobby/v2/lobby': EndpointOnlyResponse<LolLobbyV2Lobby>;
   // Patcher
   '/patcher/v1/products/league_of_legends/state': EndpointOnlyResponse<PatcherV1ProductsLeagueOfLegendState>;
+  // System
+  '/system/v1/builds': EndpointOnlyResponse<SystemV1Builds>;
 }
 
 export type ClientEndpointKeys = keyof ClientEndpoint;

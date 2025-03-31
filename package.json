@@ -1,6 +1,6 @@
 {
-  "name": "electron-template",
-  "version": "1.0.0",
+  "name": "league-client-helper",
+  "version": "0.1.0",
   "description": "An Electron application with React, NestJS and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",

@@ -27,9 +27,4 @@ export class ClientController {
   async makeRequest(@Payload() payload: ClientMakeRequestPayload<string>) {
     return this.clientService.makeRequest(payload);
   }
-
-  @IpcHandle('getVersion')
-  async getVersion() {
-    return this.clientService.getVersion();
-  }
 }

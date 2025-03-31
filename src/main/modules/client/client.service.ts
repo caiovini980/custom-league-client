@@ -3,7 +3,6 @@ import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
 import { AppConfigService } from '@main/modules/app-config/app-config.service';
-import { GameDataService } from '@main/modules/game-data/game-data.service';
 import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
@@ -14,7 +13,6 @@ export class ClientService extends ServiceAbstract {
   constructor(
     private leagueClientService: LeagueClientService,
     private appConfigService: AppConfigService,
-    private gameDataService: GameDataService,
   ) {
     super();
   }
@@ -49,10 +47,5 @@ export class ClientService extends ServiceAbstract {
       data.uri,
       data.data,
     );
-  }
-
-  async getVersion() {
-    this.logger.info('Get version');
-    return this.gameDataService.getVersion();
   }
 }

@@ -14,7 +14,6 @@ import { Module } from '@nestjs/common';
 
 import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
-import { GameDataModule } from '@main/modules/game-data/game-data.module';
 import { LobbyModule } from '@main/modules/lobby/lobby.module';
 import { SummonerModule } from '@main/modules/summoner/summoner.module';
 
@@ -32,7 +31,6 @@ import { SummonerModule } from '@main/modules/summoner/summoner.module';
     LobbyModule,
     ClientModule,
     AppConfigModule,
-    GameDataModule,
     SummonerModule,
   ],
 })

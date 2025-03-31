@@ -46,11 +46,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     [event],
   );
 
-  useEffect(() => {
-    const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
-      // @ts-ignore
-      readMessage(message[2]);
-    });
+  const loadEventData = useCallback(() => {
     const isRegexKeys = Object.keys(regexMap).some((rk) => event.includes(rk));
     if (event !== 'all' && currentOptions?.makeInitialRequest && !isRegexKeys) {
       client
@@ -69,11 +65,23 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
           }
         });
     }
+  }, [readMessage, currentOptions?.makeInitialRequest]);
+
+  useEffect(() => {
+    const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
+      // @ts-ignore
+      readMessage(message[2]);
+    });
+    loadEventData();
 
     return () => {
       unsubscribe();
     };
   }, [readMessage, currentOptions?.makeInitialRequest]);
+
+  return {
+    loadEventData,
+  };
 };
 
 export const buildEventUrl = <K extends keyof EventMessageMap>(

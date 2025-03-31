@@ -6,7 +6,6 @@ import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
-import { LoadGameDataResponse } from '@shared/typings/ipc-function/handle/game-data.typing';
 import {
   SummonerGetCurrentSummonerResponse,
   SummonerGetSummonerByIdResponse,
@@ -19,9 +18,6 @@ import {
 type RVoid = (...arg: never[]) => void;
 
 export interface IpcFunction {
-  gameData: {
-    loadGameData: () => LoadGameDataResponse;
-  };
   appConfig: {
     getConfig: () => GetAppConfigResponse;
     setConfig: (data: SetAppConfigData) => void;
@@ -33,7 +29,6 @@ export interface IpcFunction {
     makeRequest: <K extends ClientEndpointKeys>(
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
-    getVersion: () => string;
   };
   lobby: {
     createAram: () => void;

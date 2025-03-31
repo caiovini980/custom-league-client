@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import { electronApp } from '@electron-toolkit/utils';
 import { WinstonLoggerService } from '@main/integrations/logger/winston-logger.service';
 import { ElectronIpcTransport } from '@main/ipc';
@@ -31,10 +32,31 @@ async function bootstrap() {
 
   await app.whenReady();
 
-  protocol.handle('media', (request) => {
+  protocol.handle('media', async (request) => {
     const urlS = request.url.replace('media://', '');
-    fs.existsSync(request.url);
-    return net.fetch(`file://${app.getPath('userData')}/${urlS}`);
+    const filePath = path.join(app.getPath('userData'), 'resources', urlS);
+    const raw = `https://raw.communitydragon.org/latest/${urlS}`;
+    console.log(`Getting media: ${raw}`);
+    if (fs.existsSync(filePath)) {
+      return net.fetch(`file://${filePath}`);
+    }
+    return net
+      .fetch(raw)
+      .then((res) => {
+        if (res.ok) {
+          return res.arrayBuffer();
+        }
+        return null;
+      })
+      .then((arrayBuffer) => {
+        if (arrayBuffer) {
+          fs.outputFile(filePath, Buffer.from(arrayBuffer));
+          return new Response(arrayBuffer);
+        }
+        return new Response(null, {
+          status: 404,
+        });
+      });
   });
 
   const log = new WinstonLoggerService();
