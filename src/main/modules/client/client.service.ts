@@ -3,18 +3,18 @@ import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
 import { AppConfigService } from '@main/modules/app-config/app-config.service';
+import { GameDataService } from '@main/modules/game-data/game-data.service';
 import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
-import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
-import axios from 'axios';
 
 @Service()
 export class ClientService extends ServiceAbstract {
   constructor(
     private leagueClientService: LeagueClientService,
     private appConfigService: AppConfigService,
+    private gameDataService: GameDataService,
   ) {
     super();
   }
@@ -52,21 +52,7 @@ export class ClientService extends ServiceAbstract {
   }
 
   async getVersion() {
-    const regionLocale =
-      await this.leagueClientService.handleEndpoint<RiotClientRegionLocale>(
-        'GET',
-        '/riotclient/region-locale',
-        undefined,
-      );
-    if (!regionLocale.ok) {
-      throw new Error('Region error');
-    }
-
-    const regionData = await axios({
-      method: 'GET',
-      url: `https://ddragon.leagueoflegends.com/realms/${regionLocale.body?.webRegion}.json`,
-    });
-
-    return regionData.data.dd as string;
+    this.logger.info('Get version');
+    return this.gameDataService.getVersion();
   }
 }

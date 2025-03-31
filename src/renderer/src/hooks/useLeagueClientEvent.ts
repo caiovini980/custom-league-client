@@ -26,14 +26,21 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     options,
   );
 
+  const regexMap = {
+    '{digits}': '[0-9]+',
+  };
+
   const readMessage = useCallback(
     (eventData: EventMessage) => {
-      if (eventData.uri === event || event === 'all') {
+      const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
+        return prev.replace(curr, regexMap[curr]);
+      }, event);
+      if (new RegExp(eventParsed).test(eventData.uri) || event === 'all') {
         // @ts-ignore
         cb(eventData.data, eventData.uri);
       }
     },
-    [cb],
+    [cb, event],
   );
 
   useEffect(() => {
@@ -41,7 +48,8 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       // @ts-ignore
       readMessage(message[2]);
     });
-    if (event !== 'all' && currentOptions?.makeInitialRequest) {
+    const isRegexKeys = Object.keys(regexMap).some((rk) => event.includes(rk));
+    if (event !== 'all' && currentOptions?.makeInitialRequest && !isRegexKeys) {
       client
         .makeRequest({
           method: 'GET',
@@ -63,4 +71,13 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       unsubscribe();
     };
   }, [readMessage, currentOptions?.makeInitialRequest]);
+};
+
+export const buildEvent = <K extends keyof EventMessageMap>(
+  url: K,
+  ...params: (string | number)[]
+) => {
+  return params.reduce((prev, curr) => {
+    return String(prev).replace(/\{.+}/, String(curr));
+  }, url) as K;
 };

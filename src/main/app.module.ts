@@ -14,8 +14,9 @@ import { Module } from '@nestjs/common';
 
 import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
+import { GameDataModule } from '@main/modules/game-data/game-data.module';
 import { LobbyModule } from '@main/modules/lobby/lobby.module';
-import { ServerModule } from '@main/modules/server/server.module';
+import { SummonerModule } from '@main/modules/summoner/summoner.module';
 
 @Module({
   providers: [...providerConfig, AppService],
@@ -27,11 +28,12 @@ import { ServerModule } from '@main/modules/server/server.module';
     BrowserWindowRegisterModule,
     ContextModule,
     LoggerModule,
-    ServerModule,
     LeagueClientModule,
     LobbyModule,
     ClientModule,
     AppConfigModule,
+    GameDataModule,
+    SummonerModule,
   ],
 })
 export class AppModule {}

@@ -217,7 +217,8 @@ export class Generator extends AbstractGenerator {
 
     const names = this.getNames(moduleName);
     const file = template
-      .replace(/{{module-name}}/g, names.controller.camelCase)
+      .replace(/{{module-name}}/g, moduleName)
+      .replace(/{{controller-camel-case}}/g, names.module.camelCase)
       .replace(/{{controller-pascal-case}}/g, names.controller.pascalCase)
       .replace(/{{service-camel-case}}/g, names.service.camelCase)
       .replace(/{{service-pascal-case}}/g, names.service.pascalCase);

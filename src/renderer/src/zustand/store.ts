@@ -1,3 +1,4 @@
+import { championStore } from '@render/zustand/stores/championStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { mapValuesKey } from 'zustand-x';
 import { leagueClientStore } from './stores/leagueClientStore';
@@ -6,6 +7,7 @@ import { leagueClientStore } from './stores/leagueClientStore';
 export const rootStore = {
   leagueClient: leagueClientStore,
   currentSummoner: currentSummonerStore,
+  champion: championStore,
 };
 
 // Global hook selectors

@@ -1,15 +1,13 @@
 import { Null } from '@shared/typings/generic.typing';
-import { LolSummonerV1CurrentSummoner } from '@shared/typings/lol/response/lolSummonerV1CurrentSummoner';
+import { SummonerGetCurrentSummonerResponse } from '@shared/typings/ipc-function/handle/summoner.typing';
 import { createStore } from 'zustand-x';
 
 export interface CurrentSummonerState {
-  data: Null<LolSummonerV1CurrentSummoner>;
-  profileBackground: unknown;
+  data: Null<SummonerGetCurrentSummonerResponse>;
 }
 
 const initialState: CurrentSummonerState = {
   data: null,
-  profileBackground: null,
 };
 
 export const currentSummonerStore =

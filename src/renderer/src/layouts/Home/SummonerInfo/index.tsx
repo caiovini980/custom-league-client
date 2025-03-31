@@ -6,27 +6,26 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
 import { useEffect } from 'react';
 
-export const Profile = () => {
-  const { makeRequest } = useLeagueClientRequest();
+interface SummonerInfoProps {
+  onClick: (summonerId: number) => void;
+}
+
+export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
+  const { summoner } = useElectronHandle();
   const { profileIcon } = useLeagueImage();
 
   const { data: setCurrentSummoner } = storeActions.currentSummoner;
   const currentSummoner = useStore().currentSummoner.data();
 
   useEffect(() => {
-    //TODO: is better pass to main process?
-    makeRequest('GET', '/lol-summoner/v1/current-summoner', undefined).then(
-      (res) => {
-        if (res.ok) {
-          setCurrentSummoner(res.body);
-        }
-      },
-    );
+    summoner.getCurrentSummoner().then((data) => {
+      setCurrentSummoner(data);
+    });
   }, []);
 
   if (!currentSummoner) return <Box height={60} />;
@@ -39,8 +38,9 @@ export const Profile = () => {
       alignItems={'center'}
       px={1}
       component={ButtonBase}
+      onClick={() => onClick(currentSummoner.info.summonerId)}
     >
-      <Avatar src={profileIcon(currentSummoner.profileIconId)} />
+      <Avatar src={profileIcon(currentSummoner.info.profileIconId)} />
       <Stack
         direction={'column'}
         width={'100%'}
@@ -48,11 +48,11 @@ export const Profile = () => {
         px={1}
       >
         <Typography textAlign={'center'}>
-          {currentSummoner.gameName} ({currentSummoner.summonerLevel})
+          {currentSummoner.info.gameName} ({currentSummoner.info.summonerLevel})
         </Typography>
         <LinearProgress
           variant={'determinate'}
-          value={currentSummoner.percentCompleteForNextLevel}
+          value={currentSummoner.info.percentCompleteForNextLevel}
         />
       </Stack>
     </Stack>

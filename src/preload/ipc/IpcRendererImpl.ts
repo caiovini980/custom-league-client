@@ -8,8 +8,8 @@ import { merge } from 'lodash';
 export class IpcRendererImpl {
   static init() {
     const ipcFunctionObjectMapper: IpcFunctionObjectMapper = {
-      server: {
-        sendInfo: null,
+      gameData: {
+        loadGameData: null,
       },
       appConfig: {
         getConfig: null,
@@ -24,6 +24,10 @@ export class IpcRendererImpl {
       },
       lobby: {
         createAram: null,
+      },
+      summoner: {
+        getCurrentSummoner: null,
+        getSummonerById: null,
       },
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {

@@ -2,7 +2,7 @@ import { IpcHandle } from '@main/ipc';
 import { Controller } from '@nestjs/common';
 import { {{service-pascal-case}} } from './{{module-name}}.service';
 
-@Controller('{{module-name}}')
+@Controller('{{controller-camel-case}}')
 export class {{controller-pascal-case}} {
   constructor(private {{service-camel-case}}: {{service-pascal-case}}) {}
 

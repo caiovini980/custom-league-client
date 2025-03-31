@@ -5,22 +5,56 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { Profile } from '@render/layouts/Home/Profile';
+import {
+  ProfileModal,
+  ProfileModalRef,
+} from '@render/layouts/Home/Profile/ProfileModal';
+import { SummonerInfo } from '@render/layouts/Home/SummonerInfo';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const { client } = useElectronHandle();
+  const { gameData } = useElectronHandle();
+
+  const profileModal = useRef<ProfileModalRef>(null);
 
   const isAvailable = useStore().leagueClient.isAvailable();
-  const { version: setVersion } = storeActions.leagueClient;
+  const { version: setVersion, language: setLanguage } =
+    storeActions.leagueClient;
+  const { champions: setChampions } = storeActions.champion;
+
+  const [loadingGameData, setLoadingGameData] = useState(true);
 
   useEffect(() => {
-    client.getVersion().then((version) => {
-      setVersion(version);
-    });
+    setLoadingGameData(true);
+    gameData
+      .loadGameData()
+      .then((data) => {
+        setVersion(data.version);
+        setLanguage(data.language);
+        setChampions(data.championData);
+        setLoadingGameData(false);
+      })
+      .catch((err) => {
+        console.log('game data err', err);
+      });
   }, []);
+
+  if (loadingGameData) {
+    return (
+      <Stack
+        direction={'column'}
+        height={'100%'}
+        width={'100%'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
+        <Typography>Loading game data...</Typography>
+        <CircularProgress />
+      </Stack>
+    );
+  }
 
   return (
     <Box overflow={'auto'} height={'100%'} width={'100%'}>
@@ -49,11 +83,14 @@ export const Home = ({ children }: PropsWithChildren) => {
           width={250}
           borderLeft={(t) => `1px solid ${t.palette.divider}`}
         >
-          <Profile />
+          <SummonerInfo
+            onClick={(summonerId) => profileModal.current?.open(summonerId)}
+          />
           <Divider />
           chat
         </Stack>
       </Stack>
+      <ProfileModal ref={profileModal} />
     </Box>
   );
 };

@@ -14,7 +14,7 @@ export const typeOrmModuleOptions = (
 ): TypeOrmModuleOptions => {
   return {
     ...dataSource,
-    logging: true,
+    logging: false,
     retryAttempts: 3,
     autoLoadEntities: true,
     namingStrategy: new SnakeNamingStrategy(),

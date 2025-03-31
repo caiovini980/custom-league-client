@@ -103,7 +103,7 @@ export class LeagueClientService
       return {
         ok: false,
         status: -1,
-        body: undefined,
+        body: undefined as T,
       };
     }
     const response = await createHttp1Request(

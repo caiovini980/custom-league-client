@@ -21,10 +21,12 @@ $ npm run dev
 ```bash
 # For windows
 $ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
 ```
+# Links
+
+- [Community Dragon Docs](https://www.communitydragon.org/documentation)
+- [Community Dragon Directory Downloader](https://github.com/Hi-Ray/cd-dd/)
+- [Community Dragon Raw](https://raw.communitydragon.org/)
+- [Hextechdocs](https://hextechdocs.dev/)
+- [Riot Games LoL Docs](https://developer.riotgames.com/docs/lol)
+- [JSON to TS](https://transform.tools/json-to-typescript)
