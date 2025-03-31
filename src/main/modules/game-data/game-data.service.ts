@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
@@ -10,11 +11,16 @@ import { ChampionDataDragon } from '@shared/typings/lol/data-dragon/all-champion
 import { Realms } from '@shared/typings/lol/data-dragon/realms';
 import { SingleChampionDataDragon } from '@shared/typings/lol/data-dragon/single-champion';
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
+import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 import axios from 'axios';
+import { app } from 'electron';
+import fs from 'fs-extra';
 import { Transactional } from 'typeorm-transactional';
 
 @Service()
 export class GameDataService extends ServiceAbstract {
+  private COMMUNITY_DRAGON_FILES_EXPORTED =
+    'https://raw.communitydragon.org/latest/cdragon/files.exported.txt';
   private DATA_DRAGON_URL = 'https://ddragon.leagueoflegends.com';
 
   constructor(
@@ -134,5 +140,94 @@ export class GameDataService extends ServiceAbstract {
       });
       return prev;
     }, [] as LoadGameDataChampionDataResponse[]);
+  }
+
+  async fetchFileList(url: string): Promise<string[]> {
+    try {
+      const { data } = await axios.get(url);
+      return data
+        .split('\n')
+        .map((line: string) => line.trim())
+        .filter(Boolean);
+    } catch (error) {
+      console.error('Erro ao baixar lista:', error);
+      return [];
+    }
+  }
+
+  private filterUrls(
+    urls: string[],
+    regexList: RegExp[],
+    isRemove = false,
+  ): string[] {
+    return urls.filter((url) =>
+      regexList.some((regex) => {
+        if (isRemove) return !regex.test(url);
+        return regex.test(url);
+      }),
+    );
+  }
+
+  async downloadFile(url: string, outputDir: string) {
+    try {
+      const fileName = path.basename(url);
+      const outputPath = path.join(outputDir, fileName);
+
+      const { data } = await axios.get(url, { responseType: 'arraybuffer' });
+      await fs.outputFile(outputPath, data);
+
+      console.log(`Baixado: ${fileName}`);
+    } catch (error) {
+      console.error(`Erro ao baixar ${url}:`, error);
+    }
+  }
+
+  // @ts-ignore
+  private async loadFromCommunityDragon() {
+    // Read this file (https://raw.communitydragon.org/latest/cdragon/files.exported.txt)
+    // And download contents
+
+    const systemBuild =
+      await this.leagueClientService.handleEndpoint<SystemV1Builds>(
+        'GET',
+        '/system/v1/builds',
+        undefined,
+      );
+
+    const regionLocale =
+      await this.leagueClientService.handleEndpoint<RiotClientRegionLocale>(
+        'GET',
+        '/riotclient/region-locale',
+        undefined,
+      );
+
+    const version = systemBuild.body.version.substring(0, 4);
+
+    const filterAllow = [
+      /plugins\/rcp-be-lol-game-data\/global\/default\/assets\/characters/,
+      new RegExp(
+        `plugins/rcp-be-lol-game-data/global/${regionLocale.body.locale.toLowerCase()}/v1/champions`,
+      ),
+    ];
+    const filterDeny = [
+      /plugins\/rcp-be-lol-game-data\/global\/default\/assets\/characters\/tft.*/,
+    ];
+    const urls = await this.fetchFileList(
+      this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('latest', version),
+    );
+    const filteredUrls = this.filterUrls(
+      this.filterUrls(urls, filterAllow),
+      filterDeny,
+      true,
+    );
+    const output = path.join(app.getPath('userData'), 'Resources', version);
+    console.log(output);
+    await fs.ensureDir(output);
+    for (const url of filteredUrls) {
+      await this.downloadFile(
+        `https://raw.communitydragon.org/${version}/${url}`,
+        path.join(output, path.dirname(url)),
+      );
+    }
   }
 }

@@ -19,7 +19,6 @@ export class SummonerService extends ServiceAbstract {
         '/lol-summoner/v1/current-summoner',
         undefined,
       );
-
     return this.getSummonerById(summonerData.body.summonerId);
   }
 

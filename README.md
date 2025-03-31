@@ -25,7 +25,7 @@ $ npm run build:win
 # Links
 
 - [Community Dragon Docs](https://www.communitydragon.org/documentation)
-- [Community Dragon Directory Downloader](https://github.com/Hi-Ray/cd-dd/)
+- [Community Dragon Directory Downloader](https://github.com/BlossomiShymae/snip-snip)
 - [Community Dragon Raw](https://raw.communitydragon.org/)
 - [Hextechdocs](https://hextechdocs.dev/)
 - [Riot Games LoL Docs](https://developer.riotgames.com/docs/lol)

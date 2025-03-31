@@ -40,7 +40,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         cb(eventData.data, eventData.uri);
       }
     },
-    [cb, event],
+    [event],
   );
 
   useEffect(() => {
