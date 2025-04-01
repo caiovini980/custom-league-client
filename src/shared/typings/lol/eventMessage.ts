@@ -2,7 +2,7 @@ import { ClientEndpointResponse } from '@shared/typings/lol/clientEndpoint';
 
 export interface EventMessage<T = unknown> {
   uri: string;
-  eventType: 'Update';
+  eventType: 'Update' | 'Delete';
   data: T;
 }
 

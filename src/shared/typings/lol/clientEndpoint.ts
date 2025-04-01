@@ -21,6 +21,8 @@ type EndpointEmpty = EndpointData<undefined, undefined>;
 interface ClientEndpoint {
   // Riot Client
   '/riotclient/pre-shutdown/begin': EndpointEmpty;
+  '/riotclient/launch-ux': EndpointEmpty;
+  '/riotclient/kill-ux': EndpointEmpty;
   '/riotclient/region-locale': EndpointOnlyResponse<RiotClientRegionLocale>;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;

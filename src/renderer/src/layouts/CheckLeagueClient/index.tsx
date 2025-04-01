@@ -9,22 +9,17 @@ import { PropsWithChildren, useEffect } from 'react';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const { client } = useElectronHandle();
-  const { isConnected: setIsConnected, isAvailable: setIsAvailable } =
-    storeActions.leagueClient;
+  const {
+    isConnected: setIsConnected,
+    isAvailable: setIsAvailable,
+    resetState,
+  } = storeActions.leagueClient;
   const isConnected = useStore().leagueClient.isConnected();
-
-  const { loadEventData } = useLeagueClientEvent(
-    '/lol-gameflow/v1/availability',
-    (data) => {
-      setIsAvailable(data.isAvailable);
-    },
-  );
 
   useLeagueClientEvent(
     '/riotclient/pre-shutdown/begin',
     () => {
-      setIsConnected(false);
-      setIsAvailable(false);
+      resetState();
     },
     {
       makeInitialRequest: false,
@@ -50,8 +45,6 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!isConnected) {
       setIsAvailable(false);
-    } else {
-      loadEventData();
     }
   }, [isConnected]);
 

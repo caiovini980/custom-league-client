@@ -32,6 +32,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
 
   const readMessage = useCallback(
     (eventData: EventMessage) => {
+      if (eventData.eventType === 'Delete') return;
       const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
         return prev.replace(curr, regexMap[curr]);
       }, event);
@@ -77,7 +78,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     return () => {
       unsubscribe();
     };
-  }, [readMessage, currentOptions?.makeInitialRequest]);
+  }, []);
 
   return {
     loadEventData,

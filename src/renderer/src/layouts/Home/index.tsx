@@ -20,10 +20,17 @@ export const Home = ({ children }: PropsWithChildren) => {
   const isAvailable = useStore().leagueClient.isAvailable();
   const version = useStore().leagueClient.version();
   const language = useStore().leagueClient.language();
-  const { version: setVersion, language: setLanguage } =
-    storeActions.leagueClient;
+  const {
+    version: setVersion,
+    language: setLanguage,
+    isAvailable: setIsAvailable,
+  } = storeActions.leagueClient;
 
   const [loadingGameData, setLoadingGameData] = useState(true);
+
+  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
+    setIsAvailable(data.isAvailable);
+  });
 
   useLeagueClientEvent('/riotclient/region-locale', (data) => {
     setLanguage(data.locale);

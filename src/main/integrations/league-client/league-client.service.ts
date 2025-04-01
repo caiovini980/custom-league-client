@@ -35,32 +35,11 @@ export class LeagueClientService
 
         this.setupConnection();
         this.client.start();
-        this.changeConnectState(true);
       })
       .catch((err: Error) => {
         this.logger.error(err.message);
         this.changeConnectState(false);
       });
-
-    createWebSocketConnection({
-      authenticationOptions: {
-        awaitConnection: true,
-      },
-      pollInterval: -1,
-    }).then((ws) => {
-      ws.on('message', (message) => {
-        try {
-          const msgString = Buffer.from(message as Buffer)
-            .toString('utf-8')
-            .trim();
-          if (!msgString) return;
-          const msgParsed = JSON.parse(msgString);
-          this.sendMsgToRender('onLeagueClientEvent', msgParsed);
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    });
   }
 
   onApplicationShutdown(_signal?: string) {
@@ -69,9 +48,10 @@ export class LeagueClientService
   }
 
   setupConnection(): void {
+    this.tryConnection();
     this.client.on('connect', (newCredentials) => {
       this.newCredentials = newCredentials;
-      this.changeConnectState(true);
+      this.tryConnection();
     });
 
     this.client.on('disconnect', () => {
@@ -81,6 +61,42 @@ export class LeagueClientService
 
   isLeagueClientConnected() {
     return this.isConnected;
+  }
+
+  async handleEndpoint<T = unknown>(
+    method: HttpRequestOptions['method'],
+    url: string,
+    body: unknown,
+  ) {
+    try {
+      const response = await createHttp1Request(
+        {
+          method: method,
+          url: url,
+          body: body,
+        },
+        this.newCredentials,
+      );
+
+      let bodyRes = response.text();
+
+      try {
+        bodyRes = response.json();
+      } catch (e) {}
+
+      return {
+        ok: response.ok,
+        status: response.status,
+        body: bodyRes as T,
+      };
+    } catch (e) {
+      this.logger.error(`local request: ${e}`);
+      return {
+        ok: false,
+        status: -1,
+        body: undefined as T,
+      };
+    }
   }
 
   private changeConnectState(isConnected: boolean) {
@@ -93,32 +109,52 @@ export class LeagueClientService
     }
   }
 
-  async handleEndpoint<T = unknown>(
-    method: HttpRequestOptions['method'],
-    url: string,
-    body: unknown,
-  ) {
-    if (!this.isConnected) {
-      this.logger.info('Client not connected');
-      return {
-        ok: false,
-        status: -1,
-        body: undefined as T,
-      };
-    }
-    const response = await createHttp1Request(
-      {
-        method: method,
-        url: url,
-        body: body,
-      },
-      this.newCredentials,
+  private async tryConnection() {
+    const res = await this.handleEndpoint(
+      'GET',
+      '/riot-messaging-service/v1/state',
+      undefined,
     );
+    if (res.ok) {
+      this.killUX();
+      this.startWb();
+      this.changeConnectState(true);
+      return;
+    }
+    setTimeout(() => {
+      this.tryConnection();
+    }, 1000);
+  }
 
-    return {
-      ok: response.ok,
-      status: response.status,
-      body: response.json() as T,
-    };
+  private startWb() {
+    createWebSocketConnection({
+      authenticationOptions: {
+        awaitConnection: true,
+      },
+      maxRetries: -1,
+    }).then((ws) => {
+      ws.on('message', (message) => {
+        try {
+          const msgString = Buffer.from(message as Buffer)
+            .toString('utf-8')
+            .trim();
+          if (!msgString) return;
+          const msgParsed = JSON.parse(msgString);
+          this.sendMsgToRender('onLeagueClientEvent', msgParsed);
+        } catch (e) {
+          this.logger.error(e);
+        }
+      });
+    });
+  }
+
+  private killUX() {
+    this.handleEndpoint('POST', '/riotclient/kill-ux', undefined).then(
+      (res) => {
+        if (res.ok) {
+          this.logger.info('ClientUX is finished');
+        }
+      },
+    );
   }
 }

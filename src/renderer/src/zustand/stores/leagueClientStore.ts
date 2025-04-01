@@ -23,4 +23,12 @@ export const leagueClientStore = createStore('leagueClient')<LeagueClientState>(
   {
     devtools: { enabled: true },
   },
-);
+).extendActions((set, get) => ({
+  resetState: () => {
+    const s: LeagueClientState = {
+      ...initialState,
+      appConfig: get.appConfig(),
+    };
+    set.state(() => s);
+  },
+}));

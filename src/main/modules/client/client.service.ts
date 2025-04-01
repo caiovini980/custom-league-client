@@ -31,7 +31,6 @@ export class ClientService extends ServiceAbstract {
         stdio: 'ignore',
       },
     );
-    return this.leagueClientService.startAuthenticate();
   }
 
   async getIsClientConnected() {

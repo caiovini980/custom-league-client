@@ -24,7 +24,6 @@ export const BottomBar = () => {
   });
 
   const openDrawer = (screen: string) => {
-    console.log(screen);
     setOpen({
       open: true,
       screen,
