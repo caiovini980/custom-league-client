@@ -9,11 +9,7 @@ import {
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useStore } from '@render/zustand/store';
 
-interface SummonerInfoProps {
-  onClick: (summonerId: number) => void;
-}
-
-export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
+export const SummonerInfo = () => {
   const { profileIcon } = useLeagueImage();
 
   const currentSummoner = useStore().currentSummoner.info();
@@ -28,7 +24,6 @@ export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
       alignItems={'center'}
       px={1}
       component={ButtonBase}
-      onClick={() => onClick(23094773)}
     >
       <Avatar src={profileIcon(currentSummoner.profileIconId)} />
       <Stack

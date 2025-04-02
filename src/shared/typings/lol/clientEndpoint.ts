@@ -1,3 +1,5 @@
+import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
+import { lolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { LolCollectionsV1inventories_Id_backdrop } from '@shared/typings/lol/response/lolCollectionsV1inventories_Id_backdrop';
 import { LolGameFlowV1Availability } from '@shared/typings/lol/response/lolGameFlowV1Availability';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
@@ -24,6 +26,9 @@ interface ClientEndpoint {
   '/riotclient/launch-ux': EndpointEmpty;
   '/riotclient/kill-ux': EndpointEmpty;
   '/riotclient/region-locale': EndpointOnlyResponse<RiotClientRegionLocale>;
+  // Lol Chat
+  '/lol-chat/v1/friends': EndpointOnlyResponse<lolChatV1Friends[]>;
+  '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   // Lol Summoner

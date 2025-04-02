@@ -7,17 +7,12 @@ import {
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { BottomMenu } from '@render/layouts/Home/BottomMenu';
-import {
-  ProfileModal,
-  ProfileModalRef,
-} from '@render/layouts/Profile/ProfileModal';
+import { Chat } from '@render/layouts/Home/Chat';
 import { storeActions, useStore } from '@render/zustand/store';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const profileModal = useRef<ProfileModalRef>(null);
-
   const version = useStore().leagueClient.version();
   const language = useStore().leagueClient.language();
   const {
@@ -93,14 +88,11 @@ export const Home = ({ children }: PropsWithChildren) => {
           width={250}
           borderLeft={(t) => `1px solid ${t.palette.divider}`}
         >
-          <SummonerInfo
-            onClick={(summonerId) => profileModal.current?.open(summonerId)}
-          />
+          <SummonerInfo />
           <Divider />
-          chat
+          <Chat />
         </Stack>
       </Stack>
-      <ProfileModal ref={profileModal} />
     </Box>
   );
 };
