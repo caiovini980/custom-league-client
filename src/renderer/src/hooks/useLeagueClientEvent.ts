@@ -28,6 +28,8 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
 
   const regexMap = {
     '{digits}': '[0-9]+',
+    '{uuid}':
+      '[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}',
   };
 
   const readMessage = useCallback(
@@ -38,6 +40,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       }, event);
       if (
         new RegExp(`^${eventParsed}$`).test(eventData.uri) ||
+        eventData.uri === event ||
         event === 'all'
       ) {
         // @ts-ignore
@@ -78,7 +81,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [loadEventData]);
 
   return {
     loadEventData,

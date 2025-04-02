@@ -160,7 +160,10 @@ const CustomDialog = ({
           title
         ))}
       <DialogContent
-        style={{ padding: spacing(borderSpacing), display: 'flex' }}
+        sx={{
+          padding: spacing(borderSpacing),
+          display: 'flex',
+        }}
         {...dialogContentProps}
       >
         {children || (

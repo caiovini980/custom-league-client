@@ -6,9 +6,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { storeActions, useStore } from '@render/zustand/store';
+import { useStore } from '@render/zustand/store';
 
 interface SummonerInfoProps {
   onClick: (summonerId: number) => void;
@@ -17,12 +16,7 @@ interface SummonerInfoProps {
 export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
   const { profileIcon } = useLeagueImage();
 
-  const { info: setCurrentSummoner } = storeActions.currentSummoner;
   const currentSummoner = useStore().currentSummoner.info();
-
-  useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
-    setCurrentSummoner(data);
-  });
 
   if (!currentSummoner) return <Box height={60} />;
 
@@ -34,7 +28,7 @@ export const SummonerInfo = ({ onClick }: SummonerInfoProps) => {
       alignItems={'center'}
       px={1}
       component={ButtonBase}
-      onClick={() => onClick(currentSummoner.summonerId)}
+      onClick={() => onClick(23094773)}
     >
       <Avatar src={profileIcon(currentSummoner.profileIconId)} />
       <Stack

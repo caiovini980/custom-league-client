@@ -1,6 +1,8 @@
 import CustomDialog from '@render/components/CustomDialog';
-import { ProfileView } from '@render/layouts/Home/Profile/ProfileView';
+import { CustomIconButton } from '@render/components/input';
+import { ProfileView } from '@render/layouts/Profile/ProfileView';
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
 export interface ProfileModalRef {
   open: (summonerId: number) => void;
@@ -31,9 +33,26 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
       handleClose={onCloseModal}
       hiddenBtnConfirm
       labelBtnCancel={'Close'}
-      maxWidth={'sm'}
+      maxWidth={'md'}
       fullWidth
+      dialogContentProps={{
+        sx: {
+          p: 0,
+          position: 'relative',
+          height: '80vh',
+        },
+      }}
+      actionsComponent={<div />}
     >
+      <CustomIconButton
+        icon={FaTimes}
+        onClick={onCloseModal}
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+        }}
+      />
       <ProfileView summonerId={modalData.summonerId} />
     </CustomDialog>
   );

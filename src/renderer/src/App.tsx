@@ -4,6 +4,7 @@ import { CheckLeagueClient } from '@render/layouts/CheckLeagueClient';
 import { Home } from '@render/layouts/Home';
 import { LeagueClientEvent } from '@render/layouts/LeagueClientEvent';
 import { Lobby } from '@render/layouts/Lobby';
+import { Profile } from '@render/layouts/Profile';
 import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
 import { JSX } from 'react';
@@ -25,6 +26,7 @@ export const App = (): JSX.Element => {
               <Home>
                 <Routes>
                   <Route path={'/'} Component={Lobby} />
+                  <Route path={'/profile'} Component={Profile} />
                 </Routes>
               </Home>
             </CheckLeagueClient>

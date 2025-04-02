@@ -4,9 +4,8 @@ import {
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { SummonerGetSummonerByIdResponse } from '@shared/typings/ipc-function/handle/summoner.typing';
-import { useEffect, useState } from 'react';
+import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { useState } from 'react';
 
 interface ProfileViewProps {
   summonerId: number;
@@ -14,19 +13,11 @@ interface ProfileViewProps {
 
 export const ProfileView = ({ summonerId }: ProfileViewProps) => {
   const { profileIcon, lolGameDataImg } = useLeagueImage();
-  const { summoner } = useElectronHandle();
 
   const iconSize = 80;
 
-  const [summonerData, setSummonerData] =
-    useState<SummonerGetSummonerByIdResponse>();
+  const [summonerData, setSummonerData] = useState<LolSummonerV1Summoners_Id>();
   const [backgroundUrl, setBackgroundUrl] = useState('');
-
-  useEffect(() => {
-    summoner.getSummonerById(summonerId).then((data) => {
-      setSummonerData(data);
-    });
-  }, [summonerId]);
 
   useLeagueClientEvent(
     buildEventUrl(
@@ -38,16 +29,23 @@ export const ProfileView = ({ summonerId }: ProfileViewProps) => {
     },
   );
 
+  useLeagueClientEvent(
+    buildEventUrl('/lol-summoner/v1/summoners/{digits}', summonerId),
+    (data) => {
+      setSummonerData(data);
+    },
+  );
+
   if (!summonerData) return null;
 
   return (
     <Stack
       direction={'column'}
-      height={'500px'}
+      height={'100%'}
       width={'100%'}
       alignItems={'center'}
       sx={{
-        background: `linear-gradient(0deg, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%), url(${backgroundUrl})`,
+        background: `linear-gradient(0deg, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0) 100%), url(${backgroundUrl})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -64,11 +62,11 @@ export const ProfileView = ({ summonerId }: ProfileViewProps) => {
         }}
       >
         <Avatar
-          src={profileIcon(summonerData.info.profileIconId)}
+          src={profileIcon(summonerData.profileIconId)}
           sx={{ width: iconSize, height: iconSize }}
         />
         <Typography>
-          {summonerData.info.gameName} ({summonerData.info.summonerLevel})
+          {summonerData.gameName} ({summonerData.summonerLevel})
         </Typography>
       </Stack>
     </Stack>

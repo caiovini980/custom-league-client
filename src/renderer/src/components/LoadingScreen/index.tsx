@@ -19,7 +19,7 @@ export interface LoadingScreenProps {
 
 export const LoadingScreen = ({
   loading = true,
-  loadingText = 'Carregando dados...',
+  loadingText = 'Loading...',
   height = 150,
   backdrop = false,
   color,

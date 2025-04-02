@@ -3,7 +3,6 @@ import React from 'react';
 import { IconBaseProps, IconType } from 'react-icons';
 
 export interface CustomIconButtonProps extends IconButtonProps {
-  id: string;
   icon: IconType;
   loading?: boolean;
   iconProps?: IconBaseProps;

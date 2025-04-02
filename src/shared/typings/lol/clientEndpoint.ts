@@ -28,8 +28,8 @@ interface ClientEndpoint {
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   // Lol Summoner
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
-  '/lol-summoner/v1/summoners/{$string}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
-  '/lol-summoner/v1/summoner-profile': EndpointOnlyResponse<LolSummonerV1SummonerProfile>;
+  '/lol-summoner/v1/summoners/{digits}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
+  '/lol-summoner/v1/summoner-profile?puuid={uuid}': EndpointOnlyResponse<LolSummonerV1SummonerProfile>;
   // Lol Game Flow
   '/lol-gameflow/v1/availability': EndpointOnlyResponse<LolGameFlowV1Availability>;
   '/lol-gameflow/v1/session': EndpointOnlyResponse<LolGameflowV1Session>;

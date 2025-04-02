@@ -103,6 +103,7 @@ export class LeagueClientService
     this.isConnected = isConnected;
     this.sendMsgToRender('isClientConnected', isConnected);
     if (isConnected) {
+      //this.killUX()
       this.logger.info('Client instance connected.');
     } else {
       this.logger.info('Client instance disconnected.');
@@ -116,7 +117,6 @@ export class LeagueClientService
       undefined,
     );
     if (res.ok) {
-      this.killUX();
       this.startWb();
       this.changeConnectState(true);
       return;

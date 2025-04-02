@@ -6,18 +6,18 @@ import {
   Typography,
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { BottomMenu } from '@render/layouts/Home/BottomMenu';
 import {
   ProfileModal,
   ProfileModalRef,
-} from '@render/layouts/Home/Profile/ProfileModal';
-import { SummonerInfo } from '@render/layouts/Home/SummonerInfo';
+} from '@render/layouts/Profile/ProfileModal';
 import { storeActions, useStore } from '@render/zustand/store';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { SummonerInfo } from './SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const profileModal = useRef<ProfileModalRef>(null);
 
-  const isAvailable = useStore().leagueClient.isAvailable();
   const version = useStore().leagueClient.version();
   const language = useStore().leagueClient.language();
   const {
@@ -38,6 +38,12 @@ export const Home = ({ children }: PropsWithChildren) => {
 
   useLeagueClientEvent('/system/v1/builds', (data) => {
     setVersion(data.version.substring(0, 4));
+  });
+
+  const { info: setCurrentSummoner } = storeActions.currentSummoner;
+
+  useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
+    setCurrentSummoner(data);
   });
 
   useEffect(() => {
@@ -61,23 +67,24 @@ export const Home = ({ children }: PropsWithChildren) => {
 
   return (
     <Box overflow={'auto'} height={'100%'} width={'100%'}>
-      <Stack direction={'row'} height={'inherit'}>
-        <Box overflow={'auto'} height={'100%'} width={'100%'}>
-          {isAvailable ? (
-            children
-          ) : (
-            <Stack
-              direction={'column'}
-              rowGap={2}
-              justifyContent={'center'}
-              alignItems={'center'}
-              height={'100%'}
-              width={'100%'}
-            >
-              <Typography>Loading...</Typography>
-              <CircularProgress />
-            </Stack>
-          )}
+      <Stack direction={'row'} height={'inherit'} width={'100%'}>
+        <Box
+          overflow={'auto'}
+          height={'100%'}
+          width={'100%'}
+          position={'relative'}
+        >
+          {children}
+          <Box
+            position={'absolute'}
+            bottom={12}
+            right={0}
+            left={0}
+            display={'flex'}
+            justifyContent={'center'}
+          >
+            <BottomMenu />
+          </Box>
         </Box>
         <Stack
           direction={'column'}
