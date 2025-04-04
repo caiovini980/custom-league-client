@@ -17,10 +17,6 @@ export class ClientService extends ServiceAbstract {
     super();
   }
 
-  async startAuthenticate() {
-    this.leagueClientService.startAuthenticate();
-  }
-
   async startLeagueClient() {
     const appConfig = await this.appConfigService.getAppConfig();
     spawn(

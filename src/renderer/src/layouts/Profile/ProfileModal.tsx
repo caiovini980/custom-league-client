@@ -33,7 +33,7 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
       handleClose={onCloseModal}
       hiddenBtnConfirm
       labelBtnCancel={'Close'}
-      maxWidth={'md'}
+      maxWidth={'xl'}
       fullWidth
       dialogContentProps={{
         sx: {

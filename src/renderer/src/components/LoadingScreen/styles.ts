@@ -4,18 +4,18 @@ import { makeSx } from '../../styles';
 
 interface Props {
   isBackDrop: boolean;
+  full: boolean;
 }
 
 export const useStyles = makeSx((theme: Theme, props: Props) => {
-  const { isBackDrop } = props;
+  const { isBackDrop, full } = props;
   const isDark = theme.palette.mode === 'dark';
 
   const backdropStyle = {
     position: 'absolute',
-    background: alpha(
-      isDark ? theme.palette.grey[800] : theme.palette.grey[100],
-      0.7,
-    ),
+    background: isBackDrop
+      ? alpha(isDark ? theme.palette.grey[800] : theme.palette.grey[100], 0.7)
+      : undefined,
     top: 0,
     left: 0,
     height: '100% !important',
@@ -29,7 +29,7 @@ export const useStyles = makeSx((theme: Theme, props: Props) => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      ...(isBackDrop ? backdropStyle : undefined),
+      ...(full ? backdropStyle : undefined),
     },
   };
 });

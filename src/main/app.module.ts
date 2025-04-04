@@ -16,6 +16,7 @@ import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
 import { LobbyModule } from '@main/modules/lobby/lobby.module';
 import { SummonerModule } from '@main/modules/summoner/summoner.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   providers: [...providerConfig, AppService],
@@ -24,6 +25,7 @@ import { SummonerModule } from '@main/modules/summoner/summoner.module';
     configModuleConfig,
     serverStaticModuleConfig,
     electronModuleConfig,
+    EventEmitterModule.forRoot(),
     BrowserWindowRegisterModule,
     ContextModule,
     LoggerModule,

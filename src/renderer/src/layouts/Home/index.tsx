@@ -1,61 +1,76 @@
-import {
-  Box,
-  CircularProgress,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, LinearProgress, Stack, Typography } from '@mui/material';
+import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { BottomMenu } from '@render/layouts/Home/BottomMenu';
 import { Chat } from '@render/layouts/Home/Chat';
-import { storeActions, useStore } from '@render/zustand/store';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { useElectronListen } from '@render/utils/electronFunction.util';
+import { storeActions } from '@render/zustand/store';
+import { PropsWithChildren, useState } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const version = useStore().leagueClient.version();
-  const language = useStore().leagueClient.language();
-  const {
-    version: setVersion,
-    language: setLanguage,
-    isAvailable: setIsAvailable,
-  } = storeActions.leagueClient;
-
-  const [loadingGameData, setLoadingGameData] = useState(true);
-
-  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
-    setIsAvailable(data.isAvailable);
-  });
-
-  useLeagueClientEvent('/riotclient/region-locale', (data) => {
-    setLanguage(data.locale);
-  });
-
-  useLeagueClientEvent('/system/v1/builds', (data) => {
-    setVersion(data.version.substring(0, 4));
-  });
-
   const { info: setCurrentSummoner } = storeActions.currentSummoner;
+  const {
+    champions: setChampionData,
+    spells: setSpellData,
+    items: setItems,
+  } = storeActions.gameData;
+
+  const [loadingGameData, setLoadingGameData] = useState({
+    status: false,
+    percent: 0,
+    file: '',
+  });
 
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
     setCurrentSummoner(data);
   });
 
-  useEffect(() => {
-    setLoadingGameData(!(!!version && !!language));
-  }, [version, language]);
+  useElectronListen('onLoadGameData', (data) => {
+    if (data.status === 'downloading') {
+      setLoadingGameData({
+        status: true,
+        file: data.info.currentFileDownloading,
+        percent: data.info.currentPercent,
+      });
+    }
+    if (data.status === 'complete') {
+      setChampionData(data.info.championData);
+      setSpellData(data.info.spellData);
+      setItems(data.info.items);
+      setLoadingGameData({
+        status: false,
+        percent: 100,
+        file: '',
+      });
+    }
+  });
 
-  if (loadingGameData) {
+  if (loadingGameData.status) {
     return (
       <Stack
         direction={'column'}
         height={'100%'}
-        width={'100%'}
+        rowGap={2}
         justifyContent={'center'}
         alignItems={'center'}
       >
-        <Typography>Loading...</Typography>
-        <CircularProgress />
+        <LoadingScreen
+          loadingText={`Loading game data ${loadingGameData.percent}%`}
+        />
+        <LinearProgress
+          sx={{ width: '60%' }}
+          variant={'determinate'}
+          value={loadingGameData.percent}
+        />
+        <Typography
+          overflow={'hidden'}
+          whiteSpace={'nowrap'}
+          textOverflow={'ellipsis'}
+          width={'60%'}
+        >
+          {loadingGameData.file}
+        </Typography>
       </Stack>
     );
   }

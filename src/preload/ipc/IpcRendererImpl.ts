@@ -14,7 +14,6 @@ export class IpcRendererImpl {
       },
       client: {
         getIsClientConnected: null,
-        startAuthenticate: null,
         startLeagueClient: null,
         makeRequest: null,
       },
@@ -28,9 +27,10 @@ export class IpcRendererImpl {
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
       serverUp: null,
-      isClientConnected: null,
+      clientStatus: null,
       onChangeAppConfig: null,
       onLeagueClientEvent: null,
+      onLoadGameData: null,
     };
 
     const ipcRendererInvoke: Record<string, unknown> = {};

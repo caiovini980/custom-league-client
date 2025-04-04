@@ -1,12 +1,18 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { useStore } from '@render/zustand/store';
+import { storeActions, useStore } from '@render/zustand/store';
 
 export const Lobby = () => {
   const { lobby } = useElectronHandle();
 
   const isAvailable = useStore().leagueClient.isAvailable();
+  const { isAvailable: setIsAvailable } = storeActions.leagueClient;
+
+  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
+    setIsAvailable(data.isAvailable);
+  });
 
   function onFindAramButtonClicked() {
     console.log('Finding ARAM...');

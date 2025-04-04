@@ -1,9 +1,11 @@
+import { LolChatV1FriendCounts } from '@shared/typings/lol/response/lolChatV1FriendCounts';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
 import { lolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { LolCollectionsV1inventories_Id_backdrop } from '@shared/typings/lol/response/lolCollectionsV1inventories_Id_backdrop';
 import { LolGameFlowV1Availability } from '@shared/typings/lol/response/lolGameFlowV1Availability';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
+import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { LolSummonerV1CurrentSummoner } from '@shared/typings/lol/response/lolSummonerV1CurrentSummoner';
 import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSummonerV1SummonerProfile';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
@@ -29,8 +31,12 @@ interface ClientEndpoint {
   // Lol Chat
   '/lol-chat/v1/friends': EndpointOnlyResponse<lolChatV1Friends[]>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
+  '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
+  '/lol-chat/v1/friend-counts': EndpointOnlyResponse<LolChatV1FriendCounts>;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
+  //Lol Match History
+  '/lol-match-history/v1/products/lol/{uuid}/matches': EndpointOnlyResponse<LolMatchHistoryV1productsLol_Id_Matches>;
   // Lol Summoner
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
   '/lol-summoner/v1/summoners/{digits}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;

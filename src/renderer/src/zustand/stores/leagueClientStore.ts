@@ -4,7 +4,7 @@ import { createStore } from 'zustand-x';
 
 export interface LeagueClientState {
   version: string;
-  language: string;
+  locale: string;
   isConnected: boolean;
   isAvailable: boolean;
   appConfig: Null<GetAppConfigResponse>;
@@ -12,7 +12,7 @@ export interface LeagueClientState {
 
 const initialState: LeagueClientState = {
   version: '',
-  language: '',
+  locale: '',
   isConnected: false,
   isAvailable: false,
   appConfig: null,

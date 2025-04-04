@@ -14,6 +14,7 @@ export interface LoadingScreenProps {
   loadingText?: string;
   height?: number | string;
   backdrop?: boolean;
+  fullArea?: boolean;
   color?: Colors;
 }
 
@@ -22,9 +23,10 @@ export const LoadingScreen = ({
   loadingText = 'Loading...',
   height = 150,
   backdrop = false,
+  fullArea = false,
   color,
 }: LoadingScreenProps) => {
-  const classes = useStyles({ isBackDrop: backdrop });
+  const classes = useStyles({ isBackDrop: backdrop, full: fullArea });
 
   if (!loading) return null;
 

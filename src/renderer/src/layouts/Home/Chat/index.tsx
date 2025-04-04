@@ -29,18 +29,32 @@ export const Chat = () => {
     {},
   );
 
-  useLeagueClientEvent('/lol-chat/v1/friends', (data) => {
-    setChat(data);
+  const { loadEventData: loadEventDataFriends } = useLeagueClientEvent(
+    '/lol-chat/v1/friends',
+    (data) => {
+      setChat(data);
+    },
+  );
+
+  const { loadEventData: loadEventDataFriendGroups } = useLeagueClientEvent(
+    '/lol-chat/v1/friend-groups',
+    (data) => {
+      setChatGroups(sortBy(data, (d) => -1 * d.priority));
+      const gc = data.reduce((prev, curr) => {
+        return Object.assign(prev, {
+          [curr.id]: false,
+        });
+      }, {});
+      setGroupCollapse(gc);
+    },
+  );
+
+  useLeagueClientEvent('/lol-chat/v1/friend-groups/{digits}', () => {
+    loadEventDataFriendGroups();
   });
 
-  useLeagueClientEvent('/lol-chat/v1/friend-groups', (data) => {
-    setChatGroups(sortBy(data, (d) => -1 * d.priority));
-    const gc = data.reduce((prev, curr) => {
-      return Object.assign(prev, {
-        [curr.id]: false,
-      });
-    }, {});
-    setGroupCollapse(gc);
+  useLeagueClientEvent('/lol-chat/v1/friend-counts', () => {
+    loadEventDataFriends();
   });
 
   const filterChatByGroup = (groupId: number) => {
@@ -61,7 +75,7 @@ export const Chat = () => {
 
   return (
     <>
-      <List sx={{ overflow: 'auto' }}>
+      <List sx={{ overflow: 'auto', flexShrink: 0 }}>
         {chatGroups.map((cg) => (
           <Fragment key={cg.id}>
             <ListItemButton onClick={() => onClickGroup(cg.id)}>
@@ -71,7 +85,7 @@ export const Chat = () => {
               {groupCollapse[cg.id] ? <FaAngleUp /> : <FaAngleDown />}
             </ListItemButton>
             <Collapse in={groupCollapse[cg.id]}>
-              <List sx={{ overflow: 'auto' }}>
+              <List sx={{ overflow: 'auto', flexShrink: 0 }}>
                 {filterChatByGroup(cg.id).map((c) => (
                   <ListItemButton
                     key={c.id}

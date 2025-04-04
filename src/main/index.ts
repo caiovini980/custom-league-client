@@ -35,12 +35,9 @@ async function bootstrap() {
   protocol.handle('media', async (request) => {
     const urlS = request.url.replace('media://', '');
     const filePath = path.join(app.getPath('userData'), 'resources', urlS);
-    const raw = `https://raw.communitydragon.org/latest/${urlS}`;
+    const raw = `https://raw.communitydragon.org/${urlS}`;
     console.log(`Getting media: ${raw}`);
-    if (fs.existsSync(filePath)) {
-      return net.fetch(`file://${filePath}`);
-    }
-    return net
+    const ft = net
       .fetch(raw)
       .then((res) => {
         if (res.ok) {
@@ -57,6 +54,10 @@ async function bootstrap() {
           status: 404,
         });
       });
+    if (fs.existsSync(filePath)) {
+      return net.fetch(`file://${filePath}`);
+    }
+    return ft;
   });
 
   const log = new WinstonLoggerService();

@@ -11,6 +11,8 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const { client } = useElectronHandle();
   const {
     isConnected: setIsConnected,
+    version: setVersion,
+    locale: setLocale,
     isAvailable: setIsAvailable,
     resetState,
   } = storeActions.leagueClient;
@@ -27,11 +29,13 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
-    const isClientConnectedEvent = electronListen.isClientConnected(
-      (isConnected) => {
-        setIsConnected(isConnected);
-      },
-    );
+    const isClientConnectedEvent = electronListen.clientStatus((status) => {
+      setIsConnected(status.connected);
+      if (status.connected) {
+        setVersion(status.info.version);
+        setLocale(status.info.locale);
+      }
+    });
 
     client.getIsClientConnected().then((isConnected) => {
       setIsConnected(isConnected);

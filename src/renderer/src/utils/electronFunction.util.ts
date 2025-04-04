@@ -1,4 +1,6 @@
 import { ElectronFunction } from '@render/env';
+import { IpcMainToRenderer } from '@shared/typings/ipc.typing';
+import { useEffect } from 'react';
 
 type PromiseFn = (...args: unknown[]) => Promise<unknown>;
 
@@ -25,4 +27,17 @@ export const useElectronHandle = () => {
       }, {}),
     };
   }, {}) as ElectronFunction;
+};
+
+export const useElectronListen = <K extends keyof IpcMainToRenderer>(
+  ev: K,
+  cb: (...args: Parameters<IpcMainToRenderer[K]>) => void,
+) => {
+  useEffect(() => {
+    const { unsubscribe } = electronListen[ev](cb);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [ev]);
 };

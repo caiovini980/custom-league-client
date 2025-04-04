@@ -10,6 +10,8 @@ import {
   SummonerGetCurrentSummonerResponse,
   SummonerGetSummonerByIdResponse,
 } from '@shared/typings/ipc-function/handle/summoner.typing';
+import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { LoadGameData } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import {
   ClientEndpointKeys,
   ClientEndpointResponse,
@@ -23,7 +25,6 @@ export interface IpcFunction {
     setConfig: (data: SetAppConfigData) => void;
   };
   client: {
-    startAuthenticate: () => void;
     startLeagueClient: () => void;
     getIsClientConnected: () => boolean;
     makeRequest: <K extends ClientEndpointKeys>(
@@ -41,9 +42,10 @@ export interface IpcFunction {
 
 export interface IpcMainToRenderer extends Record<string, RVoid> {
   serverUp: (up: boolean) => void;
-  isClientConnected: (isConnected: boolean) => void;
+  clientStatus: (status: ClientStatusResponse) => void;
   onChangeAppConfig: (configs: GetAppConfigResponse) => void;
   onLeagueClientEvent: (data: unknown) => void;
+  onLoadGameData: (data: LoadGameData) => void;
 }
 
 export type IpcFunctionParameters = {

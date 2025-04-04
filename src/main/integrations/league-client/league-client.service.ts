@@ -1,6 +1,11 @@
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
+import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
+import { app } from 'electron';
 import {
   Credentials,
   HttpRequestOptions,
@@ -18,6 +23,10 @@ export class LeagueClientService
   private newCredentials!: Credentials;
   private client!: LeagueClient;
   private isConnected = false;
+
+  constructor(private eventEmitter: EventEmitter2) {
+    super();
+  }
 
   async onApplicationBootstrap() {
     this.logger.info('Initiating League Client Service...');
@@ -38,12 +47,13 @@ export class LeagueClientService
       })
       .catch((err: Error) => {
         this.logger.error(err.message);
-        this.changeConnectState(false);
+        this.sendMsgClientDisconnected();
       });
   }
 
-  onApplicationShutdown(_signal?: string) {
+  async onApplicationShutdown(_signal?: string) {
     this.logger.info('Stopping League Client Service...');
+    await this.launchUX();
     this.client.stop();
   }
 
@@ -55,7 +65,7 @@ export class LeagueClientService
     });
 
     this.client.on('disconnect', () => {
-      this.changeConnectState(false);
+      this.sendMsgClientDisconnected();
     });
   }
 
@@ -99,15 +109,28 @@ export class LeagueClientService
     }
   }
 
-  private changeConnectState(isConnected: boolean) {
-    this.isConnected = isConnected;
-    this.sendMsgToRender('isClientConnected', isConnected);
-    if (isConnected) {
-      //this.killUX()
-      this.logger.info('Client instance connected.');
-    } else {
-      this.logger.info('Client instance disconnected.');
+  private sendMsgClientConnected(info: ClientStatusConnected['info']) {
+    this.isConnected = true;
+    if (
+      process.env.MAIN_VITE_KILL_LAUNCHER_ON_START === 'true' ||
+      app.isPackaged
+    ) {
+      this.killUX();
     }
+    this.logger.info('Client instance connected.');
+    this.sendMsgToRender('clientStatus', {
+      connected: true,
+      info,
+    });
+    this.eventEmitter.emit('client.connected', info);
+  }
+
+  private sendMsgClientDisconnected() {
+    this.isConnected = false;
+    this.sendMsgToRender('clientStatus', {
+      connected: false,
+    });
+    this.logger.info('Client instance disconnected.');
   }
 
   private async tryConnection() {
@@ -116,9 +139,30 @@ export class LeagueClientService
       '/riot-messaging-service/v1/state',
       undefined,
     );
-    if (res.ok) {
-      this.startWb();
-      this.changeConnectState(true);
+    if (!res.ok) {
+      setTimeout(() => {
+        this.tryConnection();
+      }, 1000);
+      return;
+    }
+    this.startWb();
+    const regionRes = await this.handleEndpoint<RiotClientRegionLocale>(
+      'GET',
+      '/riotclient/region-locale',
+      undefined,
+    );
+    const systemRes = await this.handleEndpoint<SystemV1Builds>(
+      'GET',
+      '/system/v1/builds',
+      undefined,
+    );
+
+    if (regionRes.ok && systemRes.ok) {
+      this.sendMsgClientConnected({
+        locale: regionRes.body.locale,
+        region: regionRes.body.region,
+        version: systemRes.body.version.substring(0, 4),
+      });
       return;
     }
     setTimeout(() => {
@@ -153,6 +197,16 @@ export class LeagueClientService
       (res) => {
         if (res.ok) {
           this.logger.info('ClientUX is finished');
+        }
+      },
+    );
+  }
+
+  private async launchUX() {
+    await this.handleEndpoint('POST', '/riotclient/launch-ux', undefined).then(
+      (res) => {
+        if (res.ok) {
+          this.logger.info('ClientUX is launched');
         }
       },
     );

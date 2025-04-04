@@ -8,11 +8,6 @@ import type { ClientMakeRequestPayload } from '@shared/typings/ipc-function/hand
 export class ClientController {
   constructor(private clientService: ClientService) {}
 
-  @IpcHandle('startAuthenticate')
-  async startAuthenticate() {
-    return this.clientService.startAuthenticate();
-  }
-
   @IpcHandle('startLeagueClient')
   async startLeagueClient() {
     return this.clientService.startLeagueClient();
