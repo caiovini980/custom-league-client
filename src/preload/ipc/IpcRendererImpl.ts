@@ -16,6 +16,7 @@ export class IpcRendererImpl {
         getIsClientConnected: null,
         startLeagueClient: null,
         makeRequest: null,
+        reloadGameData: null,
       },
       lobby: {
         createAram: null,

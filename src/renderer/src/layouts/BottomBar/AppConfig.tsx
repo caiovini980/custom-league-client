@@ -30,30 +30,43 @@ export const AppConfig = () => {
     });
   };
 
+  const onClickReloadGameData = () => {
+    client.reloadGameData();
+  };
+
   const getConfig = (key: keyof GetAppConfigResponse) => {
     return config?.[key] ?? '-';
   };
 
+  const btn = [
+    {
+      primaryText: 'Change Riot Client Path',
+      secondaryText: getConfig('RIOT_CLIENT_PATH'),
+      onClick: onClickChangeRiotPath,
+    },
+    {
+      primaryText: 'Show Client',
+      onClick: onClickShowClient,
+    },
+    {
+      primaryText: 'Close Client',
+      onClick: onClickCloseClient,
+    },
+    {
+      primaryText: 'Reload Game Data',
+      onClick: onClickReloadGameData,
+    },
+  ];
+
   return (
     <List>
-      <ListItem disablePadding>
-        <ListItemButton onClick={onClickChangeRiotPath}>
-          <ListItemText
-            primary={'Change Riot Client Path'}
-            secondary={getConfig('RIOT_CLIENT_PATH')}
-          />
-        </ListItemButton>
-      </ListItem>
-      <ListItem disablePadding>
-        <ListItemButton onClick={onClickShowClient}>
-          <ListItemText primary={'Show Client'} />
-        </ListItemButton>
-      </ListItem>
-      <ListItem disablePadding>
-        <ListItemButton onClick={onClickCloseClient}>
-          <ListItemText primary={'Close Client'} />
-        </ListItemButton>
-      </ListItem>
+      {btn.map((b) => (
+        <ListItem key={b.primaryText} disablePadding>
+          <ListItemButton onClick={b.onClick}>
+            <ListItemText primary={b.primaryText} secondary={b.secondaryText} />
+          </ListItemButton>
+        </ListItem>
+      ))}
     </List>
   );
 };

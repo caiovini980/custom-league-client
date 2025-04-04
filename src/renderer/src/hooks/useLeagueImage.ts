@@ -3,13 +3,12 @@ import { useStore } from '@render/zustand/store';
 type Id = string | number;
 
 export const useLeagueImage = () => {
-  // @ts-ignore
   const version = useStore().leagueClient.version();
   const spells = useStore().gameData.spells();
   const items = useStore().gameData.items();
 
   const link = (path: string) => {
-    return `media://latest/${path}`;
+    return `media://${version}/${path}`;
   };
 
   const profileIcon = (id: Id) => {

@@ -6,6 +6,7 @@ import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
 import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 import { app } from 'electron';
+import fs from 'fs-extra';
 import {
   Credentials,
   HttpRequestOptions,
@@ -118,6 +119,7 @@ export class LeagueClientService
       this.killUX();
     }
     this.logger.info('Client instance connected.');
+    fs.writeFileSync(this.getClientInfoPath(), JSON.stringify(info));
     this.sendMsgToRender('clientStatus', {
       connected: true,
       info,
@@ -161,7 +163,7 @@ export class LeagueClientService
       this.sendMsgClientConnected({
         locale: regionRes.body.locale,
         region: regionRes.body.region,
-        version: systemRes.body.version.substring(0, 4),
+        version: 'latest', //systemRes.body.version.substring(0, 4),
       });
       return;
     }

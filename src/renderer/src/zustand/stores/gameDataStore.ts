@@ -1,19 +1,20 @@
-import { Champion } from '@shared/typings/lol/json/champion';
-import { Item } from '@shared/typings/lol/json/item';
-import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
+import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import { createStore } from 'zustand-x';
 
-export interface GameDataState {
-  champions: Champion[];
-  spells: SummonerSpells[];
-  items: Item[];
-}
+export type GameDataState = LoadGameDataComplete['info'];
 
 const initialState: GameDataState = {
   champions: [],
   spells: [],
   items: [],
+  maps: [],
+  queues: [],
 };
 
-export const gameDataStore =
-  createStore('gameData')<GameDataState>(initialState);
+export const gameDataStore = createStore('gameData')<GameDataState>(
+  initialState,
+).extendActions((set) => ({
+  setGameData: (value: GameDataState) => {
+    set.state(() => value);
+  },
+}));

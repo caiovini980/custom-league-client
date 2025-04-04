@@ -25,6 +25,7 @@ export interface IpcFunction {
     setConfig: (data: SetAppConfigData) => void;
   };
   client: {
+    reloadGameData: () => void;
     startLeagueClient: () => void;
     getIsClientConnected: () => boolean;
     makeRequest: <K extends ClientEndpointKeys>(

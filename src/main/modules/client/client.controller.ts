@@ -22,4 +22,9 @@ export class ClientController {
   async makeRequest(@Payload() payload: ClientMakeRequestPayload<string>) {
     return this.clientService.makeRequest(payload);
   }
+
+  @IpcHandle('reloadGameData')
+  async readGameData() {
+    return this.clientService.reloadGameData();
+  }
 }

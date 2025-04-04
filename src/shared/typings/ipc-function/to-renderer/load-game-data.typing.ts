@@ -1,5 +1,7 @@
 import { Champion } from '@shared/typings/lol/json/champion';
 import { Item } from '@shared/typings/lol/json/item';
+import { Map } from '@shared/typings/lol/json/map';
+import { Queue } from '@shared/typings/lol/json/queue';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
 
 export interface LoadGameDataDownloading {
@@ -18,9 +20,11 @@ export interface LoadGameDataReading {
 export interface LoadGameDataComplete {
   status: 'complete';
   info: {
-    championData: Champion[];
-    spellData: SummonerSpells[];
+    champions: Champion[];
+    spells: SummonerSpells[];
     items: Item[];
+    maps: Map[];
+    queues: Queue[];
   };
 }
 

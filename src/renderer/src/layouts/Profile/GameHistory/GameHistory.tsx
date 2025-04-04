@@ -23,8 +23,10 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
       setMatchHistory(data);
     },
   );
+
   return (
     <List
+      disablePadding
       sx={{
         overflow: 'auto',
         width: 800,

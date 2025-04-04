@@ -5,7 +5,6 @@ import { LeagueClientDataReaderService } from '@main/integrations/league-client/
 import { OnEvent } from '@nestjs/event-emitter';
 import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import axios from 'axios';
-import { app } from 'electron';
 import fs from 'fs-extra';
 
 @Service()
@@ -25,7 +24,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     return;
   }
 
-  async fetchFileList(url: string): Promise<string[]> {
+  private async fetchFileList(url: string): Promise<string[]> {
     try {
       const { data } = await axios.get(url);
       return data
@@ -53,7 +52,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     );
   }
 
-  async downloadFile(url: string, outputDir: string) {
+  private async downloadFile(url: string, outputDir: string) {
     try {
       const fileName = path.basename(url);
       const outputPath = path.join(outputDir, fileName);
@@ -108,8 +107,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     this.logger.info('Download completed');
   }
 
-  // @ts-ignore
-  private async downloadGameData(info: ClientStatusConnected['info']) {
+  async downloadGameData(info: ClientStatusConnected['info']) {
     // Read this file (https://raw.communitydragon.org/latest/cdragon/files.exported.txt)
     // And download contents
     this.sendMsgToRender('onLoadGameData', {
@@ -127,6 +125,8 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
       'plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json',
       'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json',
       'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
+      'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
+      'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
       'plugins/rcp-be-lol-game-data/global/default/v1/champions',
     ];
     const filterDeny: string[] = [];
@@ -138,23 +138,10 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
       filterDeny,
       true,
     );
-    const resourcePath = `resources/${version}`;
-    const output = path.join(app.getPath('userData'), resourcePath);
+    const output = this.getLolGameDataResourcePath(version);
     await fs.ensureDir(output);
     await this.downloadInBatches(filteredUrls, version, 250, output);
 
-    const { championSummary, summonerSpell, items } =
-      await this.leagueClientDataReaderService.readGameData(info, output);
-
-    this.sendMsgToRender('onLoadGameData', {
-      status: 'complete',
-      info: {
-        championData: championSummary,
-        spellData: summonerSpell,
-        items: items,
-      },
-    });
-
-    return resourcePath;
+    await this.leagueClientDataReaderService.readGameData(info);
   }
 }

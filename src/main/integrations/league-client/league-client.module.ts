@@ -10,6 +10,10 @@ import { LeagueClientService } from './league-client.service';
     LeagueClientDataDownloadService,
     LeagueClientDataReaderService,
   ],
-  exports: [LeagueClientService],
+  exports: [
+    LeagueClientService,
+    LeagueClientDataReaderService,
+    LeagueClientDataDownloadService,
+  ],
 })
 export class LeagueClientModule {}

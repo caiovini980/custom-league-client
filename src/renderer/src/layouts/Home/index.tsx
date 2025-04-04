@@ -10,11 +10,7 @@ import { SummonerInfo } from './SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const { info: setCurrentSummoner } = storeActions.currentSummoner;
-  const {
-    champions: setChampionData,
-    spells: setSpellData,
-    items: setItems,
-  } = storeActions.gameData;
+  const { setGameData } = storeActions.gameData;
 
   const [loadingGameData, setLoadingGameData] = useState({
     status: false,
@@ -35,9 +31,7 @@ export const Home = ({ children }: PropsWithChildren) => {
       });
     }
     if (data.status === 'complete') {
-      setChampionData(data.info.championData);
-      setSpellData(data.info.spellData);
-      setItems(data.info.items);
+      setGameData(data.info);
       setLoadingGameData({
         status: false,
         percent: 100,
