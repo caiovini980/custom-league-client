@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
   ProfileModal,
   ProfileModalRef,
@@ -21,10 +22,12 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 
 export const Chat = () => {
   const { profileIcon } = useLeagueImage();
+  const { rcpFeLolSocial } = useLeagueTranslate();
 
   const profileModal = useRef<ProfileModalRef>(null);
 
   const iconSize = 40;
+  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
   const [chat, setChat] = useState<lolChatV1Friends[]>([]);
   const [chatGroups, setChatGroups] = useState<LolChatV1FriendGroups[]>([]);
@@ -70,8 +73,8 @@ export const Chat = () => {
 
   const groupNameParse = (groupName: string) => {
     const nameMap = {
-      '**Default': 'General',
-      OFFLINE: 'Offline',
+      '**Default': rcpFeLolSocialTrans('group_label_default'),
+      OFFLINE: rcpFeLolSocialTrans('group_label_offline'),
     };
     return nameMap[groupName] ?? groupName;
   };
@@ -90,13 +93,7 @@ export const Chat = () => {
   };
 
   const getChatStats = (chat: lolChatV1Friends) => {
-    const availabilityMap = {
-      chat: 'Online',
-      away: 'Away',
-      dnd: 'In Game',
-      offline: 'Offline',
-    };
-    const stats = availabilityMap[chat.availability] ?? chat.availability;
+    const stats = rcpFeLolSocialTrans(`availability_${chat.availability}`);
     if (chat.productName) {
       return `${stats} (${chat.productName})`;
     }

@@ -36,5 +36,6 @@ export const useLeagueTranslate = () => {
 
   return {
     rcpFeLolSharedComponents: translateMapper('rcp-fe-lol-shared-components'),
+    rcpFeLolSocial: translateMapper('rcp-fe-lol-social'),
   };
 };

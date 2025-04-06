@@ -13,7 +13,7 @@ export const Home = ({ children }: PropsWithChildren) => {
   const { setGameData } = storeActions.gameData;
 
   const [loadingGameData, setLoadingGameData] = useState({
-    status: false,
+    status: true,
     percent: 0,
     file: '',
   });

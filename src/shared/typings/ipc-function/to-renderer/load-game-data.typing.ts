@@ -3,6 +3,7 @@ import { Item } from '@shared/typings/lol/json/item';
 import { Map } from '@shared/typings/lol/json/map';
 import { Queue } from '@shared/typings/lol/json/queue';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
+import { TranslatePathKeys } from '@shared/utils/translate.util';
 
 export interface LoadGameDataDownloading {
   status: 'downloading';
@@ -25,10 +26,7 @@ export interface LoadGameDataComplete {
     items: Item[];
     maps: Map[];
     queues: Queue[];
-    translate: {
-      'rcp-fe-lol-shared-components': TranslateData;
-      'rcp-fe-lol-match-history': TranslateData;
-    };
+    translate: Record<TranslatePathKeys, TranslateData>;
   };
 }
 

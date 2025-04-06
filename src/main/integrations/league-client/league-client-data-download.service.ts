@@ -36,6 +36,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     'plugins/rcp-fe-lol-match-history/global/default/trans(.*).json',
     'plugins/rcp-fe-lol-champ-select/global/default/trans(.*).json',
     'plugins/rcp-fe-lol-navigation/global/default/trans(.*).json',
+    'plugins/rcp-fe-lol-social/global/default/trans(.*).json',
   ];
 
   constructor(
