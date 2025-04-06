@@ -12,6 +12,32 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
   private COMMUNITY_DRAGON_FILES_EXPORTED =
     'https://raw.communitydragon.org/{version}/cdragon/files.exported.txt';
 
+  private FILE_LIST_TO_DOWNLOAD = [
+    'plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d',
+    'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons',
+    'plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/champions',
+    'plugins/rcp-fe-lol-shared-components/global/default/unranked.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/iron.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/bronze.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/silver.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/gold.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/platinum.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/emerald.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/diamond.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/grandmaster.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/master.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/challenger.png',
+    'plugins/rcp-fe-lol-shared-components/global/default/trans(.*)json',
+    'plugins/rcp-fe-lol-match-history/global/default/trans(.*).json',
+    'plugins/rcp-fe-lol-champ-select/global/default/trans(.*).json',
+    'plugins/rcp-fe-lol-navigation/global/default/trans(.*).json',
+  ];
+
   constructor(
     private leagueClientDataReaderService: LeagueClientDataReaderService,
   ) {
@@ -119,16 +145,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     });
     this.logger.info(JSON.stringify(info));
     const version = 'latest';
-    const filterAllow: string[] = [
-      'plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d',
-      'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons',
-      'plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json',
-      'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json',
-      'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
-      'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
-      'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
-      'plugins/rcp-be-lol-game-data/global/default/v1/champions',
-    ];
+    const filterAllow: string[] = this.FILE_LIST_TO_DOWNLOAD;
     const filterDeny: string[] = [];
     const urls = await this.fetchFileList(
       this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('{version}', version),

@@ -1,3 +1,4 @@
+import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { LolChatV1FriendCounts } from '@shared/typings/lol/response/lolChatV1FriendCounts';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
 import { lolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
@@ -6,11 +7,14 @@ import { LolGameFlowV1Availability } from '@shared/typings/lol/response/lolGameF
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
+import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolSummonerV1CurrentSummoner } from '@shared/typings/lol/response/lolSummonerV1CurrentSummoner';
 import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSummonerV1SummonerProfile';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { LolVanguardV1Session } from '@shared/typings/lol/response/lolVanguardV1Session';
 import { PatcherV1ProductsLeagueOfLegendState } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
+import { RiotMessagingServiceV1State } from '@shared/typings/lol/response/riotMessagingServiceV1State';
 import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 
 interface EndpointData<Req, Res> {
@@ -28,11 +32,17 @@ interface ClientEndpoint {
   '/riotclient/launch-ux': EndpointEmpty;
   '/riotclient/kill-ux': EndpointEmpty;
   '/riotclient/region-locale': EndpointOnlyResponse<RiotClientRegionLocale>;
+  // Riot Messaging Service
+  '/riot-messaging-service/v1/state': EndpointOnlyResponse<RiotMessagingServiceV1State>;
   // Lol Chat
   '/lol-chat/v1/friends': EndpointOnlyResponse<lolChatV1Friends[]>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
   '/lol-chat/v1/friend-counts': EndpointOnlyResponse<LolChatV1FriendCounts>;
+  // Lol Champion Mastery
+  '/lol-champion-mastery/v1/{uuid}/champion-mastery': EndpointOnlyResponse<
+    LolChampionMasteryV1_Id_ChampionMastery[]
+  >;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   //Lol Match History
@@ -46,6 +56,10 @@ interface ClientEndpoint {
   '/lol-gameflow/v1/session': EndpointOnlyResponse<LolGameflowV1Session>;
   // Lol Lobby
   '/lol-lobby/v2/lobby': EndpointOnlyResponse<LolLobbyV2Lobby>;
+  // Lol Ranked
+  '/lol-ranked/v1/ranked-stats/{uuid}': EndpointOnlyResponse<LolRankedV1RankedStats_Id>;
+  // Lol Vanguard
+  '/lol-vanguard/v1/session': EndpointOnlyResponse<LolVanguardV1Session>;
   // Patcher
   '/patcher/v1/products/league_of_legends/state': EndpointOnlyResponse<PatcherV1ProductsLeagueOfLegendState>;
   // System

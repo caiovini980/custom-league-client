@@ -25,6 +25,10 @@ export interface LoadGameDataComplete {
     items: Item[];
     maps: Map[];
     queues: Queue[];
+    translate: {
+      'rcp-fe-lol-shared-components': TranslateData;
+      'rcp-fe-lol-match-history': TranslateData;
+    };
   };
 }
 
@@ -32,3 +36,5 @@ export type LoadGameData =
   | LoadGameDataDownloading
   | LoadGameDataReading
   | LoadGameDataComplete;
+
+type TranslateData = Record<string, Record<string, string>>;

@@ -1,15 +1,14 @@
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import { SyntheticEvent, useState } from 'react';
+import { Null } from '@shared/typings/generic.typing';
+import { SyntheticEvent } from 'react';
 import { FaGamepad, FaUser } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BottomMenu = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [value, setValue] = useState('');
-
-  const handleChange = (_event: SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+  const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {
     navigate(`/${newValue}`);
   };
 
@@ -30,8 +29,8 @@ export const BottomMenu = () => {
 
   return (
     <BottomNavigation
-      sx={{ borderRadius: 8, overflow: 'hidden' }}
-      value={value}
+      sx={{ borderRadius: 8, overflow: 'hidden', zIndex: (t) => t.zIndex.fab }}
+      value={location.pathname.substring(1)}
       onChange={handleChange}
       showLabels
     >

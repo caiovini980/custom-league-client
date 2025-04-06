@@ -5,7 +5,7 @@ interface ItemIconProps {
 }
 
 export const ItemIcon = ({ src }: ItemIconProps) => {
-  const size = 28;
+  const size = 38;
   if (!src) {
     return <Box height={size} width={size} />;
   }

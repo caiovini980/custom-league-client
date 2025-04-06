@@ -38,10 +38,6 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     const teamId = participant.teamId;
     const team = game.teams.find((t) => t.teamId === teamId);
 
-    if (!team) {
-      throw new Error('team dont exist');
-    }
-
     const items = new Array(7).fill(0).map((_, index) => {
       const itemId = participant.stats[`item${index}`];
       return { itemId, src: itemIcon(itemId) };
@@ -57,7 +53,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     const map = maps.find((m) => m.id === game.mapId)?.name ?? '';
 
     return {
-      win: team.win === 'Win',
+      win: team?.win === 'Win',
       queueName,
       championImg: championIcon(participant.championId),
       level: participant.stats.champLevel,
@@ -117,7 +113,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
         <Stack
           direction={'column'}
           justifyContent={'space-between'}
-          flex={1}
+          alignItems={'center'}
           rowGap={0.5}
         >
           <Stack direction={'row'}>
@@ -125,19 +121,23 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
               <ItemIcon key={index} src={i.src} />
             ))}
           </Stack>
-          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Stack direction={'row'} justifyContent={'space-between'} width={265}>
             <Typography>{summaryGameData.kda}</Typography>
             <Typography>
               {formatCurrency(summaryGameData.minionsKilled, 0)} C
             </Typography>
             <Typography>{formatCurrency(summaryGameData.gold, 0)} G</Typography>
           </Stack>
-          <Stack direction={'row'} justifyContent={'space-between'}>
-            <Typography>
-              {summaryGameData.map} ({summaryGameData.duration})
-            </Typography>
-            <Typography>{summaryGameData.date}</Typography>
-          </Stack>
+        </Stack>
+        <Stack
+          direction={'column'}
+          justifyContent={'space-between'}
+          width={265}
+        >
+          <Typography>
+            {summaryGameData.map} ({summaryGameData.duration})
+          </Typography>
+          <Typography>{summaryGameData.date}</Typography>
         </Stack>
       </Stack>
     </ListItem>
