@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Collapse,
   List,
   ListItemAvatar,
@@ -22,6 +23,8 @@ export const Chat = () => {
   const { profileIcon } = useLeagueImage();
 
   const profileModal = useRef<ProfileModalRef>(null);
+
+  const iconSize = 40;
 
   const [chat, setChat] = useState<lolChatV1Friends[]>([]);
   const [chatGroups, setChatGroups] = useState<LolChatV1FriendGroups[]>([]);
@@ -73,9 +76,36 @@ export const Chat = () => {
     return nameMap[groupName] ?? groupName;
   };
 
+  const getColor = (availability: string) => {
+    if (availability === 'chat') {
+      return '#71ff89';
+    }
+    if (availability === 'away') {
+      return '#ff6464';
+    }
+    if (availability === 'dnd') {
+      return '#61a5ff';
+    }
+    return undefined;
+  };
+
+  const getChatStats = (chat: lolChatV1Friends) => {
+    const availabilityMap = {
+      chat: 'Online',
+      away: 'Away',
+      dnd: 'In Game',
+      offline: 'Offline',
+    };
+    const stats = availabilityMap[chat.availability] ?? chat.availability;
+    if (chat.productName) {
+      return `${stats} (${chat.productName})`;
+    }
+    return stats;
+  };
+
   return (
-    <>
-      <List sx={{ overflow: 'auto', flexShrink: 0 }}>
+    <Box display={'flex'} overflow={'auto'}>
+      <List>
         {chatGroups.map((cg) => (
           <Fragment key={cg.id}>
             <ListItemButton onClick={() => onClickGroup(cg.id)}>
@@ -85,16 +115,32 @@ export const Chat = () => {
               {groupCollapse[cg.id] ? <FaAngleUp /> : <FaAngleDown />}
             </ListItemButton>
             <Collapse in={groupCollapse[cg.id]}>
-              <List sx={{ overflow: 'auto', flexShrink: 0 }}>
+              <List sx={{ width: '240px', flexShrink: 0 }}>
                 {filterChatByGroup(cg.id).map((c) => (
                   <ListItemButton
                     key={c.id}
                     onClick={() => profileModal.current?.open(c.summonerId)}
+                    sx={{
+                      opacity: c.availability === 'offline' ? 0.4 : 1,
+                    }}
                   >
                     <ListItemAvatar>
-                      <Avatar src={profileIcon(c.icon)} />
+                      <Avatar
+                        src={profileIcon(c.icon)}
+                        sx={{ width: iconSize, height: iconSize }}
+                      />
                     </ListItemAvatar>
-                    <ListItemText primary={c.gameName} />
+                    <ListItemText
+                      primary={c.gameName}
+                      secondary={getChatStats(c)}
+                      slotProps={{
+                        secondary: {
+                          sx: {
+                            color: getColor(c.availability),
+                          },
+                        },
+                      }}
+                    />
                   </ListItemButton>
                 ))}
               </List>
@@ -103,6 +149,6 @@ export const Chat = () => {
         ))}
       </List>
       <ProfileModal ref={profileModal} />
-    </>
+    </Box>
   );
 };

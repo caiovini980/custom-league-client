@@ -22,6 +22,7 @@ export const SummonerInfo = () => {
       height={60}
       width={'100%'}
       alignItems={'center'}
+      flexShrink={0}
       px={1}
       component={ButtonBase}
     >

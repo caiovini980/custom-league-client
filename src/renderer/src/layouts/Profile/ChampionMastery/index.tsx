@@ -40,7 +40,6 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
 
   const loadBackgroundImg = (id: number) => {
     const c = champions.find((c) => c.id === id)?.skins[0].loadScreenPath;
-    console.log(c);
     return lolGameDataImg(c ?? '');
   };
 

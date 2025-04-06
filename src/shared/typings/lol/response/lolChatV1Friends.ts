@@ -1,5 +1,5 @@
 export interface lolChatV1Friends {
-  availability: string;
+  availability: 'offline' | 'away' | 'dnd';
   displayGroupId: number;
   displayGroupName: string;
   gameName: string;

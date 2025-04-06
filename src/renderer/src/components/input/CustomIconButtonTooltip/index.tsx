@@ -4,7 +4,7 @@ import CustomIconButton, { CustomIconButtonProps } from '../CustomIconButton';
 
 export interface CustomIconButtonTooltipProps extends CustomIconButtonProps {
   icon: IconType;
-  onClick: (e?: unknown) => void;
+  onClick?: (e?: unknown) => void;
   title: string;
   placement?: TooltipProps['placement'];
   open?: boolean;

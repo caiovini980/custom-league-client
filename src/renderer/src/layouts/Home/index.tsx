@@ -70,38 +70,39 @@ export const Home = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <Box overflow={'auto'} height={'100%'} width={'100%'}>
-      <Stack direction={'row'} height={'inherit'} width={'100%'}>
+    <Stack
+      overflow={'auto'}
+      direction={'row'}
+      height={'inherit'}
+      width={'100%'}
+    >
+      <Box
+        overflow={'auto'}
+        height={'100%'}
+        width={'100%'}
+        position={'relative'}
+      >
+        {children}
         <Box
-          overflow={'auto'}
-          height={'100%'}
-          width={'100%'}
-          position={'relative'}
+          position={'absolute'}
+          bottom={12}
+          right={0}
+          left={0}
+          display={'flex'}
+          justifyContent={'center'}
         >
-          {children}
-          <Box
-            position={'absolute'}
-            bottom={12}
-            right={0}
-            left={0}
-            display={'flex'}
-            justifyContent={'center'}
-          >
-            <BottomMenu />
-          </Box>
+          <BottomMenu />
         </Box>
-        <Stack
-          direction={'column'}
-          overflow={'auto'}
-          height={'100%'}
-          width={250}
-          borderLeft={(t) => `1px solid ${t.palette.divider}`}
-        >
-          <SummonerInfo />
-          <Divider />
-          <Chat />
-        </Stack>
+      </Box>
+      <Stack
+        direction={'column'}
+        height={'100%'}
+        borderLeft={(t) => `1px solid ${t.palette.divider}`}
+      >
+        <SummonerInfo />
+        <Divider />
+        <Chat />
       </Stack>
-    </Box>
+    </Stack>
   );
 };
