@@ -2,12 +2,14 @@ import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStor
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { mapValuesKey } from 'zustand-x';
 import { leagueClientStore } from './stores/leagueClientStore';
+import { clientGameStateStore } from './stores/clientGameStateStore';
 
 // Global store
 export const rootStore = {
   leagueClient: leagueClientStore,
   currentSummoner: currentSummonerStore,
   gameData: gameDataStore,
+  clientGameState: clientGameStateStore
 };
 
 // Global hook selectors
