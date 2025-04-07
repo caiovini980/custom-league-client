@@ -2,8 +2,10 @@ import path from 'node:path';
 import { LoggerAbstract } from '@main/abstracts/logger.abstract';
 import { ContextService } from '@main/context/context.service';
 import { BrowserWindowRegisterService } from '@main/integrations/browser-window-register/browser-window-register.service';
+import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { IpcMainToRenderer } from '@shared/typings/ipc.typing';
 import { BrowserWindow, app } from 'electron';
+import fs from 'fs-extra';
 
 export abstract class ServiceAbstract extends LoggerAbstract {
   protected ctx!: ContextService;
@@ -20,6 +22,12 @@ export abstract class ServiceAbstract extends LoggerAbstract {
 
   protected getClientInfoPath() {
     return path.join(this.getResourcePath(), 'clientInfo.json');
+  }
+
+  protected getClientStatusInfo() {
+    return JSON.parse(
+      fs.readFileSync(this.getClientInfoPath(), { encoding: 'utf8' }),
+    ) as ClientStatusConnected['info'];
   }
 
   protected sendMsgToRender<K extends keyof IpcMainToRenderer>(

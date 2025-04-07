@@ -9,6 +9,7 @@ const initialState: GameDataState = {
   items: [],
   maps: [],
   queues: [],
+  translate: {} as GameDataState['translate'],
 };
 
 export const gameDataStore = createStore('gameData')<GameDataState>(

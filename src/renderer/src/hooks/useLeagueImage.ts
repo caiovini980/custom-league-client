@@ -1,6 +1,17 @@
 import { useStore } from '@render/zustand/store';
 
 type Id = string | number;
+type Tier =
+  | string
+  | 'iron'
+  | 'bronze'
+  | 'silver'
+  | 'gold'
+  | 'emerald'
+  | 'platinum'
+  | 'grandmaster'
+  | 'master'
+  | 'challenger';
 
 export const useLeagueImage = () => {
   const version = useStore().leagueClient.version();
@@ -8,6 +19,7 @@ export const useLeagueImage = () => {
   const items = useStore().gameData.items();
 
   const link = (path: string) => {
+    if (!version) return '';
     return `media://${version}/${path}`;
   };
 
@@ -45,11 +57,19 @@ export const useLeagueImage = () => {
     return '';
   };
 
+  const tierImg = (tier: Tier) => {
+    if (!tier) tier = 'unranked';
+    return link(
+      `plugins/rcp-fe-lol-shared-components/global/default/${tier.toLowerCase()}.png`,
+    );
+  };
+
   return {
     profileIcon,
     lolGameDataImg,
     championIcon,
     spellIcon,
     itemIcon,
+    tierImg,
   };
 };

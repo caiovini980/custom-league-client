@@ -1,4 +1,5 @@
 import { ProfileView } from '@render/layouts/Profile/ProfileView';
+import config from '@render/utils/config.util';
 import { useStore } from '@render/zustand/store';
 
 export const Profile = () => {
@@ -6,5 +7,10 @@ export const Profile = () => {
 
   if (!currentSummoner) return;
 
-  return <ProfileView summonerId={currentSummoner.summonerId} />;
+  return (
+    <ProfileView
+      summonerId={currentSummoner.summonerId}
+      marginBottom={config.bottomBarOffset}
+    />
+  );
 };

@@ -7,13 +7,26 @@ import {
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import {
+  CustomIconButtonTooltip,
+  CustomIconButtonTooltipProps,
+} from '@render/components/input';
+import {
+  buildEventUrl,
+  useLeagueClientEvent,
+} from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ItemIcon } from '@render/layouts/Profile/GameHistory/ItemIcon';
 import { SpellIcon } from '@render/layouts/Profile/GameHistory/SpellIcon';
 import { useStore } from '@render/zustand/store';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
+import { LolReplaysV1Metadata_Id } from '@shared/typings/lol/response/lolReplaysV1Metadata_Id';
 import { formatDateTime, secondsToDisplayTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
+import { useState } from 'react';
+import { FaDownload, FaPlay } from 'react-icons/fa6';
 
 interface GameHistoryItemProps {
   game: LolMatchHistoryV1productsLol_Id_Matches['games']['games'][number];
@@ -22,8 +35,18 @@ interface GameHistoryItemProps {
 export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
   const theme = useTheme();
   const { championIcon, spellIcon, itemIcon } = useLeagueImage();
+  const { makeRequest } = useLeagueClientRequest();
+  const { rcpFeLolSharedComponents } = useLeagueTranslate();
   const maps = useStore().gameData.maps();
   const queues = useStore().gameData.queues();
+
+  const transReplays = rcpFeLolSharedComponents('trans-replays');
+
+  const [replayState, setReplayState] = useState<LolReplaysV1Metadata_Id>({
+    downloadProgress: -1,
+    gameId: -1,
+    state: 'incompatible',
+  });
 
   const summaryGameData = (() => {
     const participantId = game.participantIdentities[0].participantId;
@@ -37,10 +60,6 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
 
     const teamId = participant.teamId;
     const team = game.teams.find((t) => t.teamId === teamId);
-
-    if (!team) {
-      throw new Error('team dont exist');
-    }
 
     const items = new Array(7).fill(0).map((_, index) => {
       const itemId = participant.stats[`item${index}`];
@@ -57,7 +76,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     const map = maps.find((m) => m.id === game.mapId)?.name ?? '';
 
     return {
-      win: team.win === 'Win',
+      win: team?.win === 'Win',
       queueName,
       championImg: championIcon(participant.championId),
       level: participant.stats.champLevel,
@@ -72,6 +91,64 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
       map,
     };
   })();
+
+  const replayBtn = (): CustomIconButtonTooltipProps => {
+    const title = transReplays(
+      `replays_button_default_tooltip_${replayState.state}`,
+    );
+    if (replayState.state === 'download') {
+      return {
+        icon: FaDownload,
+        title,
+        onClick: () =>
+          makeRequest(
+            'POST',
+            buildEventUrl(
+              '/lol-replays/v1/rofls/{digits}/download',
+              game.gameId,
+            ),
+            {
+              componentType: '',
+            },
+          ),
+      };
+    }
+    if (replayState.state === 'downloading') {
+      return {
+        icon: FaDownload,
+        title,
+        disabled: true,
+        loading: true,
+      };
+    }
+    if (replayState.state === 'watch') {
+      return {
+        icon: FaPlay,
+        title,
+        onClick: () =>
+          makeRequest(
+            'POST',
+            buildEventUrl('/lol-replays/v1/rofls/{digits}/watch', game.gameId),
+            {
+              componentType: '',
+            },
+          ),
+      };
+    }
+
+    return {
+      icon: FaDownload,
+      title,
+      disabled: true,
+    };
+  };
+
+  useLeagueClientEvent(
+    buildEventUrl('/lol-replays/v1/metadata/{digits}', game.gameId),
+    (data) => {
+      setReplayState(data);
+    },
+  );
 
   return (
     <ListItem
@@ -117,7 +194,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
         <Stack
           direction={'column'}
           justifyContent={'space-between'}
-          flex={1}
+          alignItems={'center'}
           rowGap={0.5}
         >
           <Stack direction={'row'}>
@@ -125,19 +202,26 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
               <ItemIcon key={index} src={i.src} />
             ))}
           </Stack>
-          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Stack direction={'row'} justifyContent={'space-between'} width={265}>
             <Typography>{summaryGameData.kda}</Typography>
             <Typography>
-              {formatCurrency(summaryGameData.minionsKilled, 0)} C
+              {formatCurrency(summaryGameData.minionsKilled, 0)} CS
             </Typography>
             <Typography>{formatCurrency(summaryGameData.gold, 0)} G</Typography>
           </Stack>
-          <Stack direction={'row'} justifyContent={'space-between'}>
-            <Typography>
-              {summaryGameData.map} ({summaryGameData.duration})
-            </Typography>
-            <Typography>{summaryGameData.date}</Typography>
-          </Stack>
+        </Stack>
+        <Stack
+          direction={'column'}
+          width={140}
+          justifyContent={'space-between'}
+        >
+          <Typography>
+            {summaryGameData.map} ({summaryGameData.duration})
+          </Typography>
+          <Typography>{summaryGameData.date}</Typography>
+        </Stack>
+        <Stack direction={'column'} justifyContent={'center'}>
+          <CustomIconButtonTooltip {...replayBtn()} />
         </Stack>
       </Stack>
     </ListItem>

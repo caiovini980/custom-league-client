@@ -27,7 +27,7 @@ export interface IpcFunction {
   client: {
     reloadGameData: () => void;
     startLeagueClient: () => void;
-    getIsClientConnected: () => boolean;
+    getClientStatus: () => ClientStatusResponse;
     makeRequest: <K extends ClientEndpointKeys>(
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;

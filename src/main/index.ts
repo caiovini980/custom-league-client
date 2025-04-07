@@ -1,11 +1,14 @@
-import * as path from 'node:path';
 import { electronApp } from '@electron-toolkit/utils';
 import { WinstonLoggerService } from '@main/integrations/logger/winston-logger.service';
 import { ElectronIpcTransport } from '@main/ipc';
 import { NestFactory } from '@nestjs/core';
 import type { MicroserviceOptions } from '@nestjs/microservices';
-import { net, app, protocol } from 'electron';
-import fs from 'fs-extra';
+import { app, protocol } from 'electron';
+import {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+  installExtension,
+} from 'electron-devtools-installer';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 
@@ -32,35 +35,16 @@ async function bootstrap() {
 
   await app.whenReady();
 
-  protocol.handle('media', async (request) => {
-    const urlS = request.url.replace('media://', '');
-    const filePath = path.join(app.getPath('userData'), 'resources', urlS);
-    const raw = `https://raw.communitydragon.org/${urlS}`;
-    console.log(`Getting media: ${raw}`);
-    const ft = net
-      .fetch(raw)
-      .then((res) => {
-        if (res.ok) {
-          return res.arrayBuffer();
-        }
-        return null;
-      })
-      .then((arrayBuffer) => {
-        if (arrayBuffer) {
-          fs.outputFile(filePath, Buffer.from(arrayBuffer));
-          return new Response(arrayBuffer);
-        }
-        return new Response(null, {
-          status: 404,
-        });
-      });
-    if (fs.existsSync(filePath)) {
-      return net.fetch(`file://${filePath}`);
-    }
-    return ft;
-  });
-
   const log = new WinstonLoggerService();
+
+  await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]).then(
+    (exts) => {
+      exts.forEach((e) => {
+        log.info(`Added extension: ${e.name}`);
+      });
+    },
+  );
+
   const nestApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
@@ -77,9 +61,7 @@ async function bootstrap() {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
-try {
-  bootstrap();
-} catch (e) {
+bootstrap().catch((e) => {
   console.error(e);
   app.quit();
-}
+});

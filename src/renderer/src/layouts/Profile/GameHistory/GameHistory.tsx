@@ -1,5 +1,4 @@
 import { List, ListItem, ListItemText } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import {
   buildEventUrl,
@@ -29,9 +28,8 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
       disablePadding
       sx={{
         overflow: 'auto',
-        width: 800,
-        background: (t) => alpha(t.palette.background.default, 0.3),
-        backdropFilter: 'blur(5px)',
+        width: '100%',
+        height: '100%',
       }}
     >
       <LoadingScreen
@@ -40,7 +38,7 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
         loadingText={'Loading history...'}
         fullArea
       />
-      {!matchHistory?.games.games.length && (
+      {matchHistory?.games.games.length === 0 && (
         <ListItem>
           <ListItemText
             sx={{ textAlign: 'center' }}

@@ -20,9 +20,9 @@ export const App = (): JSX.Element => {
     >
       <CustomThemeProvider>
         <HashRouter>
-          <LeagueClientEvent />
           <Stack direction={'column'} height={'100vh'}>
             <CheckLeagueClient>
+              <LeagueClientEvent />
               <Home>
                 <Routes>
                   <Route path={'/'} Component={Lobby} />
