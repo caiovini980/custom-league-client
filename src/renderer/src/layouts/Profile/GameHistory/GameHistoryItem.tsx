@@ -205,7 +205,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
           <Stack direction={'row'} justifyContent={'space-between'} width={265}>
             <Typography>{summaryGameData.kda}</Typography>
             <Typography>
-              {formatCurrency(summaryGameData.minionsKilled, 0)} C
+              {formatCurrency(summaryGameData.minionsKilled, 0)} CS
             </Typography>
             <Typography>{formatCurrency(summaryGameData.gold, 0)} G</Typography>
           </Stack>

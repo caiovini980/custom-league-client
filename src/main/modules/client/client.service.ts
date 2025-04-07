@@ -8,7 +8,7 @@ import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
-import fs from 'fs-extra';
+import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 
 @Service()
 export class ClientService extends ServiceAbstract {
@@ -32,8 +32,17 @@ export class ClientService extends ServiceAbstract {
     );
   }
 
-  async getIsClientConnected() {
-    return this.leagueClientService.isLeagueClientConnected();
+  getClientStatus(): ClientStatusResponse {
+    const isConnected = this.leagueClientService.isLeagueClientConnected();
+    if (isConnected) {
+      return {
+        connected: true,
+        info: this.getClientStatusInfo(),
+      };
+    }
+    return {
+      connected: false,
+    };
   }
 
   async makeRequest(
@@ -48,11 +57,8 @@ export class ClientService extends ServiceAbstract {
   }
 
   async reloadGameData() {
-    const clientInfoString = fs.readFileSync(this.getClientInfoPath(), {
-      encoding: 'utf-8',
-    });
     await this.leagueClientDataDownloadService.downloadGameData(
-      JSON.parse(clientInfoString),
+      this.getClientStatusInfo(),
     );
   }
 }

@@ -5,6 +5,7 @@ import {
   useElectronHandle,
 } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
+import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { PropsWithChildren, useEffect } from 'react';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
@@ -28,21 +29,20 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     },
   );
 
-  useEffect(() => {
-    const isClientConnectedEvent = electronListen.clientStatus((status) => {
-      setIsConnected(status.connected);
-      if (status.connected) {
-        setVersion(status.info.version);
-        setLocale(status.info.locale);
-      }
-    });
+  const setClientStatus = (status: ClientStatusResponse) => {
+    setIsConnected(status.connected);
+    if (status.connected) {
+      setVersion(status.info.version);
+      setLocale(status.info.locale);
+    }
+  };
 
-    client.getIsClientConnected().then((isConnected) => {
-      setIsConnected(isConnected);
-    });
+  useEffect(() => {
+    const clientStatus = electronListen.clientStatus(setClientStatus);
+    client.getClientStatus().then(setClientStatus);
 
     return () => {
-      isClientConnectedEvent.unsubscribe();
+      clientStatus.unsubscribe();
     };
   }, []);
 

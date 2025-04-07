@@ -13,9 +13,9 @@ export class ClientController {
     return this.clientService.startLeagueClient();
   }
 
-  @IpcHandle('getIsClientConnected')
-  async getIsClientConnected() {
-    return this.clientService.getIsClientConnected();
+  @IpcHandle('getClientStatus')
+  async getClientStatus() {
+    return this.clientService.getClientStatus();
   }
 
   @IpcHandle('makeRequest')

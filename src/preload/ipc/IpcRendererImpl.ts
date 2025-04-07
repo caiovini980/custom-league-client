@@ -13,7 +13,7 @@ export class IpcRendererImpl {
         setConfig: null,
       },
       client: {
-        getIsClientConnected: null,
+        getClientStatus: null,
         startLeagueClient: null,
         makeRequest: null,
         reloadGameData: null,
