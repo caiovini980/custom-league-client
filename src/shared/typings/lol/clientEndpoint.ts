@@ -63,6 +63,7 @@ interface ClientEndpoint {
   '/lol-gameflow/v1/session': EndpointOnlyResponse<LolGameflowV1Session>;
   // Lol Lobby
   '/lol-lobby/v2/lobby': EndpointOnlyResponse<LolLobbyV2Lobby>;
+  '/lol-lobby/v2/lobby/matchmaking/search': EndpointEmpty;
   // Lol Ranked
   '/lol-ranked/v1/ranked-stats/{uuid}': EndpointOnlyResponse<LolRankedV1RankedStats_Id>;
   // Lol Vanguard
