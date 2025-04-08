@@ -93,11 +93,16 @@ export const Chat = () => {
   };
 
   const getChatStats = (chat: lolChatV1Friends) => {
-    const stats = rcpFeLolSocialTrans(`availability_${chat.availability}`);
-    if (chat.productName) {
-      return `${stats} (${chat.productName})`;
+    const gameStatus = chat.lol?.gameStatus;
+    let stats: string = chat.availability;
+    if (gameStatus && gameStatus !== 'outOfGame') {
+      stats = gameStatus;
     }
-    return stats;
+    const statsT = rcpFeLolSocialTrans(`availability_${stats}`);
+    if (chat.productName) {
+      return `${statsT} (${chat.productName})`;
+    }
+    return statsT;
   };
 
   return (

@@ -42,7 +42,7 @@ export interface CustomDialogProps
   actionsComponent?: ReactNode;
   color?: Color;
   handleConfirm?: () => void;
-  handleClose: () => void;
+  handleClose?: () => void;
   confirmButtonProps?: Omit<CustomButtonProps, 'id'>;
   cancelButtonProps?: Omit<CustomButtonProps, 'id'>;
   hiddenBtnConfirm?: boolean;
@@ -89,7 +89,7 @@ const CustomDialog = ({
       (reason !== 'backdropClick' && reason !== 'escapeKeyDown') ||
       (reason === 'backdropClick' && closeOnClickBackDrop)
     ) {
-      handleClose();
+      handleClose?.();
     }
   };
 
@@ -183,7 +183,7 @@ const CustomDialog = ({
           {!hiddenBtnCancel && (
             <CustomButton
               id={'3203ce71-aa62-4eae-9990-2387a407024a'}
-              onClick={() => handleClose()}
+              onClick={() => handleClose?.()}
               color="error"
               variant={'outlined'}
               {...cancelButtonProps}

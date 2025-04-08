@@ -1,9 +1,16 @@
 import { useStore } from '@render/zustand/store';
-import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
+import { KebabToCamelCase } from '@shared/typings/generic.typing';
+import { kebabToCamelCase } from '@shared/utils/string.util';
 import { translateJsonMap } from '@shared/utils/translate.util';
 
-type Translate = LoadGameDataComplete['info']['translate'];
+type Translate = typeof translateJsonMap;
 type TranslatePath = keyof Translate;
+
+type TransReturn<F> = {
+  [K in TranslatePath as KebabToCamelCase<K>]: (
+    path: Translate[K][number],
+  ) => F;
+};
 
 export const useLeagueTranslate = () => {
   const translateData = useStore().gameData.translate();
@@ -34,8 +41,12 @@ export const useLeagueTranslate = () => {
     return (key: (typeof translateJsonMap)[K][number]) => f[key];
   };
 
-  return {
-    rcpFeLolSharedComponents: translateMapper('rcp-fe-lol-shared-components'),
-    rcpFeLolSocial: translateMapper('rcp-fe-lol-social'),
-  };
+  return Object.keys(translateJsonMap).reduce(
+    (prev, curr) => {
+      return Object.assign(prev, {
+        [kebabToCamelCase(curr)]: translateMapper(curr as TranslatePath),
+      });
+    },
+    {} as TransReturn<ReturnType<typeof translate>>,
+  );
 };

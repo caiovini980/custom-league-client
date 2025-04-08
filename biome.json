@@ -1,8 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "formatter": {
-    "lineEnding": "lf"
-  },
   "organizeImports": {
     "enabled": true
   },

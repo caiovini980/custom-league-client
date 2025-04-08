@@ -15,6 +15,10 @@ export const formatCurrency = (value: number, digits = 2): string => {
   return valueFormat;
 };
 
+export const kebabToCamelCase = (input: string): string => {
+  return input.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+};
+
 export const stringSplitter = (text: string, size = 20) => {
   const parts: string[] = [];
   for (let i = 0, length = text.length; i < length; i += size) {
@@ -112,17 +116,4 @@ export const textIsMatchWithPattern = (text: string, pattern: string) => {
 
 export const getNumber = (text: string) => {
   return text.replace(/\D/g, '');
-};
-
-export const formatCpfCnpj = (cpfCnpj: string) => {
-  const pattern = cpfCnpj.length > 11 ? '##.###.###/####-##' : '###.###.###-##';
-  return mask(cpfCnpj, pattern);
-};
-
-export const getPhonePattern = (number: string) => {
-  return number.length < 9 ? '####-####' : '#####-####';
-};
-
-export const formatPhone = (ddd: string, number: string) => {
-  return `(${ddd}) ${mask(number, getPhonePattern(number))}`;
 };

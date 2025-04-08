@@ -21,7 +21,7 @@ export const secondsToDisplayTime = (seconds: number) => {
   const display: number[] = [];
 
   if (hours) display.push(hours);
-  if (minutes) display.push(minutes);
-  display.push(seconds % 60);
+  display.push(minutes);
+  display.push(Math.floor(seconds % 60));
   return display.map((d) => `${String(d).padStart(2, '0')}`).join(':');
 };

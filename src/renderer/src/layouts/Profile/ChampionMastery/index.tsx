@@ -24,7 +24,8 @@ interface ChampionMasteryProps {
 export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { championIcon, lolGameDataImg } = useLeagueImage();
-  const { rcpFeLolSharedComponents } = useLeagueTranslate();
+  const { rcpFeLolSharedComponents, rcpFeLolMatchHistory } =
+    useLeagueTranslate();
   const champions = useStore().gameData.champions();
 
   const [championMastery, setChampionMastery] =
@@ -33,6 +34,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const transChampionMastery = rcpFeLolSharedComponents(
     'trans-champion-mastery',
   );
+  rcpFeLolMatchHistory('trans');
 
   const getChampionName = (id: number) => {
     return champions.find((c) => c.id === id)?.name ?? '';

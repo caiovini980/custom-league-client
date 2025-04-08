@@ -1,0 +1,36 @@
+export interface LolLobbyV2LobbyMembers {
+  allowedChangeActivity: boolean;
+  allowedInviteOthers: boolean;
+  allowedKickOthers: boolean;
+  allowedStartActivity: boolean;
+  allowedToggleInvite: boolean;
+  autoFillEligible: boolean;
+  autoFillProtectedForPromos: boolean;
+  autoFillProtectedForRemedy: boolean;
+  autoFillProtectedForSoloing: boolean;
+  autoFillProtectedForStreaking: boolean;
+  botChampionId: number;
+  botDifficulty: string;
+  botId: string;
+  botPosition: string;
+  botUuid: string;
+  firstPositionPreference: string;
+  intraSubteamPosition: unknown;
+  isBot: boolean;
+  isLeader: boolean;
+  isSpectator: boolean;
+  memberData: unknown;
+  playerSlots: unknown[];
+  puuid: string;
+  ready: boolean;
+  secondPositionPreference: string;
+  showGhostedBanner: boolean;
+  strawberryMapId: unknown;
+  subteamIndex: unknown;
+  summonerIconId: number;
+  summonerId: number;
+  summonerInternalName: string;
+  summonerLevel: number;
+  summonerName: string;
+  teamId: number;
+}

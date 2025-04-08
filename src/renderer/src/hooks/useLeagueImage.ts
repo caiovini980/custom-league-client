@@ -1,4 +1,5 @@
 import { useStore } from '@render/zustand/store';
+import { Undefined } from '@shared/typings/generic.typing';
 
 type Id = string | number;
 type Tier =
@@ -23,7 +24,8 @@ export const useLeagueImage = () => {
     return `media://${version}/${path}`;
   };
 
-  const profileIcon = (id: Id) => {
+  const profileIcon = (id: Undefined<Id>) => {
+    if (id === undefined) id = 0;
     return link(
       `plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${id}.jpg`,
     );

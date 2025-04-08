@@ -8,7 +8,7 @@ export interface LolLobbyV2Lobby {
   multiUserChatId: string;
   multiUserChatPassword: string;
   partyId: string;
-  partyType: string;
+  partyType: 'open' | 'closed';
   popularChampions: unknown[];
   restrictions: unknown[];
   scarcePositions: unknown[];
