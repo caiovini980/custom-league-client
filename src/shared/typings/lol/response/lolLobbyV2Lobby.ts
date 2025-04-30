@@ -10,7 +10,7 @@ export interface LolLobbyV2Lobby {
   partyId: string;
   partyType: 'open' | 'closed';
   popularChampions: unknown[];
-  restrictions: unknown[];
+  restrictions: Restriction[];
   scarcePositions: unknown[];
   warnings: unknown[];
 }
@@ -128,4 +128,12 @@ interface MucJwtDto {
   domain: string;
   jwt: string;
   targetRegion: string;
+}
+
+interface Restriction {
+  expiredTimestamp: number;
+  restrictionArgs: {};
+  restrictionCode: string;
+  summonerIds: number[];
+  summonerIdsString: string;
 }

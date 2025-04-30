@@ -4,6 +4,7 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { MatchMakingStats } from '@render/layouts/Lobby/GenericLobby/MatchMakingStats';
 import { PlayerList } from '@render/layouts/Lobby/GenericLobby/PlayerList';
+import { Restriction } from '@render/layouts/Lobby/GenericLobby/Restriction';
 import { useStore } from '@render/zustand/store';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
@@ -34,7 +35,7 @@ export const GenericLobby = ({ lobbySession }: GenericLobbyProps) => {
     if (!lobby.localMember.allowedStartActivity) {
       return false;
     }
-    return lobby.canStartActivity;
+    return lobby.canStartActivity && !lobby.restrictions.length;
   };
 
   const getQueueName = (id: number) => {
@@ -46,7 +47,8 @@ export const GenericLobby = ({ lobbySession }: GenericLobbyProps) => {
       <Typography textAlign={'center'}>
         {getQueueName(lobbySession.gameData.queue.id)}
       </Typography>
-      <PlayerList members={lobby.members} />
+      <PlayerList lobby={lobby} />
+      <Restriction restrictions={lobby.restrictions} />
       <MatchMakingStats canStartActivity={canStartActivity()} />
       <CustomButton variant="outlined" onClick={onReturnMainMenuButtonClicked}>
         Return to Main Menu

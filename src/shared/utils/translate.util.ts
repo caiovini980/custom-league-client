@@ -18,6 +18,7 @@ export const translateJsonMap = {
   'rcp-fe-lol-navigation': ['trans'],
   'rcp-fe-lol-social': ['trans'],
   'rcp-fe-lol-parties': ['trans'],
+  'rcp-fe-lol-l10n': ['trans'],
 } as const;
 
 export type TranslatePathKeys = keyof typeof translateJsonMap;

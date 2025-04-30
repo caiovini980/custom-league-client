@@ -3,14 +3,19 @@ import { PlayerCard } from '@render/layouts/Lobby/GenericLobby/PlayerList/Player
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 
 interface PlayerListProps {
-  members: LolLobbyV2Lobby['members'];
+  lobby: LolLobbyV2Lobby;
 }
 
-export const PlayerList = ({ members }: PlayerListProps) => {
+export const PlayerList = ({ lobby }: PlayerListProps) => {
   return (
     <Stack direction={'row'} columnGap={2}>
-      {members.map((m) => (
-        <PlayerCard key={m.summonerId} summonerId={m.summonerId} />
+      {lobby.members.map((m) => (
+        <PlayerCard
+          key={m.summonerId}
+          member={m}
+          isOwner={m.summonerId === lobby.localMember.summonerId}
+          showPositionSelector={lobby.gameConfig.showPositionSelector}
+        />
       ))}
     </Stack>
   );

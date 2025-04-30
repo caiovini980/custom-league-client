@@ -1,73 +1,17 @@
-import { Box, Divider, LinearProgress, Stack, Typography } from '@mui/material';
-import { LoadingScreen } from '@render/components/LoadingScreen';
+import { Box, Divider, Stack } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { BottomMenu } from '@render/layouts/Home/BottomMenu';
 import { Chat } from '@render/layouts/Home/Chat';
-import { useElectronListen } from '@render/utils/electronFunction.util';
 import { storeActions } from '@render/zustand/store';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const { info: setCurrentSummoner } = storeActions.currentSummoner;
-  const { setGameData } = storeActions.gameData;
-
-  const [loadingGameData, setLoadingGameData] = useState({
-    status: true,
-    percent: 0,
-    file: '',
-  });
 
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
     setCurrentSummoner(data);
   });
-
-  useElectronListen('onLoadGameData', (data) => {
-    if (data.status === 'downloading') {
-      setLoadingGameData({
-        status: true,
-        file: data.info.currentFileDownloading,
-        percent: data.info.currentPercent,
-      });
-    }
-    if (data.status === 'complete') {
-      setGameData(data.info);
-      setLoadingGameData({
-        status: false,
-        percent: 100,
-        file: '',
-      });
-    }
-  });
-
-  if (loadingGameData.status) {
-    return (
-      <Stack
-        direction={'column'}
-        height={'100%'}
-        rowGap={2}
-        justifyContent={'center'}
-        alignItems={'center'}
-      >
-        <LoadingScreen
-          loadingText={`Loading game data ${loadingGameData.percent}%`}
-        />
-        <LinearProgress
-          sx={{ width: '60%' }}
-          variant={'determinate'}
-          value={loadingGameData.percent}
-        />
-        <Typography
-          overflow={'hidden'}
-          whiteSpace={'nowrap'}
-          textOverflow={'ellipsis'}
-          width={'60%'}
-        >
-          {loadingGameData.file}
-        </Typography>
-      </Stack>
-    );
-  }
 
   return (
     <Stack

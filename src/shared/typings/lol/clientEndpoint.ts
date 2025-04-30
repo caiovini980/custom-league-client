@@ -1,5 +1,6 @@
 import { Undefined } from '@shared/typings/generic.typing';
 import { LolLobbyV2Lobby as LolLobbyV2LobbyReq } from '@shared/typings/lol/request/lolLobbyV2Lobby';
+import { LolLobbyV2LobbyMembersLocalMemberPositionPreferences } from '@shared/typings/lol/request/lolLobbyV2LobbyMembersLocalMemberPositionPreferences';
 import { LolReplaysV1Metadata_Id_Download } from '@shared/typings/lol/request/lolReplaysV1Metadata_Id_Download';
 import { LolReplaysV1Metadata_Id_Watch } from '@shared/typings/lol/request/lolReplaysV1Metadata_Id_Watch';
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
@@ -12,11 +13,13 @@ import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueue
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolLobbyV2Lobby as LolLobbyV2LobbyRes } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolLobbyV2LobbyMembers } from '@shared/typings/lol/response/lolLobbyV2LobbyMembers';
+import { LolLoginV1Session } from '@shared/typings/lol/response/lolLoginV1Session';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolReplaysV1Metadata_Id } from '@shared/typings/lol/response/lolReplaysV1Metadata_Id';
+import { LolShutdownV1Notification } from '@shared/typings/lol/response/lolShutdownV1Notification';
 import { LolSummonerV1CurrentSummoner } from '@shared/typings/lol/response/lolSummonerV1CurrentSummoner';
 import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSummonerV1SummonerProfile';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
@@ -64,6 +67,9 @@ interface ClientEndpoint {
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
   '/lol-summoner/v1/summoners/{digits}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
   '/lol-summoner/v1/summoner-profile?puuid={uuid}': EndpointOnlyResponse<LolSummonerV1SummonerProfile>;
+  '/lol-summoner/v2/summoners?ids={digits}': EndpointOnlyResponse<
+    LolSummonerV1Summoners_Id[]
+  >;
   // Lol Game Queue
   '/lol-game-queues/v1/queues': EndpointOnlyResponse<LolGameQueuesV1Queues[]>;
   // Lol Game Flow
@@ -74,6 +80,9 @@ interface ClientEndpoint {
   '/lol-lobby/v2/lobby/matchmaking/search': EndpointEmpty;
   '/lol-lobby/v2/lobby/members': EndpointOnlyResponse<LolLobbyV2LobbyMembers[]>;
   '/lol-lobby/v2/play-again': EndpointEmpty;
+  '/lol-lobby/v2/lobby/members/localMember/position-preferences': EndpointOnlyRequest<LolLobbyV2LobbyMembersLocalMemberPositionPreferences>;
+  // Lol Login
+  '/lol-login/v1/session': EndpointOnlyResponse<LolLoginV1Session>;
   // Lol Matchmaking
   '/lol-matchmaking/v1/search': EndpointOnlyResponse<LolMatchmakingV1Search>;
   '/lol-matchmaking/v1/ready-check': EndpointOnlyResponse<LolMatchmakingV1ReadyCheck>;
@@ -81,6 +90,8 @@ interface ClientEndpoint {
   '/lol-matchmaking/v1/ready-check/decline': EndpointEmpty;
   // Lol Ranked
   '/lol-ranked/v1/ranked-stats/{uuid}': EndpointOnlyResponse<LolRankedV1RankedStats_Id>;
+  // Lol Shutdown
+  '/lol-shutdown/v1/notification': EndpointOnlyResponse<LolShutdownV1Notification>;
   // Lol Vanguard
   '/lol-vanguard/v1/session': EndpointOnlyResponse<LolVanguardV1Session>;
   // Patcher

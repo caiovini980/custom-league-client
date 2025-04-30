@@ -95,6 +95,9 @@ export const MatchMakingStats = ({
           <LinearProgress
             variant={'determinate'}
             value={(matchReadyCheck?.timer ?? 0) * 10}
+            sx={{
+              width: '100%',
+            }}
           />
         </CustomDialog>
       </>

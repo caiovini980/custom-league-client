@@ -2,8 +2,8 @@ import * as path from 'node:path';
 import { ServiceAbstract } from '@main/abstracts/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientDataReaderService } from '@main/integrations/league-client/league-client-data-reader.service';
-import { OnEvent } from '@nestjs/event-emitter';
 import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { translateJsonMap } from '@shared/utils/translate.util';
 import axios from 'axios';
 import fs from 'fs-extra';
 
@@ -32,24 +32,12 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     'plugins/rcp-fe-lol-shared-components/global/default/grandmaster.png',
     'plugins/rcp-fe-lol-shared-components/global/default/master.png',
     'plugins/rcp-fe-lol-shared-components/global/default/challenger.png',
-    'plugins/rcp-fe-lol-shared-components/global/default/trans(.*)json',
-    'plugins/rcp-fe-lol-match-history/global/default/trans(.*).json',
-    'plugins/rcp-fe-lol-champ-select/global/default/trans(.*).json',
-    'plugins/rcp-fe-lol-navigation/global/default/trans(.*).json',
-    'plugins/rcp-fe-lol-social/global/default/trans(.*).json',
-    'plugins/rcp-fe-lol-parties/global/default/trans(.*).json',
   ];
 
   constructor(
     private leagueClientDataReaderService: LeagueClientDataReaderService,
   ) {
     super();
-  }
-
-  @OnEvent('client.connected')
-  async onClientConnected(payload: ClientStatusConnected['info']) {
-    await this.downloadGameData(payload);
-    return;
   }
 
   private async fetchFileList(url: string): Promise<string[]> {
@@ -152,6 +140,11 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     const urls = await this.fetchFileList(
       this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('{version}', version),
     );
+
+    Object.keys(translateJsonMap).forEach((k) => {
+      filterAllow.push(`plugins/${k}/global/default/trans(.*)json`);
+    });
+
     const filteredUrls = this.filterUrls(
       this.filterUrls(urls, filterAllow),
       filterDeny,

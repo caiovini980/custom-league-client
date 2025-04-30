@@ -66,6 +66,16 @@ export const useLeagueImage = () => {
     );
   };
 
+  const genericImg = (iconPath: string) => {
+    return link(iconPath);
+  };
+
+  const positionIcon = (position: string) => {
+    return link(
+      `/plugins/rcp-fe-lol-parties/global/default/icon-position-banner-primary-${position.toLowerCase()}.png`,
+    );
+  };
+
   return {
     profileIcon,
     lolGameDataImg,
@@ -73,5 +83,7 @@ export const useLeagueImage = () => {
     spellIcon,
     itemIcon,
     tierImg,
+    genericImg,
+    positionIcon,
   };
 };

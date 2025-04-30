@@ -26,7 +26,6 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
       undefined,
     ).then((res) => {
       if (res.ok) {
-        console.log(res.body);
         setRankedStats(res.body);
       }
     });

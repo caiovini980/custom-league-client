@@ -1,9 +1,12 @@
 import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import { createStore } from 'zustand-x';
 
-export type GameDataState = LoadGameDataComplete['info'];
+export type GameDataState = {
+  loaded: boolean;
+} & LoadGameDataComplete['info'];
 
 const initialState: GameDataState = {
+  loaded: false,
   champions: [],
   spells: [],
   items: [],

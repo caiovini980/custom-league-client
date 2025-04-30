@@ -30,9 +30,6 @@ const checkerTs = (tsconfigPath: string) =>
     typescript: {
       tsconfigPath,
     },
-    biome: {
-      command: 'check',
-    },
   });
 
 export default defineConfig({
