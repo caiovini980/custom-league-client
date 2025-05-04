@@ -13,5 +13,6 @@ const initialState: CurrentSummonerState = {
   profile: null,
 };
 
-export const currentSummonerStore =
-  createStore('currentSummoner')<CurrentSummonerState>(initialState);
+export const currentSummonerStore = createStore(
+  'currentSummoner',
+)<CurrentSummonerState>(initialState, { devtools: { enabled: true } });

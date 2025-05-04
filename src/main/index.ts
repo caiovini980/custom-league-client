@@ -37,13 +37,16 @@ async function bootstrap() {
 
   const log = new WinstonLoggerService();
 
-  await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]).then(
-    (exts) => {
+  await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS], {
+    forceDownload: true,
+    loadExtensionOptions: { allowFileAccess: true },
+  })
+    .then((exts) => {
       exts.forEach((e) => {
         log.info(`Added extension: ${e.name}`);
       });
-    },
-  );
+    })
+    .catch((err) => console.log('An error occurred: ', err));
 
   const nestApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,

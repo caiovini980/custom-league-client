@@ -1,3 +1,5 @@
+import { Null } from '@shared/typings/generic.typing';
+
 export interface LolLobbyV2Lobby {
   canStartActivity: boolean;
   gameConfig: GameConfig;
@@ -10,7 +12,7 @@ export interface LolLobbyV2Lobby {
   partyId: string;
   partyType: 'open' | 'closed';
   popularChampions: unknown[];
-  restrictions: Restriction[];
+  restrictions: Null<Restriction[]>;
   scarcePositions: unknown[];
   warnings: unknown[];
 }

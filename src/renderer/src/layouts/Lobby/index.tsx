@@ -1,8 +1,10 @@
 import {
-  ButtonBase,
-  Grid,
+  Divider,
   LinearProgress,
-  Paper,
+  List,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
   Stack,
   Typography,
 } from '@mui/material';
@@ -10,16 +12,17 @@ import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
 import { GenericLobby } from '@render/layouts/Lobby/GenericLobby';
 import { storeActions, useStore } from '@render/zustand/store';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 export const Lobby = () => {
   const { makeRequest } = useLeagueClientRequest();
-  const { rcpFeLolL10n } = useLeagueTranslate();
+  const { rcpFeLolL10n, rcpFeLolParties } = useLeagueTranslate();
   // Constants
   const isAvailable = useStore().leagueClient.isAvailable();
   const queues = useStore().gameData.queues();
@@ -116,29 +119,105 @@ export const Lobby = () => {
     );
   }
 
+  const queuesFiltered = queueList.filter(
+    (q) => q.queueAvailability === 'Available' && q.isVisible,
+  );
+
   if (!isAvailable) {
     return <LoadingScreen height={'100%'} />;
   }
 
-  if (lobbySession) {
-    return <GenericLobby lobbySession={lobbySession} />;
+  if (lobbySession?.phase === 'ChampSelect') {
+    return <ChampSelect />;
   }
 
+  const getQueuesGrouped = () => {
+    if (!queuesFiltered.length) return [];
+    const queuesGrouped: { name: string; queues: LolGameQueuesV1Queues[] }[] =
+      [];
+
+    const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+
+    const tftQueues = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kTeamfightTactics' &&
+        q.gameSelectCategory === 'kPvP',
+    );
+    const summonersRiftQueues = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kSummonersRift' &&
+        q.gameSelectCategory === 'kPvP',
+    );
+    const aramQueues = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kARAM' && q.gameSelectCategory === 'kPvP',
+    );
+    const otherQueues = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kAlternativeLeagueGameModes' &&
+        q.gameSelectCategory === 'kPvP',
+    );
+
+    const coopVsAiQueues = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kSummonersRift' &&
+        q.gameSelectCategory === 'kVersusAI',
+    );
+
+    queuesGrouped.push({
+      name: rcpFeLolPartiesTrans('parties_game_category_kpvp'),
+      queues: summonersRiftQueues,
+    });
+
+    queuesGrouped.push({
+      name: aramQueues[0]?.name ?? '-',
+      queues: aramQueues,
+    });
+
+    queuesGrouped.push({
+      name: otherQueues[0]?.name ?? '-',
+      queues: otherQueues,
+    });
+
+    queuesGrouped.push({
+      name: 'TFT',
+      queues: tftQueues,
+    });
+
+    queuesGrouped.push({
+      name: rcpFeLolPartiesTrans('parties_game_category_kversusai'),
+      queues: coopVsAiQueues,
+    });
+
+    return queuesGrouped;
+  };
+
   return (
-    <Grid container spacing={2} sx={{ p: 1 }}>
-      {queueList
-        .filter((q) => q.queueAvailability === 'Available' && q.isVisible)
-        .map((q) => (
-          <Grid key={q.id} size={{ xs: 4 }}>
-            <Paper
-              sx={{ p: 1 }}
-              component={ButtonBase}
-              onClick={() => onClickQueue(q)}
-            >
-              <Typography>{getQueueName(q.id)}</Typography>
-            </Paper>
-          </Grid>
+    <Stack direction={'row'} height={'100%'}>
+      <List sx={{ overflow: 'auto' }} dense disablePadding>
+        {getQueuesGrouped().map((qGrouped) => (
+          <Fragment key={qGrouped.name}>
+            <ListSubheader component="div" sx={{ textAlign: 'center' }}>
+              {qGrouped.name}
+            </ListSubheader>
+            {qGrouped.queues.map((q) => (
+              <ListItemButton
+                key={q.id}
+                onClick={() => onClickQueue(q)}
+                selected={q.id === lobbySession?.gameData.queue.id}
+              >
+                <ListItemText>{getQueueName(q.id)}</ListItemText>
+              </ListItemButton>
+            ))}
+          </Fragment>
         ))}
-    </Grid>
+      </List>
+      <Divider orientation={'vertical'} />
+      {lobbySession ? (
+        <GenericLobby lobbySession={lobbySession} />
+      ) : (
+        <Typography>Select</Typography>
+      )}
+    </Stack>
   );
 };

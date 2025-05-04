@@ -17,6 +17,7 @@ const initialState: GameDataState = {
 
 export const gameDataStore = createStore('gameData')<GameDataState>(
   initialState,
+  { devtools: { enabled: true } },
 ).extendActions((set) => ({
   setGameData: (value: GameDataState) => {
     set.state(() => value);

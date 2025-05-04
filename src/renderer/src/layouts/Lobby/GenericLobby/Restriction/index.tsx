@@ -7,7 +7,7 @@ import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummo
 import { useEffect, useState } from 'react';
 
 interface RestrictionProps {
-  restrictions: LolLobbyV2Lobby['restrictions'];
+  restrictions: NonNullable<LolLobbyV2Lobby['restrictions']>;
 }
 
 export const Restriction = ({ restrictions }: RestrictionProps) => {

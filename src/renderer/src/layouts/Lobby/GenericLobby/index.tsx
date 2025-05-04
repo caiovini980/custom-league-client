@@ -35,7 +35,7 @@ export const GenericLobby = ({ lobbySession }: GenericLobbyProps) => {
     if (!lobby.localMember.allowedStartActivity) {
       return false;
     }
-    return lobby.canStartActivity && !lobby.restrictions.length;
+    return lobby.canStartActivity && !lobby.restrictions?.length;
   };
 
   const getQueueName = (id: number) => {
@@ -43,12 +43,19 @@ export const GenericLobby = ({ lobbySession }: GenericLobbyProps) => {
   };
 
   return (
-    <Stack direction={'column'} rowGap={2} p={1} alignItems={'center'}>
+    <Stack
+      direction={'column'}
+      rowGap={2}
+      p={1}
+      alignItems={'center'}
+      justifyContent={'center'}
+      width={'100%'}
+    >
       <Typography textAlign={'center'}>
         {getQueueName(lobbySession.gameData.queue.id)}
       </Typography>
       <PlayerList lobby={lobby} />
-      <Restriction restrictions={lobby.restrictions} />
+      <Restriction restrictions={lobby.restrictions ?? []} />
       <MatchMakingStats canStartActivity={canStartActivity()} />
       <CustomButton variant="outlined" onClick={onReturnMainMenuButtonClicked}>
         Return to Main Menu

@@ -3,7 +3,6 @@ import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
-  electronListen,
   useElectronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
@@ -21,7 +20,7 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     resetState,
   } = storeActions.leagueClient;
   const gameDataLoaded = useStore().gameData.loaded();
-  const { setGameData } = storeActions.gameData;
+  const { setGameData, loaded: setGameDataLoaded } = storeActions.gameData;
   const isConnected = useStore().leagueClient.isConnected();
 
   const [loadingGameData, setLoadingGameData] = useState({
@@ -47,13 +46,12 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     }
   };
 
-  useEffect(() => {
-    const clientStatus = electronListen.clientStatus(setClientStatus);
-    client.getClientStatus().then(setClientStatus);
+  useElectronListen('clientStatus', (data) => {
+    setClientStatus(data);
+  });
 
-    return () => {
-      clientStatus.unsubscribe();
-    };
+  useEffect(() => {
+    client.getClientStatus().then(setClientStatus);
   }, []);
 
   useEffect(() => {
@@ -63,13 +61,14 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   }, [isConnected]);
 
   useEffect(() => {
-    if (!gameDataLoaded) {
+    if (!gameDataLoaded && isConnected) {
       client.reloadGameData();
     }
-  }, [gameDataLoaded]);
+  }, [gameDataLoaded, isConnected]);
 
   useElectronListen('onLoadGameData', (data) => {
     if (data.status === 'downloading') {
+      setGameDataLoaded(false);
       setLoadingGameData({
         file: data.info.currentFileDownloading,
         percent: data.info.currentPercent,
@@ -86,6 +85,10 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
       });
     }
   });
+
+  if (!isConnected) {
+    return <LoadingLeagueClient />;
+  }
 
   if (!gameDataLoaded) {
     return (
@@ -114,10 +117,6 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
         </Typography>
       </Stack>
     );
-  }
-
-  if (!isConnected) {
-    return <LoadingLeagueClient />;
   }
 
   return <>{children}</>;
