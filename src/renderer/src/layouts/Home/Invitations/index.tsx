@@ -14,23 +14,23 @@ export const Invitations = () => {
   const { closeSnackbar } = snackbar();
   const { makeRequest } = useLeagueClientRequest();
 
-  const handleAcceptInvitation = (data: LolLobbyV2ReceivedInvitations[]) => {
+  const handleAcceptInvitation = (id: string) => {
     makeRequest(
       'POST',
       buildEventUrl(
         '/lol-lobby/v2/received-invitations/{invitationId}/accept',
-        data[0].invitationId,
+        id,
       ),
       undefined,
     );
   };
 
-  const handleDeclineInvitation = (data: LolLobbyV2ReceivedInvitations[]) => {
+  const handleDeclineInvitation = (id: string) => {
     makeRequest(
       'POST',
       buildEventUrl(
         '/lol-lobby/v2/received-invitations/{invitationId}/decline',
-        data[0].invitationId,
+        id,
       ),
       undefined,
     );
@@ -39,54 +39,56 @@ export const Invitations = () => {
   useLeagueClientEvent(
     '/lol-lobby/v2/received-invitations',
     (data: LolLobbyV2ReceivedInvitations[]) => {
-      makeRequest(
-        'GET',
-        buildEventUrl(
-          '/lol-summoner/v1/summoners/{digits}',
-          data[0].fromSummonerId,
-        ),
-        undefined,
-      ).then((res) => {
-        if (res.ok) {
-          const greetString = `${res.body.gameName} sent a game invite!`;
-          const acceptAction: SnackbarAction = (key) => {
-            return createElement(
-              Button,
-              {
-                variant: 'text',
-                color: 'success',
-                onClick: () => {
-                  handleAcceptInvitation(data);
-                  closeSnackbar(key);
+      data.forEach((each) => {
+        makeRequest(
+          'GET',
+          buildEventUrl(
+            '/lol-summoner/v1/summoners/{digits}',
+            each.fromSummonerId,
+          ),
+          undefined,
+        ).then((res) => {
+          if (res.ok) {
+            const greetString = `${res.body.gameName} sent a game invite!`;
+            const acceptAction: SnackbarAction = (key) => {
+              return createElement(
+                Button,
+                {
+                  variant: 'text',
+                  color: 'success',
+                  onClick: () => {
+                    handleAcceptInvitation(each.invitationId);
+                    closeSnackbar(key);
+                  },
                 },
-              },
-              'Accept',
-            );
-          };
+                'Accept',
+              );
+            };
 
-          const declineAction: SnackbarAction = (key) => {
-            return createElement(
-              Button,
-              {
-                variant: 'text',
-                color: 'error',
-                onClick: () => {
-                  handleDeclineInvitation(data);
-                  closeSnackbar(key);
+            const declineAction: SnackbarAction = (key) => {
+              return createElement(
+                Button,
+                {
+                  variant: 'text',
+                  color: 'error',
+                  onClick: () => {
+                    handleDeclineInvitation(each.invitationId);
+                    closeSnackbar(key);
+                  },
                 },
-              },
-              'Decline',
-            );
-          };
+                'Decline',
+              );
+            };
 
-          show({
-            message: greetString,
-            variant: 'default',
-            persist: true,
-            preventDuplicate: true,
-            action: (key) => [acceptAction(key), declineAction(key)],
-          });
-        }
+            show({
+              message: greetString,
+              variant: 'default',
+              persist: true,
+              preventDuplicate: true,
+              action: (key) => [acceptAction(key), declineAction(key)],
+            });
+          }
+        });
       });
     },
   );
