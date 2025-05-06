@@ -48,7 +48,6 @@ export const Chat = () => {
 
   const { loadEventData: loadEventDataFriendGroups } = useLeagueClientEvent(
     '/lol-chat/v1/friend-groups',
-    // QUESTION: is this supposed to do something?
     (data) => {
       setChatGroups(sortBy(data, (d) => -1 * d.priority));
       const gc = data.reduce((prev, curr) => {

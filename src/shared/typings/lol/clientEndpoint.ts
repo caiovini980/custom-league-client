@@ -38,6 +38,7 @@ import { LolRemedyV1RemedyNotifications } from '@shared/typings/lol/response/lol
 import { LolHonorV2V1Ballot } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
 import { LolHonorV1Honor } from '@shared/typings/lol/request/lolHonorV1Honor';
 import { LolLobbyV2LobbyInvitations } from '@shared/typings/lol/request/lolLobbyV2LobbyInvitations';
+import { LolLobbyV2ReceivedInvitations } from '@shared/typings/lol/response/lolLobbyV2ReceivedInvitations';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -117,6 +118,9 @@ interface ClientEndpoint {
   '/lol-lobby/v2/lobby/members/localMember/position-preferences': EndpointOnlyRequest<LolLobbyV2LobbyMembersLocalMemberPositionPreferences>;
   '/lol-lobby/v2/lobby/invitations': EndpointOnlyRequest<
     LolLobbyV2LobbyInvitations[]
+  >;
+  '/lol-lobby/v2/received-invitations': EndpointOnlyResponse<
+    LolLobbyV2ReceivedInvitations[]
   >;
 
   // Lol Login
