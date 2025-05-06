@@ -88,13 +88,17 @@ export const Chat = () => {
     return nameMap[groupName] ?? groupName;
   };
 
-  const inviteTooltip = (friendSummonerId: number) => {
+  const inviteTooltip = (friend: lolChatV1Friends) => {
+    if (friend.availability !== 'chat') {
+      return '';
+    }
+
     return (
       <IconButton
         onClick={() => {
           makeRequest('POST', '/lol-lobby/v2/lobby/invitations', [
             {
-              toSummonerId: friendSummonerId,
+              toSummonerId: friend.summonerId,
               invitationType: 'lobby',
             },
           ]);
@@ -151,11 +155,7 @@ export const Chat = () => {
             <Collapse in={groupCollapse[cg.id]}>
               <List sx={{ width: '100%', flexShrink: 0 }}>
                 {filterChatByGroup(cg.id).map((c) => (
-                  <Tooltip
-                    title={inviteTooltip(c.summonerId)}
-                    key={c.id}
-                    placement="left"
-                  >
+                  <Tooltip title={inviteTooltip(c)} key={c.id} placement="left">
                     <ListItemButton
                       onClick={() => profileModal.current?.open(c.summonerId)}
                       sx={{
