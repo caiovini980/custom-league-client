@@ -7,13 +7,12 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { LolLobbyV2ReceivedInvitations } from '@shared/typings/lol/response/lolLobbyV2ReceivedInvitations';
 import { SnackbarAction, useSnackbar as snackbar } from 'notistack';
-import { createElement, useState } from 'react';
+import { createElement } from 'react';
 
 export const Invitations = () => {
   const { show } = useSnackNotification();
   const { closeSnackbar } = snackbar();
   const { makeRequest } = useLeagueClientRequest();
-  const [fromSummonerName, setFromSummonerName] = useState('');
 
   const handleAcceptInvitation = (data: LolLobbyV2ReceivedInvitations[]) => {
     makeRequest(
@@ -49,9 +48,7 @@ export const Invitations = () => {
         undefined,
       ).then((res) => {
         if (res.ok) {
-          setFromSummonerName(res.body.gameName);
-
-          const greetString = `${fromSummonerName} sent a game invite!`;
+          const greetString = `${res.body.gameName} sent a game invite!`;
           const acceptAction: SnackbarAction = (key) => {
             return createElement(
               Button,
