@@ -26,7 +26,11 @@ export const useLobby = () => {
   };
 
   const getQueueName = () => {
-    return queues.find((q) => q.id === gameFlow?.gameData.queue.id)?.name;
+    return getQueueNameByQueueId(gameFlow?.gameData.queue.id ?? 0);
+  };
+
+  const getQueueNameByQueueId = (queueId: number) => {
+    return queues.find((q) => q.id === queueId)?.name;
   };
 
   return {
@@ -35,6 +39,7 @@ export const useLobby = () => {
     getLobbyOrThrow,
     canStartActivity,
     getQueueName,
+    getQueueNameByQueueId,
     currentSummonerId,
     phase: gameFlow?.phase ?? 'None',
   };

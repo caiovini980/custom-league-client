@@ -29,6 +29,7 @@ export const GenericLobby = () => {
       alignItems={'center'}
       justifyContent={'center'}
       width={'100%'}
+      overflow={'auto'}
     >
       <Typography textAlign={'center'}>{getQueueName()}</Typography>
       <PlayerList lobby={lobby} />
