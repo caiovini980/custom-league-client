@@ -2,12 +2,15 @@ import {
   Avatar,
   Box,
   Collapse,
+  IconButton,
   List,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  Tooltip,
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
@@ -21,8 +24,9 @@ import { Fragment, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 
 export const Chat = () => {
-  const { profileIcon } = useLeagueImage();
+  const { profileIcon, genericImg } = useLeagueImage();
   const { rcpFeLolSocial } = useLeagueTranslate();
+  const { makeRequest } = useLeagueClientRequest();
 
   const profileModal = useRef<ProfileModalRef>(null);
 
@@ -44,6 +48,7 @@ export const Chat = () => {
 
   const { loadEventData: loadEventDataFriendGroups } = useLeagueClientEvent(
     '/lol-chat/v1/friend-groups',
+    // QUESTION: is this supposed to do something?
     (data) => {
       setChatGroups(sortBy(data, (d) => -1 * d.priority));
       const gc = data.reduce((prev, curr) => {
@@ -64,7 +69,11 @@ export const Chat = () => {
   });
 
   const filterChatByGroup = (groupId: number) => {
-    return chat.filter((c) => c.displayGroupId === groupId);
+    const currentChat = chat.filter((c) => c.displayGroupId === groupId);
+
+    return sortBy(currentChat, (each) => {
+      return each.availability;
+    });
   };
 
   const onClickGroup = (groupId: number) => {
@@ -77,6 +86,29 @@ export const Chat = () => {
       OFFLINE: rcpFeLolSocialTrans('group_label_offline'),
     };
     return nameMap[groupName] ?? groupName;
+  };
+
+  const inviteTooltip = (friendSummonerId: number) => {
+    return (
+      <IconButton
+        onClick={() => {
+          makeRequest('POST', '/lol-lobby/v2/lobby/invitations', [
+            {
+              toSummonerId: friendSummonerId,
+              invitationType: 'lobby',
+            },
+          ]);
+        }}
+      >
+        <img
+          src={genericImg(
+            '/plugins/rcp-fe-lol-social/global/default/add_person_mask.png',
+          )}
+          alt=""
+          width={20}
+        />
+      </IconButton>
+    );
   };
 
   const getColor = (availability: string) => {
@@ -119,31 +151,36 @@ export const Chat = () => {
             <Collapse in={groupCollapse[cg.id]}>
               <List sx={{ width: '100%', flexShrink: 0 }}>
                 {filterChatByGroup(cg.id).map((c) => (
-                  <ListItemButton
+                  <Tooltip
+                    title={inviteTooltip(c.summonerId)}
                     key={c.id}
-                    onClick={() => profileModal.current?.open(c.summonerId)}
-                    sx={{
-                      opacity: c.availability === 'offline' ? 0.4 : 1,
-                    }}
+                    placement="left"
                   >
-                    <ListItemAvatar>
-                      <Avatar
-                        src={profileIcon(c.icon)}
-                        sx={{ width: iconSize, height: iconSize }}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={c.gameName}
-                      secondary={getChatStats(c)}
-                      slotProps={{
-                        secondary: {
-                          sx: {
-                            color: getColor(c.availability),
-                          },
-                        },
+                    <ListItemButton
+                      onClick={() => profileModal.current?.open(c.summonerId)}
+                      sx={{
+                        opacity: c.availability === 'offline' ? 0.4 : 1,
                       }}
-                    />
-                  </ListItemButton>
+                    >
+                      <ListItemAvatar>
+                        <Avatar
+                          src={profileIcon(c.icon)}
+                          sx={{ width: iconSize, height: iconSize }}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={c.gameName}
+                        secondary={getChatStats(c)}
+                        slotProps={{
+                          secondary: {
+                            sx: {
+                              color: getColor(c.availability),
+                            },
+                          },
+                        }}
+                      />
+                    </ListItemButton>
+                  </Tooltip>
                 ))}
               </List>
             </Collapse>
