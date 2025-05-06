@@ -1,7 +1,7 @@
 import { Null } from '@shared/typings/generic.typing';
 
 export interface lolChatV1Friends {
-  availability: 'offline' | 'away' | 'dnd';
+  availability: 'dnd' | 'offline' | 'away' | 'chat';
   displayGroupId: number;
   displayGroupName: string;
   gameName: string;

@@ -6,6 +6,7 @@ import { storeActions } from '@render/zustand/store';
 import { PropsWithChildren } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
+import { Invitations } from '@render/layouts/Home/Invitations';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const { info: setCurrentSummoner } = storeActions.currentSummoner;
@@ -51,6 +52,7 @@ export const Home = ({ children }: PropsWithChildren) => {
           <BottomMenu />
         </Box>
       </Box>
+      <Invitations />
       <Stack
         direction={'column'}
         height={'100%'}

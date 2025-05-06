@@ -37,6 +37,10 @@ import { LolChampSelectV1SessionMySelection } from '@shared/typings/lol/request/
 import { LolRemedyV1RemedyNotifications } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
 import { LolHonorV2V1Ballot } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
 import { LolHonorV1Honor } from '@shared/typings/lol/request/lolHonorV1Honor';
+import { LolLobbyV2LobbyInvitations } from '@shared/typings/lol/request/lolLobbyV2LobbyInvitations';
+import { LolLobbyV2ReceivedInvitations } from '@shared/typings/lol/response/lolLobbyV2ReceivedInvitations';
+import { LolLobbyV2ReceivedInivitations_Id_Accept } from '@shared/typings/lol/request/lolLobbyV2ReceivedInivitations_Id_Accept';
+import { LolLobbyV2ReceivedInivitations_Id_Decline } from '@shared/typings/lol/request/lolLobbyV2ReceivedInivitations_Id_Decline';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -114,6 +118,15 @@ interface ClientEndpoint {
   '/lol-lobby/v2/lobby/members': EndpointOnlyResponse<LolLobbyV2LobbyMembers[]>;
   '/lol-lobby/v2/play-again': EndpointEmpty;
   '/lol-lobby/v2/lobby/members/localMember/position-preferences': EndpointOnlyRequest<LolLobbyV2LobbyMembersLocalMemberPositionPreferences>;
+  '/lol-lobby/v2/lobby/invitations': EndpointOnlyRequest<
+    LolLobbyV2LobbyInvitations[]
+  >;
+  '/lol-lobby/v2/received-invitations': EndpointOnlyResponse<
+    LolLobbyV2ReceivedInvitations[]
+  >;
+  '/lol-lobby/v2/received-invitations/{invitationId}/accept': EndpointOnlyRequest<LolLobbyV2ReceivedInivitations_Id_Accept>;
+  '/lol-lobby/v2/received-invitations/{invitationId}/decline': EndpointOnlyRequest<LolLobbyV2ReceivedInivitations_Id_Decline>;
+
   // Lol Login
   '/lol-login/v1/session': EndpointOnlyResponse<LolLoginV1Session>;
   // Lol Matchmaking
