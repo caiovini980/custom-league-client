@@ -15,4 +15,10 @@ const initialState: CurrentSummonerState = {
 
 export const currentSummonerStore = createStore(
   'currentSummoner',
-)<CurrentSummonerState>(initialState, { devtools: { enabled: true } });
+)<CurrentSummonerState>(initialState, {
+  devtools: { enabled: true },
+}).extendActions((set) => ({
+  resetState: () => {
+    set.state(() => initialState);
+  },
+}));

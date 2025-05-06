@@ -19,6 +19,8 @@ export const translateJsonMap = {
   'rcp-fe-lol-social': ['trans'],
   'rcp-fe-lol-parties': ['trans'],
   'rcp-fe-lol-l10n': ['trans'],
+  'rcp-fe-lol-honor': ['trans'],
+  'rcp-fe-lol-postgame': ['trans'],
 } as const;
 
 export type TranslatePathKeys = keyof typeof translateJsonMap;

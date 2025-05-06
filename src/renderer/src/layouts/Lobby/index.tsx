@@ -14,23 +14,23 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
 import { GenericLobby } from '@render/layouts/Lobby/GenericLobby';
-import { storeActions, useStore } from '@render/zustand/store';
+import { useStore } from '@render/zustand/store';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
-import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { Fragment, useEffect, useState } from 'react';
+import { InGame } from '@render/layouts/Lobby/InGame';
+import { Reconnect } from '@render/layouts/Lobby/Reconnect';
+import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
 
 export const Lobby = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolL10n, rcpFeLolParties } = useLeagueTranslate();
-  // Constants
+
   const isAvailable = useStore().leagueClient.isAvailable();
   const queues = useStore().gameData.queues();
-  const { isAvailable: setIsAvailable } = storeActions.leagueClient;
+  const gameFlow = useStore().lobby.gameFlow();
 
-  // Variables
   const [queueList, setQueueList] = useState<LolGameQueuesV1Queues[]>([]);
-  const [lobbySession, setLobbySession] = useState<LolGameflowV1Session>();
   const [patchingData, setPatchingData] =
     useState<PatcherV1ProductsLeagueOfLegendStateComponent['progress']>(null);
 
@@ -45,11 +45,6 @@ export const Lobby = () => {
     return queues.find((q) => q.id === id)?.name;
   };
 
-  // Events subscriptions
-  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
-    setIsAvailable(data.isAvailable);
-  });
-
   useLeagueClientEvent(
     '/patcher/v1/products/league_of_legends/state',
     (data) => {
@@ -61,21 +56,17 @@ export const Lobby = () => {
     },
   );
 
-  useLeagueClientEvent('/lol-gameflow/v1/session', (data) => {
-    if (data.gameData.queue.id !== -1) {
-      setLobbySession(data);
-    } else {
-      setLobbySession(undefined);
-    }
-  });
-
   useEffect(() => {
+    if (!isAvailable) {
+      setQueueList([]);
+      return;
+    }
     makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
       if (res.ok) {
         setQueueList(res.body);
       }
     });
-  }, []);
+  }, [isAvailable]);
 
   if (patchingData) {
     const msg = rcpFeLolL10n('trans')(
@@ -127,8 +118,20 @@ export const Lobby = () => {
     return <LoadingScreen height={'100%'} />;
   }
 
-  if (lobbySession?.phase === 'ChampSelect') {
+  if (gameFlow?.phase === 'ChampSelect') {
     return <ChampSelect />;
+  }
+
+  if (gameFlow?.phase === 'InProgress') {
+    return <InGame />;
+  }
+
+  if (gameFlow?.phase === 'Reconnect') {
+    return <Reconnect />;
+  }
+
+  if (gameFlow?.phase === 'PreEndOfGame') {
+    return <PreEndGame />;
   }
 
   const getQueuesGrouped = () => {
@@ -204,7 +207,7 @@ export const Lobby = () => {
               <ListItemButton
                 key={q.id}
                 onClick={() => onClickQueue(q)}
-                selected={q.id === lobbySession?.gameData.queue.id}
+                selected={q.id === gameFlow?.gameData.queue.id}
               >
                 <ListItemText>{getQueueName(q.id)}</ListItemText>
               </ListItemButton>
@@ -213,11 +216,7 @@ export const Lobby = () => {
         ))}
       </List>
       <Divider orientation={'vertical'} />
-      {lobbySession ? (
-        <GenericLobby lobbySession={lobbySession} />
-      ) : (
-        <Typography>Select</Typography>
-      )}
+      {gameFlow?.phase !== 'None' && <GenericLobby />}
     </Stack>
   );
 };

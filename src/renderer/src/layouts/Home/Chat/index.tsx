@@ -117,7 +117,7 @@ export const Chat = () => {
               {groupCollapse[cg.id] ? <FaAngleUp /> : <FaAngleDown />}
             </ListItemButton>
             <Collapse in={groupCollapse[cg.id]}>
-              <List sx={{ width: '240px', flexShrink: 0 }}>
+              <List sx={{ width: '100%', flexShrink: 0 }}>
                 {filterChatByGroup(cg.id).map((c) => (
                   <ListItemButton
                     key={c.id}

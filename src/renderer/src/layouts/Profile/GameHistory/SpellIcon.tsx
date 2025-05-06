@@ -1,12 +1,9 @@
-import { Avatar } from '@mui/material';
+import { SquareIcon } from '@render/components/SquareIcon';
 
 interface SpellIconProps {
   src: string;
 }
 
 export const SpellIcon = ({ src }: SpellIconProps) => {
-  const size = 20;
-  return (
-    <Avatar variant={'square'} src={src} sx={{ height: size, width: size }} />
-  );
+  return <SquareIcon src={src} size={20} />;
 };

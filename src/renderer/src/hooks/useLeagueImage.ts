@@ -15,6 +15,7 @@ type Tier =
   | 'challenger';
 
 export const useLeagueImage = () => {
+  const champions = useStore().gameData.champions();
   const version = useStore().leagueClient.version();
   const spells = useStore().gameData.spells();
   const items = useStore().gameData.items();
@@ -76,6 +77,20 @@ export const useLeagueImage = () => {
     );
   };
 
+  const loadChampionBackgroundImg = (championId: number, skinId = 0) => {
+    const championSkins = champions.find((c) => c.id === championId)?.skins;
+    if (championSkins) {
+      const skin = championSkins.find((s) => s.id === skinId);
+      if (skin) {
+        return {
+          loadScreenPath: skin.loadScreenPath,
+          splashPath: skin.splashPath,
+        };
+      }
+    }
+    return lolGameDataImg('');
+  };
+
   return {
     profileIcon,
     lolGameDataImg,
@@ -85,5 +100,6 @@ export const useLeagueImage = () => {
     tierImg,
     genericImg,
     positionIcon,
+    loadChampionBackgroundImg,
   };
 };

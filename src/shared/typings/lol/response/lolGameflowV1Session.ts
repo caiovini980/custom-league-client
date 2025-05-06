@@ -3,7 +3,15 @@ export interface LolGameflowV1Session {
   gameData: GameData;
   gameDodge: GameDodge;
   map: Map;
-  phase: string;
+  phase:
+    | 'None'
+    | 'Lobby'
+    | 'ChampSelect'
+    | 'InProgress'
+    | 'Reconnect'
+    | 'EndOfGame'
+    | 'PreEndOfGame'
+    | 'Matchmaking';
 }
 
 interface GameClient {

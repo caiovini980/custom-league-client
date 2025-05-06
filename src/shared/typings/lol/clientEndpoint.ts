@@ -28,6 +28,15 @@ import { PatcherV1ProductsLeagueOfLegendState } from '@shared/typings/lol/respon
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
 import { RiotMessagingServiceV1State } from '@shared/typings/lol/response/riotMessagingServiceV1State';
 import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
+import { LolChampSelectV1AllGridCampions } from '@shared/typings/lol/response/lolChampSelectV1AllGridChampions';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { LolChampSelectV1DisabledChampionIds } from '@shared/typings/lol/response/lolChampSelectV1DisabledChampionIds';
+import { LolChampSelectV1BannableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1BannableChampionIds';
+import { LolChampSelectV1PickableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1PickableChampionIds';
+import { LolChampSelectV1SessionMySelection } from '@shared/typings/lol/request/lolChampSelectV1SessionMySelection';
+import { LolRemedyV1RemedyNotifications } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
+import { LolHonorV2V1Ballot } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
+import { LolHonorV1Honor } from '@shared/typings/lol/request/lolHonorV1Honor';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -55,6 +64,22 @@ interface ClientEndpoint {
   '/lol-champion-mastery/v1/{uuid}/champion-mastery': EndpointOnlyResponse<
     LolChampionMasteryV1_Id_ChampionMastery[]
   >;
+  // Lol Champion Select
+  '/lol-champ-select/v1/all-grid-champions': EndpointOnlyResponse<LolChampSelectV1AllGridCampions>;
+  '/lol-champ-select/v1/session': EndpointOnlyResponse<LolChampSelectV1Session>;
+  '/lol-champ-select/v1/session/my-selection': EndpointOnlyRequest<LolChampSelectV1SessionMySelection>;
+  '/lol-champ-select/v1/pickable-skin-ids': EndpointEmpty;
+  '/lol-champ-select/v1/pickable-champion-ids': EndpointOnlyResponse<LolChampSelectV1PickableChampionIds>;
+  '/lol-champ-select/v1/bannable-champion-ids': EndpointOnlyResponse<LolChampSelectV1BannableChampionIds>;
+  '/lol-champ-select/v1/disabled-champion-ids': EndpointOnlyResponse<LolChampSelectV1DisabledChampionIds>;
+  '/lol-champ-select/v1/timer': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/accept': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/cancel': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/decline': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/request': EndpointEmpty;
+  '/lol-champ-select/v1/session/my-selection/reroll': EndpointEmpty;
+  '/lol-champ-select/v1/session/bench/swap/{digits}': EndpointEmpty;
+  '/lol-champ-select/v1': EndpointEmpty;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   //Lol Match History
@@ -63,6 +88,10 @@ interface ClientEndpoint {
   '/lol-replays/v1/metadata/{digits}': EndpointOnlyResponse<LolReplaysV1Metadata_Id>;
   '/lol-replays/v1/rofls/{digits}/download': EndpointOnlyRequest<LolReplaysV1Metadata_Id_Download>;
   '/lol-replays/v1/rofls/{digits}/watch': EndpointOnlyRequest<LolReplaysV1Metadata_Id_Watch>;
+  // Lol Remedy
+  '/lol-remedy/v1/remedy-notifications': EndpointOnlyResponse<
+    LolRemedyV1RemedyNotifications[]
+  >;
   // Lol Summoner
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
   '/lol-summoner/v1/summoners/{digits}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
@@ -75,6 +104,10 @@ interface ClientEndpoint {
   // Lol Game Flow
   '/lol-gameflow/v1/availability': EndpointOnlyResponse<LolGameFlowV1Availability>;
   '/lol-gameflow/v1/session': EndpointOnlyResponse<LolGameflowV1Session>;
+  '/lol-gameflow/v1/reconnect': EndpointEmpty;
+  // Lol Honor
+  '/lol-honor-v2/v1/ballot': EndpointOnlyResponse<LolHonorV2V1Ballot>;
+  '/lol-honor/v1/honor': EndpointOnlyRequest<LolHonorV1Honor>;
   // Lol Lobby
   '/lol-lobby/v2/lobby': EndpointData<LolLobbyV2LobbyReq, LolLobbyV2LobbyRes>;
   '/lol-lobby/v2/lobby/matchmaking/search': EndpointEmpty;

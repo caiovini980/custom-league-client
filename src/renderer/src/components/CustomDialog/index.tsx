@@ -64,7 +64,7 @@ const CustomDialog = ({
   handleConfirm,
   handleClose,
   loading,
-  loadingText = 'Aguarde...',
+  loadingText = 'Loading...',
   actionsComponent: ActionsComponent,
   hiddenTitle = false,
   closeOnClickBackDrop = false,
@@ -126,9 +126,9 @@ const CustomDialog = ({
 
   const btnConfirmLabel = () => {
     if (currentDelay !== undefined && currentDelay > 0) {
-      return `Aguarde ${currentDelay} seg`;
+      return `Wait ${currentDelay} sec`;
     }
-    return labelBtnConfirm || 'Aceitar';
+    return labelBtnConfirm || 'Accept';
   };
 
   return (
@@ -154,7 +154,7 @@ const CustomDialog = ({
               color: 'primary.main',
             }}
           >
-            {title || 'Confirmação'}
+            {title}
           </DialogTitle>
         ) : (
           title
@@ -173,12 +173,14 @@ const CustomDialog = ({
               whiteSpace: 'pre-wrap',
             }}
           >
-            {description || 'Deseja realmente realizar essa ação?'}
+            {description || 'Do you really want to take this action?'}
           </DialogContentText>
         )}
       </DialogContent>
       {ActionsComponent || (
-        <DialogActions style={{ padding: spacing(borderSpacing) }}>
+        <DialogActions
+          style={{ padding: spacing(borderSpacing), justifyContent: 'center' }}
+        >
           {OtherActionButton}
           {!hiddenBtnCancel && (
             <CustomButton
@@ -189,7 +191,7 @@ const CustomDialog = ({
               {...cancelButtonProps}
               disabled={loading || cancelButtonProps?.disabled}
             >
-              {labelBtnCancel || 'Recusar'}
+              {labelBtnCancel || 'Decline'}
             </CustomButton>
           )}
           {!hiddenBtnConfirm && (

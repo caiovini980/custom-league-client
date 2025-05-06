@@ -1,16 +1,29 @@
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { BottomMenu } from '@render/layouts/Home/BottomMenu';
 import { Chat } from '@render/layouts/Home/Chat';
 import { storeActions } from '@render/zustand/store';
 import { PropsWithChildren } from 'react';
 import { SummonerInfo } from './SummonerInfo';
+import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const { info: setCurrentSummoner } = storeActions.currentSummoner;
 
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
     setCurrentSummoner(data);
+  });
+
+  useLeagueClientEvent('/lol-lobby/v2/lobby', (data) => {
+    storeActions.lobby.lobby(data);
+  });
+
+  useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
+    storeActions.leagueClient.isAvailable(data.isAvailable);
+  });
+
+  useLeagueClientEvent('/lol-gameflow/v1/session', (data) => {
+    storeActions.lobby.gameFlow(data);
   });
 
   return (
@@ -41,10 +54,12 @@ export const Home = ({ children }: PropsWithChildren) => {
       <Stack
         direction={'column'}
         height={'100%'}
+        width={250}
+        flexShrink={0}
         borderLeft={(t) => `1px solid ${t.palette.divider}`}
       >
         <SummonerInfo />
-        <Divider />
+        <ReadyCheck />
         <Chat />
       </Stack>
     </Stack>

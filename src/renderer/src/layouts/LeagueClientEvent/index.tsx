@@ -6,6 +6,7 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { sortBy } from 'lodash';
 import { useState } from 'react';
+import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
 
 interface ErrorModal {
   eventName: string;
@@ -36,6 +37,8 @@ export const LeagueClientEvent = () => {
   };
 
   useLeagueClientEvent('all', (data, event) => {
+    const ignore = ['lol-chat', 'lol-clash'];
+    if (ignore.some((i) => event.includes(i))) return;
     console.log(event, data);
   });
 
@@ -96,6 +99,28 @@ export const LeagueClientEvent = () => {
     }
   });
 
+  useLeagueClientEvent(
+    '/lol-remedy/v1/remedy-notifications',
+    (state, event) => {
+      if (state.length) {
+        // TODO: check if is same payload every time
+        const payload = JSON.parse(
+          state[0].message,
+        ) as LolRemedyV1RemedyNotificationsTransgression;
+        if (payload.transgressionType === 'AWAY_FROM_KEYBOARD') {
+          addError({
+            eventName: event,
+            mode: 'warning',
+            priority: 1,
+            msg: '',
+          });
+        }
+      } else {
+        removeError(eventName);
+      }
+    },
+  );
+
   const { msg, mode, eventName } = ((): ErrorModal => {
     const errorMap: Record<ErrorModal['mode'], number> = {
       'fatal-error': 0,
@@ -119,7 +144,6 @@ export const LeagueClientEvent = () => {
   return (
     <CustomDialog
       open={!!errors.length}
-      handleClose={() => console.log('')}
       hiddenBtnCancel
       hiddenBtnConfirm
       maxWidth={'xs'}

@@ -17,7 +17,6 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     version: setVersion,
     locale: setLocale,
     isAvailable: setIsAvailable,
-    resetState,
   } = storeActions.leagueClient;
   const gameDataLoaded = useStore().gameData.loaded();
   const { setGameData, loaded: setGameDataLoaded } = storeActions.gameData;
@@ -31,7 +30,9 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   useLeagueClientEvent(
     '/riotclient/pre-shutdown/begin',
     () => {
-      resetState();
+      storeActions.leagueClient.resetState();
+      storeActions.lobby.resetState();
+      storeActions.currentSummoner.resetState();
     },
     {
       makeInitialRequest: false,

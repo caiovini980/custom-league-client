@@ -23,7 +23,7 @@ interface ChampionMasteryProps {
 
 export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const { makeRequest } = useLeagueClientRequest();
-  const { championIcon, lolGameDataImg } = useLeagueImage();
+  const { championIcon, loadChampionBackgroundImg } = useLeagueImage();
   const { rcpFeLolSharedComponents, rcpFeLolMatchHistory } =
     useLeagueTranslate();
   const champions = useStore().gameData.champions();
@@ -38,11 +38,6 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
 
   const getChampionName = (id: number) => {
     return champions.find((c) => c.id === id)?.name ?? '';
-  };
-
-  const loadBackgroundImg = (id: number) => {
-    const c = champions.find((c) => c.id === id)?.skins[0].loadScreenPath;
-    return lolGameDataImg(c ?? '');
   };
 
   useEffect(() => {
@@ -70,7 +65,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
           key={cm.championId}
           size={{ xs: 3 }}
           sx={{
-            background: `linear-gradient(0deg, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%), url(${loadBackgroundImg(cm.championId)})`,
+            background: `linear-gradient(0deg, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%), url(${loadChampionBackgroundImg(cm.championId)})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: '0% 15%',
