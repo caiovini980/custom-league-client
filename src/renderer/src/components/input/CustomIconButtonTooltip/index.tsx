@@ -1,29 +1,56 @@
-import { Tooltip, TooltipProps } from '@mui/material';
-import { IconType } from 'react-icons';
+import { ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
 import CustomIconButton, { CustomIconButtonProps } from '../CustomIconButton';
+import { ReactNode, useState } from 'react';
 
-export interface CustomIconButtonTooltipProps extends CustomIconButtonProps {
-  icon: IconType;
-  onClick?: (e?: unknown) => void;
-  title: string;
+export interface CustomIconButtonTooltipProps
+  extends Omit<CustomIconButtonProps, 'title'> {
+  title: ReactNode;
   placement?: TooltipProps['placement'];
-  open?: boolean;
   arrow?: boolean;
+  openTooltipOnClick?: boolean;
 }
 
 const CustomIconButtonTooltip = ({
-  icon,
-  onClick,
-  open,
   placement = 'top',
   title,
   arrow = true,
+  openTooltipOnClick = false,
   ...iconProps
 }: CustomIconButtonTooltipProps) => {
+  const [openTooltip, setOpenTooltip] = useState(false);
+
+  const handleCloseTooltip = () => setOpenTooltip(false);
+  const toggleTooltip = () => setOpenTooltip((p) => !p);
+
+  const tooltipProps: Omit<TooltipProps, 'children'> = {
+    title,
+    arrow,
+    placement,
+  };
+
+  if (openTooltipOnClick) {
+    return (
+      <ClickAwayListener onClickAway={handleCloseTooltip}>
+        <span>
+          <Tooltip
+            open={openTooltip}
+            onClose={handleCloseTooltip}
+            disableFocusListener
+            disableTouchListener
+            disableHoverListener
+            {...tooltipProps}
+          >
+            <CustomIconButton {...iconProps} onClick={toggleTooltip} />
+          </Tooltip>
+        </span>
+      </ClickAwayListener>
+    );
+  }
+
   return (
-    <Tooltip title={title} open={open} placement={placement} arrow={arrow}>
+    <Tooltip title={title} placement={placement} arrow={arrow}>
       <span>
-        <CustomIconButton icon={icon} onClick={onClick} {...iconProps} />
+        <CustomIconButton {...iconProps} />
       </span>
     </Tooltip>
   );

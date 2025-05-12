@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Grid } from '@mui/material';
 import { PlayerCard } from '@render/layouts/Lobby/GenericLobby/PlayerList/PlayerCard';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 
@@ -8,15 +8,16 @@ interface PlayerListProps {
 
 export const PlayerList = ({ lobby }: PlayerListProps) => {
   return (
-    <Stack direction={'row'} columnGap={2}>
+    <Grid container spacing={2} justifyContent={'center'}>
       {lobby.members.map((m) => (
-        <PlayerCard
-          key={m.summonerId}
-          member={m}
-          isOwner={m.summonerId === lobby.localMember.summonerId}
-          showPositionSelector={lobby.gameConfig.showPositionSelector}
-        />
+        <Grid key={m.summonerId}>
+          <PlayerCard
+            member={m}
+            isOwner={m.summonerId === lobby.localMember.summonerId}
+            showPositionSelector={lobby.gameConfig.showPositionSelector}
+          />
+        </Grid>
       ))}
-    </Stack>
+    </Grid>
   );
 };

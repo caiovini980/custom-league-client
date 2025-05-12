@@ -1,18 +1,14 @@
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { ButtonBase, Stack } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { getSummonerFromTeamUtil } from '@render/layouts/Lobby/ChampSelect/getSummonerFromTeamUtil';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 
-interface AramBenchChampionsProps {
-  session: LolChampSelectV1Session;
-}
-
-export const AramBenchChampions = ({ session }: AramBenchChampionsProps) => {
+export const AramBenchChampions = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { championIcon } = useLeagueImage();
+  const { session, currentPlayer } = useChampSelectContext();
 
   if (!session.benchEnabled) return;
 
@@ -28,28 +24,27 @@ export const AramBenchChampions = ({ session }: AramBenchChampionsProps) => {
   };
 
   const getCurrentChampionId = () => {
-    return getSummonerFromTeamUtil(session).championId;
+    return currentPlayer.championId;
   };
 
   return (
     <Stack
       direction={'row'}
-      columnGap={0.5}
-      height={35}
+      columnGap={1}
       width={'100%'}
       justifyContent={'center'}
     >
-      {session.benchChampions.map((_bc, i) => {
+      {session.benchChampions.map((bc) => {
         return (
           <ButtonBase
-            key={i}
-            onClick={() => onClickChampion(i)}
-            disabled={getCurrentChampionId() === i}
+            key={bc.championId}
+            onClick={() => onClickChampion(bc.championId)}
+            disabled={getCurrentChampionId() === bc.championId}
           >
             <SquareIcon
-              src={championIcon(getCurrentChampionId())}
-              size={30}
-              grayScale={getCurrentChampionId() === i}
+              src={championIcon(bc.championId)}
+              size={40}
+              grayScale={getCurrentChampionId() === bc.championId}
             />
           </ButtonBase>
         );

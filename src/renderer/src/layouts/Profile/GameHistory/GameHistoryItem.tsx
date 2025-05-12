@@ -98,8 +98,8 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     );
     if (replayState.state === 'download') {
       return {
-        icon: FaDownload,
         title,
+        children: <FaDownload />,
         onClick: () =>
           makeRequest(
             'POST',
@@ -115,7 +115,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
     if (replayState.state === 'downloading') {
       return {
-        icon: FaDownload,
+        children: <FaDownload />,
         title,
         disabled: true,
         loading: true,
@@ -123,7 +123,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
     if (replayState.state === 'watch') {
       return {
-        icon: FaPlay,
+        children: <FaPlay />,
         title,
         onClick: () =>
           makeRequest(
@@ -137,7 +137,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
 
     return {
-      icon: FaDownload,
+      children: <FaDownload />,
       title,
       disabled: true,
     };

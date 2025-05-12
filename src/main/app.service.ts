@@ -2,7 +2,7 @@ import path from 'node:path';
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { OnApplicationBootstrap } from '@nestjs/common';
-import { net, protocol } from 'electron';
+import { app, net, protocol } from 'electron';
 import fs from 'fs-extra';
 import { DataSource } from 'typeorm';
 
@@ -20,6 +20,12 @@ export class AppService
     await this.dataSource.runMigrations();
     this.setupProtocols();
     this.mainWin.show();
+    if (!app.isPackaged) {
+      const tempPath = path.join(process.cwd(), '.temp');
+      fs.writeFileSync(tempPath, this.getResourcePath(), {
+        encoding: 'utf-8',
+      });
+    }
   }
 
   private setupProtocols() {

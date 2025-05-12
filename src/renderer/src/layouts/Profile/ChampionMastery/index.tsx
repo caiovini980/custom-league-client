@@ -65,7 +65,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
           key={cm.championId}
           size={{ xs: 3 }}
           sx={{
-            background: `linear-gradient(0deg, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%), url(${loadChampionBackgroundImg(cm.championId)})`,
+            background: `linear-gradient(0deg, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0) 100%), url(${loadChampionBackgroundImg('loadScreenPath', cm.championId)})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: '0% 15%',

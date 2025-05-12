@@ -45,14 +45,15 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
       actionsComponent={<div />}
     >
       <CustomIconButton
-        icon={FaTimes}
         onClick={onCloseModal}
         sx={{
           position: 'absolute',
           top: 8,
           right: 8,
         }}
-      />
+      >
+        <FaTimes size={20} />
+      </CustomIconButton>
       <ProfileView summonerId={modalData.summonerId} />
     </CustomDialog>
   );

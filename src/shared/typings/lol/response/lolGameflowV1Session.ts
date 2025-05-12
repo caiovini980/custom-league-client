@@ -1,17 +1,11 @@
+import { LolGameFlowV1GameFlowPhase } from '@shared/typings/lol/response/lolGameFlowV1GameFlowPhase';
+
 export interface LolGameflowV1Session {
   gameClient: GameClient;
   gameData: GameData;
   gameDodge: GameDodge;
   map: Map;
-  phase:
-    | 'None'
-    | 'Lobby'
-    | 'ChampSelect'
-    | 'InProgress'
-    | 'Reconnect'
-    | 'EndOfGame'
-    | 'PreEndOfGame'
-    | 'Matchmaking';
+  phase: LolGameFlowV1GameFlowPhase;
 }
 
 interface GameClient {

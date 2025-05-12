@@ -79,8 +79,12 @@ export const Lobby = () => {
     return <LoadingScreen height={'100%'} />;
   }
 
+  if (['WaitingForStats', 'GameStart'].includes(gameFlow?.phase ?? 'None')) {
+    return <LoadingScreen height={'100%'} />;
+  }
+
   if (gameFlow?.phase === 'ChampSelect') {
-    return <ChampSelect />;
+    return <ChampSelect gameMode={gameFlow?.gameData.queue.gameMode} />;
   }
 
   if (gameFlow?.phase === 'InProgress') {
@@ -99,7 +103,7 @@ export const Lobby = () => {
     <Stack direction={'row'} height={'100%'} width={'100%'} overflow={'auto'}>
       <QueueList />
       <Divider orientation={'vertical'} />
-      {gameFlow?.phase !== 'None' && <GenericLobby />}
+      <GenericLobby />
     </Stack>
   );
 };

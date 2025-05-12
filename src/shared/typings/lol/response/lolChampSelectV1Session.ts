@@ -29,7 +29,7 @@ export interface LolChampSelectV1Session {
   skipChampionSelect: boolean;
   theirTeam: LolChampSelectV1SessionTeam[];
   timer: LolChampSelectV1SessionTimer;
-  trades: unknown[];
+  trades: LolChampSelectV1SessionTrade[];
 }
 
 export interface LolChampSelectV1SessionAction {
@@ -40,7 +40,7 @@ export interface LolChampSelectV1SessionAction {
   isAllyAction: boolean;
   isInProgress: boolean;
   pickTurn: number;
-  type: string;
+  type: 'pick' | 'ban' | 'ten_bans_reveal';
 }
 
 export interface LolChampSelectV1SessionBans {
@@ -91,11 +91,17 @@ export interface LolChampSelectV1SessionTimer {
   adjustedTimeLeftInPhase: number;
   internalNowInEpochMs: number;
   isInfinite: boolean;
-  phase: 'BAN_PICK' | 'FINALIZATION';
+  phase: 'BAN_PICK' | 'FINALIZATION' | 'PLANNING' | 'GAME_STARTING';
   totalTimeInPhase: number;
 }
 
 export interface LolChampSelectV1SessionBenchChampions {
   championId: number;
   isPriority: boolean;
+}
+
+export interface LolChampSelectV1SessionTrade {
+  cellId: number;
+  id: number;
+  state: 'AVAILABLE';
 }

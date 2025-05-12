@@ -44,7 +44,7 @@ export const PlayerCard = ({
   }, [member.summonerId]);
 
   return (
-    <Card sx={{ width: 250, opacity: member.ready ? 1 : 0.5 }}>
+    <Card sx={{ width: 240, opacity: member.ready ? 1 : 0.5 }}>
       <CardHeader
         avatar={<Avatar src={profileIcon(summoner?.profileIconId)} />}
         title={

@@ -14,7 +14,7 @@ import { useLobby } from '@render/hooks/useLobby';
 export const QueueList = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const { getQueueNameByQueueId, canStartActivity } = useLobby();
+  const { getQueueNameByQueueId, getLobby } = useLobby();
 
   const gameFlow = useStore().lobby.gameFlow();
 
@@ -101,8 +101,14 @@ export const QueueList = () => {
   };
 
   const disabledList = () => {
-    if (gameFlow?.phase === 'None') return false;
-    return gameFlow?.phase === 'Matchmaking' || !canStartActivity();
+    if (gameFlow) {
+      if (gameFlow.phase === 'None') return false;
+      return (
+        gameFlow.phase === 'Matchmaking' ||
+        !getLobby()?.localMember.allowedChangeActivity
+      );
+    }
+    return false;
   };
 
   return (

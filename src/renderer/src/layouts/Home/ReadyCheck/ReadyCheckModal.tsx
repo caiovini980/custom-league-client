@@ -6,7 +6,11 @@ import { useState } from 'react';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 
-export const ReadyCheckModal = () => {
+interface ReadyCheckModalProps {
+  autoAccept: boolean;
+}
+
+export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolL10n } = useLeagueTranslate();
   const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
@@ -14,9 +18,18 @@ export const ReadyCheckModal = () => {
   const [matchReadyCheck, setMatchReadyCheck] =
     useState<LolMatchmakingV1ReadyCheck>();
 
-  useLeagueClientEvent('/lol-matchmaking/v1/ready-check', (data) => {
-    setMatchReadyCheck(data);
-  });
+  useLeagueClientEvent(
+    '/lol-matchmaking/v1/ready-check',
+    (data) => {
+      setMatchReadyCheck(data);
+      if (autoAccept && data.state === 'InProgress') {
+        onClickGameAccept();
+      }
+    },
+    {
+      deps: [autoAccept],
+    },
+  );
 
   const onClickGameAccept = () => {
     makeRequest('POST', '/lol-matchmaking/v1/ready-check/accept', undefined);

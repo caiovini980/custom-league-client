@@ -15,6 +15,7 @@ import {
   createHttp1Request,
   createWebSocketConnection,
 } from 'league-connect';
+import path from 'node:path';
 
 @Service()
 export class LeagueClientService
@@ -186,11 +187,30 @@ export class LeagueClientService
             .trim();
           if (!msgString) return;
           const msgParsed = JSON.parse(msgString);
+          this.saveLogFile(msgParsed);
           this.sendMsgToRender('onLeagueClientEvent', msgParsed);
         } catch (e) {
           this.logger.error(e);
         }
       });
+    });
+  }
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  private saveLogFile(data: any) {
+    if (app.isPackaged) return;
+    const { uri } = data[2];
+    const logPath = path.join(
+      process.cwd(),
+      'logs',
+      `${uri.split('/')[1]}.log`,
+    );
+    fs.createFileSync(logPath);
+    const obj = Object.assign(data[2], {
+      timestamp: new Date().toISOString(),
+    });
+    fs.appendFile(logPath, `${JSON.stringify(obj)}\n`, {
+      encoding: 'utf-8',
     });
   }
 

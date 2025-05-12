@@ -1,22 +1,22 @@
 import { Avatar, Box } from '@mui/material';
 
-interface SquareIconProps {
+interface CircularIconProps {
   src: string;
   size?: number;
   grayScale?: boolean;
 }
 
-export const SquareIcon = ({
+export const CircularIcon = ({
   src,
   size = 20,
   grayScale = false,
-}: SquareIconProps) => {
+}: CircularIconProps) => {
   if (!src) {
     return <Box height={size} width={size} />;
   }
   return (
     <Avatar
-      variant={'square'}
+      variant={'circular'}
       src={src}
       sx={{
         height: size,

@@ -27,6 +27,17 @@ export const Home = ({ children }: PropsWithChildren) => {
     storeActions.lobby.gameFlow(data);
   });
 
+  useLeagueClientEvent('/lol-gameflow/v1/gameflow-phase', (data) => {
+    if (['None', 'GameStart'].includes(data)) {
+      storeActions.lobby.gameFlow(null);
+      storeActions.lobby.lobby(null);
+      storeActions.lobby.matchMaking(null);
+    }
+    if (['ChampSelect', 'Lobby'].includes(data)) {
+      storeActions.lobby.matchMaking(null);
+    }
+  });
+
   return (
     <Stack
       overflow={'auto'}

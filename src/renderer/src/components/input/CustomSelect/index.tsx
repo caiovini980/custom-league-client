@@ -10,8 +10,7 @@ import {
 import { ReactNode } from 'react';
 
 export interface CustomSelectProps<T extends SelectProps['value']>
-  extends Omit<SelectProps<T>, 'onChange' | 'size'> {
-  id: string;
+  extends Omit<SelectProps<T>, 'onChange'> {
   options: {
     label: string | ReactNode;
     value: T;
@@ -23,12 +22,12 @@ export interface CustomSelectProps<T extends SelectProps['value']>
 }
 
 const CustomSelect = <T,>({
-  id,
   options,
   onChangeValue,
   helperText,
   label,
   disabled,
+  size = 'small',
   ...props
 }: CustomSelectProps<T>) => {
   const handleChange = (ev: SelectChangeEvent<T>) => {
@@ -40,13 +39,12 @@ const CustomSelect = <T,>({
       disabled={disabled}
       fullWidth={props.fullWidth ?? true}
       error={props.error}
-      size={'medium'}
+      size={size}
     >
-      <InputLabel id={`${id}--label`}>{label}</InputLabel>
+      <InputLabel id={'label'}>{label}</InputLabel>
       <Select<T>
-        id={`${id}--select`}
         label={label}
-        labelId={`${id}--label`}
+        labelId={'label'}
         MenuProps={{
           style: {
             maxHeight: 500,
@@ -61,11 +59,7 @@ const CustomSelect = <T,>({
       >
         {options.map((op, index) => {
           return (
-            <MenuItem
-              id={`${id}--menu-item--${index}`}
-              key={index}
-              value={op.value as string}
-            >
+            <MenuItem key={index} value={op.value as string}>
               {op.label}
             </MenuItem>
           );

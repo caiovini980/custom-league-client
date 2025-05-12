@@ -8,7 +8,6 @@ type Pattern = string[] | string | ((value: string) => string | undefined);
 
 export interface CustomTextFieldProps
   extends Omit<TextFieldProps, 'value' | 'onChange'> {
-  id: string;
   pattern?: Pattern;
   justNumber?: boolean;
   onChangeText?: (text: string) => void;
@@ -22,7 +21,6 @@ export interface CustomTextFieldProps
 }
 
 export const CustomTextField = ({
-  id,
   pattern,
   justNumber,
   value,
@@ -152,8 +150,7 @@ export const CustomTextField = ({
   return (
     <TextField
       key={tempKey ? textValue : undefined}
-      id={id}
-      size={'medium'}
+      size={'small'}
       variant={'outlined'}
       fullWidth
       {...props}

@@ -10,3 +10,5 @@ export { default as CustomSelect } from './CustomSelect';
 export type * from './CustomSelect';
 export { default as CustomTextField } from './CustomTextField';
 export type * from './CustomTextField';
+export { default as CustomCheckBox } from './CustomCheckBox';
+export type * from './CustomCheckBox';

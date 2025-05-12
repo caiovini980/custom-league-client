@@ -3,36 +3,46 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
-import { CustomButton } from '@render/components/input';
+import { CustomButton, CustomCheckBox } from '@render/components/input';
 import { storeActions, useStore } from '@render/zustand/store';
 import { useLobby } from '@render/hooks/useLobby';
 import { ReadyCheckModal } from '@render/layouts/Home/ReadyCheck/ReadyCheckModal';
 import { LowPriorityModal } from '@render/layouts/Home/ReadyCheck/LowPriorityModal';
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 export const ReadyCheck = () => {
   const { makeRequest } = useLeagueClientRequest();
-  const { rcpFeLolParties } = useLeagueTranslate();
+  const { rcpFeLolParties, rcpFeLolL10n } = useLeagueTranslate();
   const { getLobby, currentSummonerId, getQueueName, phase } = useLobby();
 
+  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
   const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+
+  const [autoAccept, setAutoAccept] = useState(false);
 
   const matchMaking = useStore().lobby.matchMaking();
   const lobby = getLobby();
 
-  useLeagueClientEvent('/lol-matchmaking/v1/search', (data) => {
-    storeActions.lobby.matchMaking(data);
-  });
+  useLeagueClientEvent(
+    '/lol-matchmaking/v1/search',
+    (data) => {
+      const canSetData = ['Matchmaking', 'ReadyCheck'].includes(phase);
+      storeActions.lobby.matchMaking(canSetData ? data : null);
+    },
+    {
+      deps: [phase],
+    },
+  );
 
   const onQuitMatchmaking = () => {
-    makeRequest('DELETE', '/lol-lobby/v2/lobby/matchmaking/search', undefined);
-  };
-
-  useEffect(() => {
-    if (phase !== 'Matchmaking') {
+    makeRequest(
+      'DELETE',
+      '/lol-lobby/v2/lobby/matchmaking/search',
+      undefined,
+    ).then(() => {
       storeActions.lobby.matchMaking(null);
-    }
-  }, [phase]);
+    });
+  };
 
   if (matchMaking && matchMaking.searchState !== 'Error') {
     return (
@@ -46,7 +56,12 @@ export const ReadyCheck = () => {
         <CustomButton variant="contained" onClick={onQuitMatchmaking}>
           {rcpFeLolPartiesTrans('parties_button_quit_matchmaking')}
         </CustomButton>
-        <ReadyCheckModal />
+        <CustomCheckBox
+          label={`Auto ${rcpFeLolL10nTrans('ready_check_accept_button')}`}
+          checked={autoAccept}
+          onChange={setAutoAccept}
+        />
+        <ReadyCheckModal autoAccept={autoAccept} />
         <LowPriorityModal
           currentSummonerId={currentSummonerId}
           onQuitMatchmaking={onQuitMatchmaking}
@@ -55,7 +70,7 @@ export const ReadyCheck = () => {
     );
   }
 
-  if (phase === 'None') {
+  if (['None', 'InProgress', 'ChampSelect', 'GameStart'].includes(phase)) {
     return <Divider />;
   }
 

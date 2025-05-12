@@ -6,11 +6,12 @@ import { PlayerList } from '@render/layouts/Lobby/GenericLobby/PlayerList';
 import { Restriction } from '@render/layouts/Lobby/GenericLobby/Restriction';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLobby } from '@render/hooks/useLobby';
+import config from '@render/utils/config.util';
 
 export const GenericLobby = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const { getLobby, getQueueName, canStartActivity } = useLobby();
+  const { getLobby, getQueueName, canStartActivity, phase } = useLobby();
 
   const lobby = getLobby();
   const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
@@ -19,7 +20,7 @@ export const GenericLobby = () => {
     makeRequest('DELETE', '/lol-lobby/v2/lobby', undefined);
   }
 
-  if (!lobby) return;
+  if (!lobby || phase === 'None') return;
 
   return (
     <Stack
@@ -30,6 +31,7 @@ export const GenericLobby = () => {
       justifyContent={'center'}
       width={'100%'}
       overflow={'auto'}
+      pb={`${config.bottomBarOffset}px`}
     >
       <Typography textAlign={'center'}>{getQueueName()}</Typography>
       <PlayerList lobby={lobby} />

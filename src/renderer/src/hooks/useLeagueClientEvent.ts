@@ -6,10 +6,11 @@ import {
   EventMessage,
   EventMessageMap,
 } from '@shared/typings/lol/eventMessage';
-import { useCallback, useEffect } from 'react';
+import { DependencyList, useCallback, useEffect } from 'react';
 
 interface Options {
   makeInitialRequest: boolean;
+  deps: DependencyList;
 }
 
 export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
@@ -22,6 +23,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   const currentOptions = Object.assign(
     {
       makeInitialRequest: true,
+      deps: [],
     } as Options,
     options,
   );
@@ -47,7 +49,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         cb(eventData.data, eventData.uri);
       }
     },
-    [event],
+    [event, ...currentOptions.deps],
   );
 
   const loadEventData = useCallback(() => {

@@ -1,6 +1,11 @@
 import { ClientEndpointRequest } from '@shared/typings/lol/clientEndpoint';
 
-export type ClientMakeRequestMethod = 'POST' | 'GET' | 'DELETE' | 'PUT';
+export type ClientMakeRequestMethod =
+  | 'POST'
+  | 'GET'
+  | 'DELETE'
+  | 'PUT'
+  | 'PATCH';
 
 export interface ClientMakeRequestPayload<
   K extends keyof ClientEndpointRequest | string,

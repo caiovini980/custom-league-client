@@ -40,7 +40,7 @@ export const useLeagueImage = () => {
 
   const championIcon = (id: Id) => {
     return link(
-      `plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id}.png`,
+      `plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id || -1}.png`,
     );
   };
 
@@ -77,16 +77,18 @@ export const useLeagueImage = () => {
     );
   };
 
-  const loadChampionBackgroundImg = (championId: number, skinId = 0) => {
+  const loadChampionBackgroundImg = (
+    art: 'loadScreenPath' | 'splashPath',
+    championId: number,
+    skinId = 0,
+  ) => {
     const championSkins = champions.find((c) => c.id === championId)?.skins;
     if (championSkins) {
-      const skin = championSkins.find((s) => s.id === skinId);
-      if (skin) {
-        return {
-          loadScreenPath: skin.loadScreenPath,
-          splashPath: skin.splashPath,
-        };
+      let skin = championSkins.find((s) => s.id === skinId);
+      if (!skin) {
+        skin = championSkins[0];
       }
+      return lolGameDataImg(skin[art]);
     }
     return lolGameDataImg('');
   };

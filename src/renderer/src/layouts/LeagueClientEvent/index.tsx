@@ -1,7 +1,10 @@
 import { CircularProgress, Stack, Typography } from '@mui/material';
 import CustomDialog from '@render/components/CustomDialog';
 import { CustomButton } from '@render/components/input';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import {
+  buildEventUrl,
+  useLeagueClientEvent,
+} from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { sortBy } from 'lodash';
@@ -16,10 +19,12 @@ interface ErrorModal {
 }
 
 export const LeagueClientEvent = () => {
-  const { rcpFeLolNavigation } = useLeagueTranslate();
+  const { rcpFeLolNavigation, rcpFeLolSocial } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
   const [errors, setErrors] = useState<ErrorModal[]>([]);
+
+  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
   const addError = (err: ErrorModal) => {
     setErrors((prev) => [
@@ -37,7 +42,17 @@ export const LeagueClientEvent = () => {
   };
 
   useLeagueClientEvent('all', (data, event) => {
-    const ignore = ['lol-chat', 'lol-clash'];
+    const ignore = [
+      'lol-clash',
+      'client-config',
+      'patcher',
+      'lol-patcher',
+      'lol-chat',
+      'lol-hovercard',
+      'lol-premade-voice',
+      'riot-messaging-service',
+      'lol-challenges',
+    ];
     if (ignore.some((i) => event.includes(i))) return;
     console.log(event, data);
   });
@@ -107,14 +122,32 @@ export const LeagueClientEvent = () => {
         const payload = JSON.parse(
           state[0].message,
         ) as LolRemedyV1RemedyNotificationsTransgression;
-        if (payload.transgressionType === 'AWAY_FROM_KEYBOARD') {
-          addError({
-            eventName: event,
-            mode: 'warning',
-            priority: 1,
-            msg: '',
-          });
-        }
+
+        makeRequest(
+          'GET',
+          buildEventUrl(
+            '/lol-summoner/v1/summoner-profile?puuid={uuid}',
+            payload.offenderPuuid,
+          ),
+          undefined,
+        ).then((res) => {
+          if (!res.ok) return;
+          if (payload.transgressionType === 'AWAY_FROM_KEYBOARD') {
+            const msg1 = rcpFeLolSocialTrans(
+              `remedy_feedback_offender_${payload.transgressionType}$html`,
+              '',
+            );
+            const msg2 = rcpFeLolSocialTrans(
+              `remedy_received_notification_body_top_${payload.transgressionType}_bystander_no_remedies_received`,
+            );
+            addError({
+              eventName: event,
+              mode: 'warning',
+              priority: 1,
+              msg: `${msg1} ${msg2}`,
+            });
+          }
+        });
       } else {
         removeError(eventName);
       }
@@ -155,7 +188,11 @@ export const LeagueClientEvent = () => {
         width={'100%'}
         rowGap={2}
       >
-        <Typography textAlign={'center'}>{msg}</Typography>
+        <Typography
+          textAlign={'center'}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{ __html: msg }}
+        />
         {mode === 'loading' && <CircularProgress />}
         {mode === 'warning' && (
           <CustomButton

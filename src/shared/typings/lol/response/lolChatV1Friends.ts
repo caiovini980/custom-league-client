@@ -1,6 +1,6 @@
 import { Null } from '@shared/typings/generic.typing';
 
-export interface lolChatV1Friends {
+export interface LolChatV1Friends {
   availability: 'dnd' | 'offline' | 'away' | 'chat';
   displayGroupId: number;
   displayGroupName: string;

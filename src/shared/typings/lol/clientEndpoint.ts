@@ -6,7 +6,7 @@ import { LolReplaysV1Metadata_Id_Watch } from '@shared/typings/lol/request/lolRe
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { LolChatV1FriendCounts } from '@shared/typings/lol/response/lolChatV1FriendCounts';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
-import { lolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { LolCollectionsV1inventories_Id_backdrop } from '@shared/typings/lol/response/lolCollectionsV1inventories_Id_backdrop';
 import { LolGameFlowV1Availability } from '@shared/typings/lol/response/lolGameFlowV1Availability';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
@@ -41,6 +41,13 @@ import { LolLobbyV2LobbyInvitations } from '@shared/typings/lol/request/lolLobby
 import { LolLobbyV2ReceivedInvitations } from '@shared/typings/lol/response/lolLobbyV2ReceivedInvitations';
 import { LolLobbyV2ReceivedInivitations_Id_Accept } from '@shared/typings/lol/request/lolLobbyV2ReceivedInivitations_Id_Accept';
 import { LolLobbyV2ReceivedInivitations_Id_Decline } from '@shared/typings/lol/request/lolLobbyV2ReceivedInivitations_Id_Decline';
+import { LolChampSelectV1SkinCarouselSkins } from '@shared/typings/lol/response/lolChampSelectV1SkinCarouselSkins';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
+import { LolGameFlowV1GameFlowPhase } from '@shared/typings/lol/response/lolGameFlowV1GameFlowPhase';
+import { LolChampSelectV1SessionActions_Id } from '@shared/typings/lol/request/lolChampSelectV1SessionActions_Id';
+import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
+import { LolPerksV1Styles } from '@shared/typings/lol/response/lolPerksV1Styles';
+import { LolPerksV1CurrentPage } from '@shared/typings/lol/request/lolPerksV1CurrentPage';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -60,7 +67,7 @@ interface ClientEndpoint {
   // Riot Messaging Service
   '/riot-messaging-service/v1/state': EndpointOnlyResponse<RiotMessagingServiceV1State>;
   // Lol Chat
-  '/lol-chat/v1/friends': EndpointOnlyResponse<lolChatV1Friends[]>;
+  '/lol-chat/v1/friends': EndpointOnlyResponse<LolChatV1Friends[]>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
   '/lol-chat/v1/friend-counts': EndpointOnlyResponse<LolChatV1FriendCounts>;
@@ -69,9 +76,17 @@ interface ClientEndpoint {
     LolChampionMasteryV1_Id_ChampionMastery[]
   >;
   // Lol Champion Select
-  '/lol-champ-select/v1/all-grid-champions': EndpointOnlyResponse<LolChampSelectV1AllGridCampions>;
+  '/lol-champ-select/v1/summoners/{digits}': EndpointOnlyResponse<LolChampSelectV1Summoners_Id>;
+  '/lol-champ-select/v1/all-grid-champions': EndpointOnlyResponse<
+    LolChampSelectV1AllGridCampions[]
+  >;
   '/lol-champ-select/v1/session': EndpointOnlyResponse<LolChampSelectV1Session>;
-  '/lol-champ-select/v1/session/my-selection': EndpointOnlyRequest<LolChampSelectV1SessionMySelection>;
+  '/lol-champ-select/v1/session/my-selection': EndpointOnlyRequest<
+    Partial<LolChampSelectV1SessionMySelection>
+  >;
+  '/lol-champ-select/v1/skin-carousel-skins': EndpointOnlyResponse<
+    LolChampSelectV1SkinCarouselSkins[]
+  >;
   '/lol-champ-select/v1/pickable-skin-ids': EndpointEmpty;
   '/lol-champ-select/v1/pickable-champion-ids': EndpointOnlyResponse<LolChampSelectV1PickableChampionIds>;
   '/lol-champ-select/v1/bannable-champion-ids': EndpointOnlyResponse<LolChampSelectV1BannableChampionIds>;
@@ -83,7 +98,10 @@ interface ClientEndpoint {
   '/lol-champ-select/v1/session/champion-swaps/{digits}/request': EndpointEmpty;
   '/lol-champ-select/v1/session/my-selection/reroll': EndpointEmpty;
   '/lol-champ-select/v1/session/bench/swap/{digits}': EndpointEmpty;
-  '/lol-champ-select/v1': EndpointEmpty;
+  '/lol-champ-select/v1/session/actions/{digits}/complete': EndpointEmpty;
+  '/lol-champ-select/v1/session/actions/{digits}': EndpointOnlyRequest<
+    Partial<LolChampSelectV1SessionActions_Id>
+  >;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   //Lol Match History
@@ -109,6 +127,7 @@ interface ClientEndpoint {
   '/lol-gameflow/v1/availability': EndpointOnlyResponse<LolGameFlowV1Availability>;
   '/lol-gameflow/v1/session': EndpointOnlyResponse<LolGameflowV1Session>;
   '/lol-gameflow/v1/reconnect': EndpointEmpty;
+  '/lol-gameflow/v1/gameflow-phase': EndpointOnlyResponse<LolGameFlowV1GameFlowPhase>;
   // Lol Honor
   '/lol-honor-v2/v1/ballot': EndpointOnlyResponse<LolHonorV2V1Ballot>;
   '/lol-honor/v1/honor': EndpointOnlyRequest<LolHonorV1Honor>;
@@ -134,6 +153,14 @@ interface ClientEndpoint {
   '/lol-matchmaking/v1/ready-check': EndpointOnlyResponse<LolMatchmakingV1ReadyCheck>;
   '/lol-matchmaking/v1/ready-check/accept': EndpointEmpty;
   '/lol-matchmaking/v1/ready-check/decline': EndpointEmpty;
+  // Lol Perks
+  '/lol-perks/v1/pages': EndpointOnlyResponse<LolPerksV1Pages[]>;
+  '/lol-perks/v1/pages/{digits}': EndpointOnlyResponse<LolPerksV1Pages>;
+  '/lol-perks/v1/currentpage': EndpointData<
+    LolPerksV1CurrentPage,
+    LolPerksV1Pages
+  >;
+  '/lol-perks/v1/styles': EndpointOnlyResponse<LolPerksV1Styles[]>;
   // Lol Ranked
   '/lol-ranked/v1/ranked-stats/{uuid}': EndpointOnlyResponse<LolRankedV1RankedStats_Id>;
   // Lol Shutdown
