@@ -1,31 +1,21 @@
 import { CustomButton } from '@render/components/input';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 
 export const ActionButton = () => {
   const { makeRequest } = useLeagueClientRequest();
-  const { currentCellId, session, currentPlayerAction, currentAction } =
-    useChampSelectContext();
+  const {
+    session,
+    currentAction,
+    banPlayerActionId,
+    pickPlayerActionId,
+    isPlayerAction,
+  } = useChampSelectContext();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
-
-  const [summonerData, setSummonerData] =
-    useState<LolChampSelectV1Summoners_Id>();
-
-  useLeagueClientEvent(
-    buildEventUrl('/lol-champ-select/v1/summoners/{digits}', currentCellId),
-    (data) => {
-      setSummonerData(data);
-    },
-  );
 
   const onClickReRoll = () => {
     makeRequest(
@@ -36,11 +26,14 @@ export const ActionButton = () => {
   };
 
   const onClickActionButton = () => {
+    let actionId = pickPlayerActionId;
+    if (currentAction === 'ban') actionId = banPlayerActionId;
+
     makeRequest(
       'POST',
       buildEventUrl(
         '/lol-champ-select/v1/session/actions/{digits}/complete',
-        currentPlayerAction?.id ?? '',
+        actionId,
       ),
       undefined,
     ).then();
@@ -51,7 +44,7 @@ export const ActionButton = () => {
       return rcpFeLolChampSelectTrans('ban_button');
     }
     if (currentAction === 'pick') {
-      rcpFeLolChampSelectTrans('lock_in');
+      return rcpFeLolChampSelectTrans('lock_in');
     }
     return '';
   };
@@ -68,7 +61,7 @@ export const ActionButton = () => {
     );
   }
 
-  if (!summonerData?.isActingNow) return null;
+  if (!isPlayerAction) return null;
 
   return (
     <CustomButton variant={'contained'} onClick={onClickActionButton}>

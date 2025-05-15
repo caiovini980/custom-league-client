@@ -199,6 +199,7 @@ export class LeagueClientService
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   private saveLogFile(data: any) {
     if (app.isPackaged) return;
+    if (process.env.MAIN_VITE_SAVE_LOG_LEAGUE_CLIENT !== 'true') return;
     const { uri } = data[2];
     const logPath = path.join(
       process.cwd(),

@@ -19,7 +19,7 @@ export interface LolChampSelectV1Summoners_Id {
   isPickIntenting: boolean;
   isPlaceholder: boolean;
   isSelf: boolean;
-  nameVisibilityType: 'VISIBLE' | 'HIDDEN';
+  nameVisibilityType: 'UNHIDDEN' | 'HIDDEN';
   obfuscatedPuuid: string;
   obfuscatedSummonerId: number;
   pickSnipedClass: string;

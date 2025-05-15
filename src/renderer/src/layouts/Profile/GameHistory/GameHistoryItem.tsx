@@ -93,13 +93,15 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
   })();
 
   const replayBtn = (): CustomIconButtonTooltipProps => {
+    const iconSize = 16;
+
     const title = transReplays(
       `replays_button_default_tooltip_${replayState.state}`,
     );
     if (replayState.state === 'download') {
       return {
         title,
-        children: <FaDownload />,
+        children: <FaDownload size={iconSize} />,
         onClick: () =>
           makeRequest(
             'POST',
@@ -115,7 +117,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
     if (replayState.state === 'downloading') {
       return {
-        children: <FaDownload />,
+        children: <FaDownload size={iconSize} />,
         title,
         disabled: true,
         loading: true,
@@ -123,7 +125,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
     if (replayState.state === 'watch') {
       return {
-        children: <FaPlay />,
+        children: <FaPlay size={iconSize} />,
         title,
         onClick: () =>
           makeRequest(
@@ -137,7 +139,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
     }
 
     return {
-      children: <FaDownload />,
+      children: <FaDownload size={iconSize} />,
       title,
       disabled: true,
     };

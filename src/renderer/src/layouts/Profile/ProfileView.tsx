@@ -10,6 +10,8 @@ import { GameHistory } from '@render/layouts/Profile/GameHistory/GameHistory';
 import { RankedStats } from '@render/layouts/Profile/RankedStats';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useState } from 'react';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { capitalize } from '@render/utils/stringUtil';
 
 interface ProfileViewProps {
   summonerId: number;
@@ -18,6 +20,9 @@ interface ProfileViewProps {
 
 export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
   const { lolGameDataImg } = useLeagueImage();
+  const { rcpFeLolMatchHistory } = useLeagueTranslate();
+
+  const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
 
   const [summonerData, setSummonerData] = useState<LolSummonerV1Summoners_Id>();
   const [backgroundUrl, setBackgroundUrl] = useState('');
@@ -59,7 +64,14 @@ export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
       <Stack direction={'row'} width={'100%'} height={'100%'}>
         <RankedStats summonerData={summonerData} />
         <CustomTab>
-          <CustomTabPanel label={'Game History'} name={'history'}>
+          <CustomTabPanel
+            label={capitalize(
+              rcpFeLolMatchHistoryTrans(
+                'MATCH_HISTORY_PROFILE_SUB_MENU_TITLE',
+              ).toLowerCase(),
+            )}
+            name={'history'}
+          >
             <GameHistory puuid={summonerData.puuid} />
           </CustomTabPanel>
           <CustomTabPanel label={'Champion Mastery'} name={'mastery'}>

@@ -18,10 +18,10 @@ export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const {
-    currentPlayerAction,
     currentAction,
     currentPlayer,
     disabledChampionList,
+    pickPlayerActionId
   } = useChampSelectContext();
 
   const [championNameFilter, setChampionNameFilter] = useState('');
@@ -110,12 +110,11 @@ export const ChampionSelectList = () => {
   };
 
   const onClickChampion = (champion: LolChampSelectV1AllGridCampions) => {
-    if (!currentPlayerAction) return;
     makeRequest(
       'PATCH',
       buildEventUrl(
         '/lol-champ-select/v1/session/actions/{digits}',
-        currentPlayerAction.id,
+        pickPlayerActionId,
       ),
       {
         championId: champion.id,

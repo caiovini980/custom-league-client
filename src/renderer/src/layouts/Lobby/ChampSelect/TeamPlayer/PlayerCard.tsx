@@ -1,10 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import {
-  LolChampSelectV1Session,
-  LolChampSelectV1SessionTeam,
-} from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { LolChampSelectV1SessionTeam } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
   buildEventUrl,
@@ -17,14 +14,14 @@ import { CircularIcon } from '@render/components/CircularIcon';
 interface TeamPlayerCardProps {
   isEnemyTeam?: boolean;
   player: LolChampSelectV1SessionTeam;
-  session: LolChampSelectV1Session;
 }
 
 export const TeamPlayerCard = ({
   player,
   isEnemyTeam,
 }: TeamPlayerCardProps) => {
-  const { championIcon, spellIcon } = useLeagueImage();
+  const { championIcon, spellIcon, loadChampionBackgroundImg } =
+    useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
@@ -37,6 +34,9 @@ export const TeamPlayerCard = ({
     (data) => {
       setSummonerData(data);
     },
+    {
+      deps: [player.cellId],
+    },
   );
 
   const getCurrentAction = () => {
@@ -46,6 +46,12 @@ export const TeamPlayerCard = ({
     return '';
   };
 
+  const skinUrl = loadChampionBackgroundImg(
+    'splashPath',
+    summonerData?.championId ?? 0,
+    summonerData?.skinId,
+  );
+
   if (!summonerData) return null;
 
   return (
@@ -53,15 +59,29 @@ export const TeamPlayerCard = ({
       direction={isEnemyTeam ? 'row-reverse' : 'row'}
       p={1}
       height={80}
-      width={220}
+      width={270}
       columnGap={0.5}
       alignItems={'center'}
       justifyContent={'flex-start'}
       sx={{
+        position: 'relative',
         overflow: 'hidden',
-        background: 'rgba(0,0,0,0.2)',
-        backdropFilter: 'blur(20px)',
         borderRadius: '10px',
+        zIndex: 0,
+        '&::before': {
+          content: "''",
+          zIndex: -1,
+          inset: 0,
+          position: 'absolute',
+          background: `url(${skinUrl})`,
+          backgroundSize: 'auto 350px',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: '-90px -70px',
+          transform: isEnemyTeam ? 'scaleX(-1)' : undefined,
+          filter: 'blur(0px)',
+          maskImage:
+            'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+        },
       }}
     >
       <Stack
@@ -80,7 +100,7 @@ export const TeamPlayerCard = ({
         <SquareIcon src={championIcon(summonerData.banIntentChampionId)} />
       )}
       <Stack direction={'column'} rowGap={0.2}>
-        <Typography>{getCurrentAction()}</Typography>
+        <Typography fontSize={'0.7rem'}>{getCurrentAction()}</Typography>
         {isEnemyTeam ? (
           <>
             <Typography fontSize={'1rem'}>
@@ -89,18 +109,18 @@ export const TeamPlayerCard = ({
             <Typography fontSize={'0.8rem'}>
               {rcpFeLolChampSelectTrans(
                 'name_visibility_type_enemy',
-                summonerData.cellId - 4,
+                player.cellId - 4,
               )}
             </Typography>
           </>
         ) : (
           <>
-            <Typography fontSize={'0.85rem'}>
+            <Typography fontSize={'1rem'}>
               {rcpFeLolChampSelectTrans(
-                `summoner_assigned_position_${summonerData.assignedPosition.toLocaleLowerCase()}`,
+                `summoner_assigned_position_${player.assignedPosition.toLocaleLowerCase()}`,
               )}
             </Typography>
-            <Typography fontSize={'0.6rem'}>{summonerData.gameName}</Typography>
+            <Typography fontSize={'0.8rem'}>{player.gameName}</Typography>
           </>
         )}
       </Stack>

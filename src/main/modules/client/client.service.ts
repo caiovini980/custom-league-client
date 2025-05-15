@@ -9,15 +9,33 @@ import {
   ClientMakeRequestResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { OnApplicationBootstrap } from '@nestjs/common';
 
 @Service()
-export class ClientService extends ServiceAbstract {
+export class ClientService
+  extends ServiceAbstract
+  implements OnApplicationBootstrap
+{
+  private showClient = true;
+
   constructor(
     private leagueClientService: LeagueClientService,
     private leagueClientDataDownloadService: LeagueClientDataDownloadService,
     private appConfigService: AppConfigService,
   ) {
     super();
+  }
+
+  onApplicationBootstrap() {
+    setInterval(() => {
+      if (!this.showClient) {
+        this.leagueClientService.handleEndpoint(
+          'POST',
+          '/riotclient/kill-ux',
+          undefined,
+        );
+      }
+    }, 100);
   }
 
   async startLeagueClient() {
@@ -60,5 +78,16 @@ export class ClientService extends ServiceAbstract {
     await this.leagueClientDataDownloadService.downloadGameData(
       this.getClientStatusInfo(),
     );
+  }
+
+  async changeShowClient(value: boolean) {
+    this.showClient = value;
+    setTimeout(() => {
+      this.makeRequest({
+        method: 'POST',
+        uri: '/riotclient/launch-ux',
+        data: undefined,
+      });
+    }, 200);
   }
 }

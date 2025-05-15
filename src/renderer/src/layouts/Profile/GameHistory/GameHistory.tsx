@@ -32,12 +32,7 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
         height: '100%',
       }}
     >
-      <LoadingScreen
-        loading={!matchHistory}
-        height={'100%'}
-        loadingText={'Loading history...'}
-        fullArea
-      />
+      <LoadingScreen loading={!matchHistory} height={'100%'} fullArea />
       {matchHistory?.games.games.length === 0 && (
         <ListItem>
           <ListItemText

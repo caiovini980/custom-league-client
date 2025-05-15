@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionAction,
@@ -7,12 +7,20 @@ import {
 import { Undefined } from '@shared/typings/generic.typing';
 import { Box } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import {
+  buildEventUrl,
+  useLeagueClientEvent,
+} from '@render/hooks/useLeagueClientEvent';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 
 type Actions = 'planning' | 'ban' | 'show-bans' | 'pick' | 'finalization';
 
 interface ChampSelectContextState {
   gameMode: string;
   session: LolChampSelectV1Session;
+  banPlayerActionId: number;
+  pickPlayerActionId: number;
+  isPlayerAction: boolean;
   currentActionIndex: number;
   currentCellId: number;
   currentPlayer: LolChampSelectV1SessionTeam;
@@ -43,6 +51,9 @@ export const ChampSelectContext = ({
 }: PropsWithChildren<ChampSelectContextProps>) => {
   const { loadChampionBackgroundImg } = useLeagueImage();
 
+  const [summonerData, setSummonerData] =
+    useState<LolChampSelectV1Summoners_Id>();
+
   const getCurrentActionIndex = () => {
     return session.actions.findIndex((al) => al.some((a) => !a.completed));
   };
@@ -56,10 +67,11 @@ export const ChampSelectContext = ({
   };
 
   const getAction = (): Actions => {
-    if (!session.actions.length) {
+    const actionIndex = getCurrentActionIndex();
+    if (!session.actions.length || actionIndex === -1) {
       return 'finalization';
     }
-    const { type } = session.actions[getCurrentActionIndex()][0];
+    const { type } = session.actions[actionIndex][0];
     if (type === 'ten_bans_reveal') {
       return 'show-bans';
     }
@@ -81,6 +93,28 @@ export const ChampSelectContext = ({
           !a.completed &&
           a.isInProgress,
       );
+  };
+
+  const getBanPlayerActionId = () => {
+    return (
+      session.actions
+        .flat()
+        .find(
+          (a) =>
+            a.actorCellId === session.localPlayerCellId && a.type === 'ban',
+        )?.id ?? -1
+    );
+  };
+
+  const getPickPlayerActionId = () => {
+    return (
+      session.actions
+        .flat()
+        .find(
+          (a) =>
+            a.actorCellId === session.localPlayerCellId && a.type === 'pick',
+        )?.id ?? -1
+    );
   };
 
   const getBans = (): ChampSelectContextState['bans'] => {
@@ -115,6 +149,21 @@ export const ChampSelectContext = ({
     getSummonerFromTeam().selectedSkinId,
   );
 
+  useLeagueClientEvent(
+    buildEventUrl(
+      '/lol-champ-select/v1/summoners/{digits}',
+      session.localPlayerCellId,
+    ),
+    (data) => {
+      setSummonerData(data);
+    },
+    {
+      deps: [session.localPlayerCellId],
+    },
+  );
+
+  if (!summonerData) return null;
+
   return (
     <context.Provider
       value={{
@@ -127,6 +176,9 @@ export const ChampSelectContext = ({
         bans: getBans(),
         disabledChampionList: getDisabledChampions(),
         gameMode,
+        banPlayerActionId: getBanPlayerActionId(),
+        pickPlayerActionId: getPickPlayerActionId(),
+        isPlayerAction: summonerData.isActingNow,
       }}
     >
       <Box

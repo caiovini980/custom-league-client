@@ -78,7 +78,7 @@ export const useLeagueImage = () => {
   };
 
   const loadChampionBackgroundImg = (
-    art: 'loadScreenPath' | 'splashPath',
+    art: 'loadScreenPath' | 'splashPath' | 'tilePath',
     championId: number,
     skinId = 0,
   ) => {

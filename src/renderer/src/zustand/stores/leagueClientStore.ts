@@ -7,6 +7,7 @@ export interface LeagueClientState {
   locale: string;
   isConnected: boolean;
   isAvailable: boolean;
+  isClientOpen: boolean;
   appConfig: Null<GetAppConfigResponse>;
 }
 
@@ -15,6 +16,7 @@ const initialState: LeagueClientState = {
   locale: '',
   isConnected: false,
   isAvailable: false,
+  isClientOpen: true,
   appConfig: null,
 };
 

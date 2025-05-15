@@ -36,6 +36,7 @@ export interface LolChampSelectV1SessionAction {
   actorCellId: number;
   championId: number;
   completed: boolean;
+  duration: number;
   id: number;
   isAllyAction: boolean;
   isInProgress: boolean;
@@ -103,5 +104,5 @@ export interface LolChampSelectV1SessionBenchChampions {
 export interface LolChampSelectV1SessionTrade {
   cellId: number;
   id: number;
-  state: 'AVAILABLE';
+  state: 'AVAILABLE' | 'INVALID';
 }

@@ -27,4 +27,9 @@ export class ClientController {
   async readGameData() {
     return this.clientService.reloadGameData();
   }
+
+  @IpcHandle('changeShowClient')
+  async changeShowClient(@Payload() payload: boolean) {
+    return this.clientService.changeShowClient(payload);
+  }
 }

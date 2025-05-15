@@ -1,11 +1,7 @@
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useEffect, useState } from 'react';
-import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
+import { useState } from 'react';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
-import { Stack, Tooltip, Typography } from '@mui/material';
+import { Stack, Tooltip } from '@mui/material';
 import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { LolPerksV1Styles } from '@shared/typings/lol/response/lolPerksV1Styles';
@@ -13,7 +9,6 @@ import { useLeagueImage } from '@render/hooks/useLeagueImage';
 
 export const RuneEdit = () => {
   const { lolGameDataImg } = useLeagueImage();
-  const { makeRequest } = useLeagueClientRequest();
 
   const [rune, setRune] = useState<LolPerksV1Pages>();
   const [perks, setPerks] = useState<LolPerksV1Styles[]>([]);

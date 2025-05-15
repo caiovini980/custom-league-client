@@ -1,11 +1,13 @@
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { useStore } from '@render/zustand/store';
+import {storeActions, useStore} from '@render/zustand/store';
 import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
+import { CustomCheckBox } from '@render/components/input';
 
 export const AppConfig = () => {
   const { appConfig, client } = useElectronHandle();
   const config = useStore().leagueClient.appConfig();
+  const isClientOpen = useStore().leagueClient.isClientOpen()
 
   const onClickChangeRiotPath = () => {
     appConfig.setConfig({
@@ -14,20 +16,9 @@ export const AppConfig = () => {
     });
   };
 
-  const onClickShowClient = () => {
-    client.makeRequest({
-      method: 'POST',
-      uri: '/riotclient/launch-ux',
-      data: undefined,
-    });
-  };
-
-  const onClickCloseClient = () => {
-    client.makeRequest({
-      method: 'POST',
-      uri: '/riotclient/kill-ux',
-      data: undefined,
-    });
+  const onClickToggleClient = () => {
+    storeActions.leagueClient.isClientOpen(!isClientOpen);
+    client.changeShowClient(!isClientOpen);
   };
 
   const onClickReloadGameData = () => {
@@ -45,12 +36,9 @@ export const AppConfig = () => {
       onClick: onClickChangeRiotPath,
     },
     {
-      primaryText: 'Show Client',
-      onClick: onClickShowClient,
-    },
-    {
-      primaryText: 'Close Client',
-      onClick: onClickCloseClient,
+      primaryText: 'Toggle Show Client',
+      onClick: onClickToggleClient,
+      toggle: isClientOpen,
     },
     {
       primaryText: 'Reload Game Data',
@@ -64,6 +52,7 @@ export const AppConfig = () => {
         <ListItem key={b.primaryText} disablePadding>
           <ListItemButton onClick={b.onClick}>
             <ListItemText primary={b.primaryText} secondary={b.secondaryText} />
+            {b.toggle !== undefined && <CustomCheckBox checked={b.toggle} />}
           </ListItemButton>
         </ListItem>
       ))}
