@@ -22,7 +22,11 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
     '/lol-matchmaking/v1/ready-check',
     (data) => {
       setMatchReadyCheck(data);
-      if (autoAccept && data.state === 'InProgress') {
+      if (
+        autoAccept &&
+        data.state === 'InProgress' &&
+        data.playerResponse === 'None'
+      ) {
         onClickGameAccept();
       }
     },
@@ -56,6 +60,7 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
         disabled: matchReadyCheck?.playerResponse !== 'None',
       }}
     >
+      <audio src={'party_found.mp3'} autoPlay />
       <Stack
         width={'100%'}
         direction={'column'}

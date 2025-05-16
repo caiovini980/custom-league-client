@@ -21,6 +21,7 @@ export const useLeagueImage = () => {
   const items = useStore().gameData.items();
 
   const link = (path: string) => {
+    if (!path) return '';
     if (!version) return '';
     return `media://${version}/${path}`;
   };

@@ -28,6 +28,7 @@ interface ChampSelectContextState {
   currentPlayerAction: Undefined<LolChampSelectV1SessionAction>;
   disabledChampionList: number[];
   bans: {
+    banIntentChampionId: number;
     myTeam: number[];
     theirTeam: number[];
   };
@@ -49,28 +50,55 @@ export const ChampSelectContext = ({
   gameMode,
   children,
 }: PropsWithChildren<ChampSelectContextProps>) => {
-  const { loadChampionBackgroundImg } = useLeagueImage();
+  const { loadChampionBackgroundImg, genericImg } = useLeagueImage();
 
   const [summonerData, setSummonerData] =
     useState<LolChampSelectV1Summoners_Id>();
+
+  useLeagueClientEvent(
+    buildEventUrl('/lol-champ-select/v1/summoners/{digits}', getSlotId()),
+    (data) => {
+      setSummonerData(data);
+    },
+    {
+      deps: [session.localPlayerCellId],
+    },
+  );
+
+  function getSlotId() {
+    const player = getSummonerFromTeam();
+    return player.team === 1 ? player.cellId : player.cellId - 5;
+  }
 
   const getCurrentActionIndex = () => {
     return session.actions.findIndex((al) => al.some((a) => !a.completed));
   };
 
-  const getSummonerFromTeam = () => {
+  function getSummonerFromTeam() {
     const s = session.myTeam.find(
       (t) => t.cellId === session.localPlayerCellId,
     );
     if (!s) throw new Error('Player not found in team');
     return s;
-  };
+  }
 
   const getAction = (): Actions => {
+    if (summonerData?.areSummonerActionsComplete) {
+      return 'finalization';
+    }
+    if (session.timer.phase === 'PLANNING') {
+      return 'planning';
+    }
+
+    if (session.timer.phase === 'FINALIZATION') {
+      return 'finalization';
+    }
+
     const actionIndex = getCurrentActionIndex();
     if (!session.actions.length || actionIndex === -1) {
       return 'finalization';
     }
+
     const { type } = session.actions[actionIndex][0];
     if (type === 'ten_bans_reveal') {
       return 'show-bans';
@@ -81,7 +109,7 @@ export const ChampSelectContext = ({
     if (type === 'pick') {
       return 'pick';
     }
-    return 'planning';
+    return 'finalization';
   };
 
   const getCurrentPlayerAction = () => {
@@ -131,6 +159,7 @@ export const ChampSelectContext = ({
     });
 
     return {
+      banIntentChampionId: summonerData?.banIntentChampionId ?? 0,
       myTeam,
       theirTeam,
     };
@@ -139,28 +168,24 @@ export const ChampSelectContext = ({
   const getDisabledChampions = () => {
     return session.actions
       .flat()
-      .filter((a) => a.championId > 0 && a.completed)
+      .filter((a) => a.type === 'ban' && a.championId > 0 && a.completed)
       .map((a) => a.championId);
   };
 
-  const skinUrl = loadChampionBackgroundImg(
-    'splashPath',
-    getSummonerFromTeam().championId,
-    getSummonerFromTeam().selectedSkinId,
-  );
-
-  useLeagueClientEvent(
-    buildEventUrl(
-      '/lol-champ-select/v1/summoners/{digits}',
-      session.localPlayerCellId,
-    ),
-    (data) => {
-      setSummonerData(data);
-    },
-    {
-      deps: [session.localPlayerCellId],
-    },
-  );
+  const skinUrl = () => {
+    const { selectedSkinId, championId, championPickIntent } =
+      getSummonerFromTeam();
+    if (championId === 0 && championPickIntent === 0) {
+      return genericImg(
+        '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/champ-select-planning-intro.jpg',
+      );
+    }
+    return loadChampionBackgroundImg(
+      'splashPath',
+      championId || championPickIntent,
+      selectedSkinId,
+    );
+  };
 
   if (!summonerData) return null;
 
@@ -186,7 +211,7 @@ export const ChampSelectContext = ({
         width={'100%'}
         display={'flex'}
         sx={{
-          background: `linear-gradient(0deg, rgba(0,0,0,0.5) 10%, rgba(0,0,0,0) 100%), url(${skinUrl})`,
+          background: `linear-gradient(0deg, rgba(0,0,0,0.8) 5%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%), url(${skinUrl()})`,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',

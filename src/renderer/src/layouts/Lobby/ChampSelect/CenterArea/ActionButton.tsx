@@ -12,6 +12,8 @@ export const ActionButton = () => {
     banPlayerActionId,
     pickPlayerActionId,
     isPlayerAction,
+    currentPlayer,
+    bans,
   } = useChampSelectContext();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
@@ -35,7 +37,7 @@ export const ActionButton = () => {
         '/lol-champ-select/v1/session/actions/{digits}/complete',
         actionId,
       ),
-      undefined,
+      {} as unknown as undefined,
     ).then();
   };
 
@@ -47,6 +49,16 @@ export const ActionButton = () => {
       return rcpFeLolChampSelectTrans('lock_in');
     }
     return '';
+  };
+
+  const disabledActionButton = () => {
+    if (currentAction === 'ban') {
+      return bans.banIntentChampionId === 0;
+    }
+    if (currentAction === 'pick') {
+      return currentPlayer.championId === 0;
+    }
+    return false;
   };
 
   if (session.allowRerolling) {
@@ -64,7 +76,11 @@ export const ActionButton = () => {
   if (!isPlayerAction) return null;
 
   return (
-    <CustomButton variant={'contained'} onClick={onClickActionButton}>
+    <CustomButton
+      variant={'contained'}
+      onClick={onClickActionButton}
+      disabled={disabledActionButton()}
+    >
       {getButtonLabel()}
     </CustomButton>
   );

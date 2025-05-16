@@ -24,6 +24,9 @@
         "noParameterAssign": "off",
         "useExponentiationOperator": "off",
         "useImportType": "off"
+      },
+      "a11y": {
+        "useMediaCaption": "off"
       }
     }
   },

@@ -13,6 +13,7 @@ import { LolChampSelectV1DisabledChampionIds } from '@shared/typings/lol/respons
 import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { FaTimes } from 'react-icons/fa';
 
 export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
@@ -21,7 +22,8 @@ export const ChampionSelectList = () => {
     currentAction,
     currentPlayer,
     disabledChampionList,
-    pickPlayerActionId
+    pickPlayerActionId,
+    banPlayerActionId,
   } = useChampSelectContext();
 
   const [championNameFilter, setChampionNameFilter] = useState('');
@@ -110,16 +112,20 @@ export const ChampionSelectList = () => {
   };
 
   const onClickChampion = (champion: LolChampSelectV1AllGridCampions) => {
+    const actionId =
+      currentAction === 'ban' ? banPlayerActionId : pickPlayerActionId;
     makeRequest(
       'PATCH',
-      buildEventUrl(
-        '/lol-champ-select/v1/session/actions/{digits}',
-        pickPlayerActionId,
-      ),
+      buildEventUrl('/lol-champ-select/v1/session/actions/{digits}', actionId),
       {
         championId: champion.id,
       },
     ).then();
+  };
+
+  const disabled = (championId: number) => {
+    const active: boolean[] = [disabledChampionList.includes(championId)];
+    return active.some(Boolean);
   };
 
   return (
@@ -160,6 +166,11 @@ export const ChampionSelectList = () => {
           placeholder={'Champion name'}
           value={championNameFilter}
           onChangeText={setChampionNameFilter}
+          endIcon={
+            <CustomIconButton onClick={() => setChampionNameFilter('')}>
+              <FaTimes size={12} />
+            </CustomIconButton>
+          }
         />
       </Stack>
       <Grid container spacing={2} overflow={'auto'} width={'100%'}>
@@ -173,13 +184,13 @@ export const ChampionSelectList = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}
                 width={50}
-                disabled={disabledChampionList.includes(c.id)}
+                disabled={disabled(c.id)}
                 onClick={() => onClickChampion(c)}
               >
                 <SquareIcon
                   src={championIcon(c.id)}
                   size={50}
-                  grayScale={c.selectionStatus.isBanned}
+                  grayScale={disabledChampionList.includes(c.id)}
                 />
                 <Typography fontSize={'0.7rem'}>{c.name}</Typography>
               </Stack>

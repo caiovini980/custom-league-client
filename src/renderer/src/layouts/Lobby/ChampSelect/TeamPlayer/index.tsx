@@ -1,4 +1,3 @@
-import { LolChampSelectV1SessionTeam } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { Stack } from '@mui/material';
 import { TeamPlayerCard } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/PlayerCard';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -6,15 +5,15 @@ import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSe
 import { SquareIcon } from '@render/components/SquareIcon';
 
 interface TeamPlayerProps {
-  team: LolChampSelectV1SessionTeam[];
   isEnemyTeam?: boolean;
 }
 
-export const TeamPlayer = ({ team, isEnemyTeam }: TeamPlayerProps) => {
+export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
   const { championIcon } = useLeagueImage();
-  const { bans: bansData } = useChampSelectContext();
+  const { bans: bansData, session } = useChampSelectContext();
 
   const bans = isEnemyTeam ? bansData.theirTeam : bansData.myTeam;
+  const team = isEnemyTeam ? session.theirTeam : session.myTeam;
 
   return (
     <Stack direction={'column'} rowGap={2} height={'100%'}>
@@ -23,9 +22,15 @@ export const TeamPlayer = ({ team, isEnemyTeam }: TeamPlayerProps) => {
           return <SquareIcon key={i} src={championIcon(b)} size={35} />;
         })}
       </Stack>
-      {team.map((m) => {
+      {team.map((m, index) => {
         return (
-          <TeamPlayerCard key={m.cellId} player={m} isEnemyTeam={isEnemyTeam} />
+          <TeamPlayerCard
+            key={m.cellId}
+            player={m}
+            slotId={index}
+            isEnemyTeam={isEnemyTeam}
+            side={m.team === 1 ? 'blue' : 'red'}
+          />
         );
       })}
     </Stack>

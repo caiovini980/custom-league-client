@@ -45,9 +45,9 @@ export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
           height={'100%'}
           overflow={'auto'}
         >
-          <TeamPlayer team={session.myTeam} />
+          <TeamPlayer />
           <CenterArea />
-          <TeamPlayer team={session.theirTeam} isEnemyTeam />
+          <TeamPlayer isEnemyTeam />
         </Stack>
       </Stack>
     </ChampSelectContext>

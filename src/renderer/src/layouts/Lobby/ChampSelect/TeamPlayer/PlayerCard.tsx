@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { LolChampSelectV1SessionTeam } from '@shared/typings/lol/response/lolChampSelectV1Session';
@@ -12,13 +12,17 @@ import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolCh
 import { CircularIcon } from '@render/components/CircularIcon';
 
 interface TeamPlayerCardProps {
+  slotId: number;
   isEnemyTeam?: boolean;
   player: LolChampSelectV1SessionTeam;
+  side: 'blue' | 'red';
 }
 
 export const TeamPlayerCard = ({
+  slotId,
   player,
   isEnemyTeam,
+  side,
 }: TeamPlayerCardProps) => {
   const { championIcon, spellIcon, loadChampionBackgroundImg } =
     useLeagueImage();
@@ -30,7 +34,7 @@ export const TeamPlayerCard = ({
     useState<LolChampSelectV1Summoners_Id>();
 
   useLeagueClientEvent(
-    buildEventUrl('/lol-champ-select/v1/summoners/{digits}', player.cellId),
+    buildEventUrl('/lol-champ-select/v1/summoners/{digits}', slotId),
     (data) => {
       setSummonerData(data);
     },
@@ -80,10 +84,18 @@ export const TeamPlayerCard = ({
           transform: isEnemyTeam ? 'scaleX(-1)' : undefined,
           filter: 'blur(0px)',
           maskImage:
-            'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+            'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.3) 40%)',
         },
       }}
     >
+      {summonerData?.isActingNow && (
+        <Box
+          height={'100%'}
+          width={10}
+          bgcolor={'primary.main'}
+          borderRadius={4}
+        />
+      )}
       <Stack
         direction={'column'}
         justifyContent={'space-between'}
@@ -99,7 +111,16 @@ export const TeamPlayerCard = ({
       {summonerData.shouldShowBanIntentIcon && (
         <SquareIcon src={championIcon(summonerData.banIntentChampionId)} />
       )}
-      <Stack direction={'column'} rowGap={0.2}>
+      <Stack
+        direction={'column'}
+        rowGap={0.2}
+        sx={{
+          color: summonerData?.isSelf ? '#fff669' : undefined,
+          '& p': {
+            fontWeight: 'bold',
+          },
+        }}
+      >
         <Typography fontSize={'0.7rem'}>{getCurrentAction()}</Typography>
         {isEnemyTeam ? (
           <>
@@ -109,7 +130,7 @@ export const TeamPlayerCard = ({
             <Typography fontSize={'0.8rem'}>
               {rcpFeLolChampSelectTrans(
                 'name_visibility_type_enemy',
-                player.cellId - 4,
+                side === 'red' ? player.cellId - 4 : player.cellId + 1,
               )}
             </Typography>
           </>
