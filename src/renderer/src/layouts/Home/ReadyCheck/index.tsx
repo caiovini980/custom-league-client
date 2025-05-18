@@ -26,8 +26,7 @@ export const ReadyCheck = () => {
   useLeagueClientEvent(
     '/lol-matchmaking/v1/search',
     (data) => {
-      const canSetData = ['Matchmaking', 'ReadyCheck'].includes(phase);
-      storeActions.lobby.matchMaking(canSetData ? data : null);
+      storeActions.lobby.matchMaking(data);
     },
     {
       deps: [phase],
@@ -43,6 +42,10 @@ export const ReadyCheck = () => {
       storeActions.lobby.matchMaking(null);
     });
   };
+
+  if (['None', 'InProgress', 'ChampSelect', 'GameStart'].includes(phase)) {
+    return <Divider />;
+  }
 
   if (matchMaking && matchMaking.searchState !== 'Error') {
     return (
@@ -68,10 +71,6 @@ export const ReadyCheck = () => {
         />
       </StackBox>
     );
-  }
-
-  if (['None', 'InProgress', 'ChampSelect', 'GameStart'].includes(phase)) {
-    return <Divider />;
   }
 
   return (

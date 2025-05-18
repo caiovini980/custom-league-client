@@ -12,6 +12,8 @@ const initialState: GameDataState = {
   items: [],
   maps: [],
   queues: [],
+  perks: [],
+  perkStyles: [],
   translate: {} as GameDataState['translate'],
 };
 

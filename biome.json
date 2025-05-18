@@ -27,6 +27,9 @@
       },
       "a11y": {
         "useMediaCaption": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
       }
     }
   },

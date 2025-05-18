@@ -20,7 +20,6 @@ export const ChampionSelectList = () => {
   const { makeRequest } = useLeagueClientRequest();
   const {
     currentAction,
-    currentPlayer,
     disabledChampionList,
     pickPlayerActionId,
     banPlayerActionId,
@@ -51,8 +50,6 @@ export const ChampionSelectList = () => {
   useLeagueClientEvent('/lol-champ-select/v1/pickable-champion-ids', (data) => {
     setPickableChampion(data);
   });
-
-  const { championId } = currentPlayer;
 
   const position = ['top', 'jungle', 'middle', 'bottom', 'utility'];
 
@@ -119,6 +116,7 @@ export const ChampionSelectList = () => {
       buildEventUrl('/lol-champ-select/v1/session/actions/{digits}', actionId),
       {
         championId: champion.id,
+        //completed: true,
       },
     ).then();
   };
@@ -133,10 +131,10 @@ export const ChampionSelectList = () => {
       direction={'column'}
       overflow={'auto'}
       height={'100%'}
-      display={championId > 0 ? 'none' : 'flex'}
+      display={currentAction === 'finalization' ? 'none' : 'flex'}
       p={1}
       sx={{
-        background: 'rgba(0,0,0,0.5)',
+        background: 'rgba(0,0,0,0.7)',
       }}
       rowGap={2}
     >
@@ -192,7 +190,7 @@ export const ChampionSelectList = () => {
                   size={50}
                   grayScale={disabledChampionList.includes(c.id)}
                 />
-                <Typography fontSize={'0.7rem'}>{c.name}</Typography>
+                <Typography fontSize={'0.75rem'}>{c.name}</Typography>
               </Stack>
             </Grid>
           );

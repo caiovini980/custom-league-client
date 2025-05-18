@@ -48,6 +48,7 @@ import { LolChampSelectV1SessionActions_Id } from '@shared/typings/lol/request/l
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { LolPerksV1Styles } from '@shared/typings/lol/response/lolPerksV1Styles';
 import { LolPerksV1CurrentPage } from '@shared/typings/lol/request/lolPerksV1CurrentPage';
+import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -145,7 +146,8 @@ interface ClientEndpoint {
   >;
   '/lol-lobby/v2/received-invitations/{invitationId}/accept': EndpointOnlyRequest<LolLobbyV2ReceivedInivitations_Id_Accept>;
   '/lol-lobby/v2/received-invitations/{invitationId}/decline': EndpointOnlyRequest<LolLobbyV2ReceivedInivitations_Id_Decline>;
-
+  // Lol Lobby Team Builder
+  '/lol-lobby-team-builder/champ-select/v1/session/quit': EndpointEmpty;
   // Lol Login
   '/lol-login/v1/session': EndpointOnlyResponse<LolLoginV1Session>;
   // Lol Matchmaking
@@ -155,7 +157,10 @@ interface ClientEndpoint {
   '/lol-matchmaking/v1/ready-check/decline': EndpointEmpty;
   // Lol Perks
   '/lol-perks/v1/pages': EndpointOnlyResponse<LolPerksV1Pages[]>;
-  '/lol-perks/v1/pages/{digits}': EndpointOnlyResponse<LolPerksV1Pages>;
+  '/lol-perks/v1/pages/{digits}': EndpointData<
+    LolPerksV1Pages_Id,
+    LolPerksV1Pages
+  >;
   '/lol-perks/v1/currentpage': EndpointData<
     LolPerksV1CurrentPage,
     LolPerksV1Pages

@@ -11,6 +11,8 @@ import { Queue } from '@shared/typings/lol/json/queue';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
 import { translateJsonMap } from '@shared/utils/translate.util';
 import fs from 'fs-extra';
+import { Perk } from '@shared/typings/lol/json/perk';
+import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 
 @Service()
 export class LeagueClientDataReaderService extends ServiceAbstract {
@@ -32,10 +34,26 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
         items: this.readItemData(),
         maps: this.readMapData(),
         queues: this.readQueueData(),
+        perks: this.readPerksData(),
+        perkStyles: this.readPerkStylesData(),
         translate: this.translate(),
       },
     });
     this.logger.info('Read complete');
+  }
+
+  private readPerksData() {
+    const perksString = this.readFile(
+      'plugins/rcp-be-lol-game-data/global/default/v1/perks.json',
+    );
+    return JSON.parse(perksString) as Perk[];
+  }
+
+  private readPerkStylesData() {
+    const perkStylesString = this.readFile(
+      'plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json',
+    );
+    return JSON.parse(perkStylesString).styles as PerkStyles[];
   }
 
   private readChampionData() {

@@ -5,58 +5,97 @@ import { useStore } from '@render/zustand/store';
 import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { useEffect, useState } from 'react';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 
 interface ErrorModalProps {
   errors: LolMatchmakingV1Search['errors'];
 }
 
 export const ErrorModal = ({ errors }: ErrorModalProps) => {
+  const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
   const currentSummoner = useStore().currentSummoner.info();
 
   const [openModal, setOpenModal] = useState(false);
+  const [summonersName, setSummonersName] = useState<Record<string, string>>(
+    {},
+  );
 
-  const rcpFeLolPartiesTranslate = rcpFeLolParties('trans');
+  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
 
   useEffect(() => {
+    setOpenModal(!!errors.length);
     if (errors.length > 0) {
-      setOpenModal(true);
+      const ids = errors.map((e) => e.penalizedSummonerId);
+      makeRequest(
+        'GET',
+        buildEventUrl(
+          '/lol-summoner/v2/summoners?ids={digits}',
+          JSON.stringify(ids),
+        ),
+        undefined,
+      ).then((res) => {
+        if (res.ok) {
+          setSummonersName(
+            res.body.reduce(
+              (prev, curr) =>
+                Object.assign(prev, {
+                  [curr.summonerId]: curr.gameName,
+                }),
+              {},
+            ),
+          );
+        }
+      });
     }
   }, [errors.length]);
 
-  const getReadyCheckFailer = (summonerId: number) => {
-    if (currentSummoner?.summonerId === summonerId) {
-      return rcpFeLolPartiesTranslate(
-        'parties_queue_error_ready_check_failer_myself_body',
-      );
-    }
-    return rcpFeLolPartiesTranslate(
-      'parties_queue_error_ready_check_failer_other_body',
-      'someone',
+  const getFailerInfo = (summonerId: number, errorType: string) => {
+    const isCurrentSummoner = summonerId === currentSummoner?.summonerId;
+    const mySelfError = rcpFeLolPartiesTrans(
+      `parties_queue_error_${errorType}_myself_body`,
     );
+    const otherError = rcpFeLolPartiesTrans(
+      `parties_queue_error_${errorType}_other_body`,
+      summonersName[summonerId],
+    );
+
+    return {
+      title: rcpFeLolPartiesTrans(`parties_${errorType}_timer`),
+      header: rcpFeLolPartiesTrans(`parties_queue_${errorType}_header`),
+      body: isCurrentSummoner ? mySelfError : otherError,
+    };
   };
 
   const getMessage = (err: LolMatchmakingV1Search['errors'][number]) => {
-    switch (err.message) {
-      case 'READY_CHECK_FAILER': {
-        return (
-          <>
-            <Typography textAlign={'center'}>
-              {rcpFeLolPartiesTranslate('parties_ready_check_failer_timer')}
-            </Typography>
-            <Typography>
-              {getReadyCheckFailer(err.penalizedSummonerId)}
-            </Typography>
-          </>
-        );
-      }
+    const errTypeMapper: Record<string, string> = {
+      READY_CHECK_FAILER: 'ready_check_failer',
+      QUEUE_DODGER: 'queue_dodge',
+    };
+
+    const errorType = errTypeMapper[err.errorType];
+
+    if (!errorType) {
+      return <Typography>Err: {err.errorType}</Typography>;
     }
-    return;
+
+    const errInfo = getFailerInfo(err.penalizedSummonerId, errorType);
+
+    return (
+      <>
+        <Typography textAlign={'center'} fontSize={'1.2rem'}>
+          {errInfo.title}
+        </Typography>
+        <Typography textAlign={'center'}>{errInfo.header}</Typography>
+        <Typography fontSize={'0.8rem'}>{errInfo.body}</Typography>
+      </>
+    );
   };
 
   return (
     <CustomDialog
-      title={rcpFeLolPartiesTranslate('parties_queue_error_generic_header')}
+      title={rcpFeLolPartiesTrans('parties_queue_error_generic_header')}
       open={openModal}
       handleConfirm={() => setOpenModal(false)}
       labelBtnConfirm={'OK'}

@@ -77,12 +77,17 @@ export const SpellSelect = () => {
     );
   };
 
+  const disabled = (spellId: number) => {
+    return currentPlayer.assignedPosition === 'jungle' && spellId === 11; //Smite;
+  };
+
   return (
     <Stack direction={'row'} columnGap={0.5}>
       <CustomIconButtonTooltip
         placement={'top'}
         openTooltipOnClick
         title={SpellBox('first')}
+        disabled={disabled(spell1Id)}
       >
         <SquareIcon src={spellIcon(spell1Id)} size={iconSize} />
       </CustomIconButtonTooltip>
@@ -90,6 +95,7 @@ export const SpellSelect = () => {
         placement={'top'}
         openTooltipOnClick
         title={SpellBox('second')}
+        disabled={disabled(spell2Id)}
       >
         <SquareIcon src={spellIcon(spell2Id)} size={iconSize} />
       </CustomIconButtonTooltip>

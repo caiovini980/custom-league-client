@@ -190,7 +190,6 @@ export const LeagueClientEvent = () => {
       >
         <Typography
           textAlign={'center'}
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
           dangerouslySetInnerHTML={{ __html: msg }}
         />
         {mode === 'loading' && <CircularProgress />}

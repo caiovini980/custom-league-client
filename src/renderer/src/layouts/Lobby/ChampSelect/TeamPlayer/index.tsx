@@ -27,9 +27,10 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
           <TeamPlayerCard
             key={m.cellId}
             player={m}
-            slotId={index}
+            slotId={isEnemyTeam ? index + team.length : index}
             isEnemyTeam={isEnemyTeam}
             side={m.team === 1 ? 'blue' : 'red'}
+            amountPlayer={team.length}
           />
         );
       })}

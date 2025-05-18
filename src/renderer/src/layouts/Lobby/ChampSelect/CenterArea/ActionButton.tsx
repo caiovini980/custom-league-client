@@ -29,15 +29,19 @@ export const ActionButton = () => {
 
   const onClickActionButton = () => {
     let actionId = pickPlayerActionId;
-    if (currentAction === 'ban') actionId = banPlayerActionId;
+    let championId = currentPlayer.championPickIntent;
+    if (currentAction === 'ban') {
+      actionId = banPlayerActionId;
+      championId = bans.banIntentChampionId;
+    }
 
     makeRequest(
-      'POST',
-      buildEventUrl(
-        '/lol-champ-select/v1/session/actions/{digits}/complete',
-        actionId,
-      ),
-      {} as unknown as undefined,
+      'PATCH',
+      buildEventUrl('/lol-champ-select/v1/session/actions/{digits}', actionId),
+      {
+        completed: true,
+        championId,
+      },
     ).then();
   };
 
@@ -56,7 +60,7 @@ export const ActionButton = () => {
       return bans.banIntentChampionId === 0;
     }
     if (currentAction === 'pick') {
-      return currentPlayer.championId === 0;
+      return currentPlayer.championPickIntent === 0;
     }
     return false;
   };

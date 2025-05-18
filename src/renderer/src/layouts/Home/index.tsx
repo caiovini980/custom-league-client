@@ -28,7 +28,7 @@ export const Home = ({ children }: PropsWithChildren) => {
   });
 
   useLeagueClientEvent('/lol-gameflow/v1/gameflow-phase', (data) => {
-    if (['None', 'GameStart'].includes(data)) {
+    if (['None', 'GameStart', 'InProgress'].includes(data)) {
       storeActions.lobby.gameFlow(null);
       storeActions.lobby.lobby(null);
       storeActions.lobby.matchMaking(null);

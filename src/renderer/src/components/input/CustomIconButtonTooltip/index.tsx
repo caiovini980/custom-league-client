@@ -8,6 +8,7 @@ export interface CustomIconButtonTooltipProps
   placement?: TooltipProps['placement'];
   arrow?: boolean;
   openTooltipOnClick?: boolean;
+  disableInteractive?: boolean;
 }
 
 const CustomIconButtonTooltip = ({
@@ -15,6 +16,7 @@ const CustomIconButtonTooltip = ({
   title,
   arrow = true,
   openTooltipOnClick = false,
+  disableInteractive = false,
   ...iconProps
 }: CustomIconButtonTooltipProps) => {
   const [openTooltip, setOpenTooltip] = useState(false);
@@ -26,6 +28,7 @@ const CustomIconButtonTooltip = ({
     title,
     arrow,
     placement,
+    disableInteractive,
   };
 
   if (openTooltipOnClick) {
@@ -48,7 +51,7 @@ const CustomIconButtonTooltip = ({
   }
 
   return (
-    <Tooltip title={title} placement={placement} arrow={arrow}>
+    <Tooltip {...tooltipProps}>
       <span>
         <CustomIconButton {...iconProps} />
       </span>

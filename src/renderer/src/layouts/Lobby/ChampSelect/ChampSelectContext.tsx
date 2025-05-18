@@ -94,12 +94,12 @@ export const ChampSelectContext = ({
       return 'finalization';
     }
 
-    const actionIndex = getCurrentActionIndex();
-    if (!session.actions.length || actionIndex === -1) {
+    const action = getCurrentPlayerAction();
+    if (!session.actions.length || !action) {
       return 'finalization';
     }
 
-    const { type } = session.actions[actionIndex][0];
+    const { type } = action;
     if (type === 'ten_bans_reveal') {
       return 'show-bans';
     }
@@ -115,12 +115,7 @@ export const ChampSelectContext = ({
   const getCurrentPlayerAction = () => {
     return session.actions
       .flat()
-      .find(
-        (a) =>
-          a.actorCellId === session.localPlayerCellId &&
-          !a.completed &&
-          a.isInProgress,
-      );
+      .find((a) => a.actorCellId === session.localPlayerCellId && !a.completed);
   };
 
   const getBanPlayerActionId = () => {
@@ -129,7 +124,9 @@ export const ChampSelectContext = ({
         .flat()
         .find(
           (a) =>
-            a.actorCellId === session.localPlayerCellId && a.type === 'ban',
+            a.actorCellId === session.localPlayerCellId &&
+            a.type === 'ban' &&
+            !a.completed,
         )?.id ?? -1
     );
   };
@@ -140,7 +137,9 @@ export const ChampSelectContext = ({
         .flat()
         .find(
           (a) =>
-            a.actorCellId === session.localPlayerCellId && a.type === 'pick',
+            a.actorCellId === session.localPlayerCellId &&
+            a.type === 'pick' &&
+            !a.completed,
         )?.id ?? -1
     );
   };
@@ -175,15 +174,23 @@ export const ChampSelectContext = ({
   const skinUrl = () => {
     const { selectedSkinId, championId, championPickIntent } =
       getSummonerFromTeam();
-    if (championId === 0 && championPickIntent === 0) {
-      return genericImg(
-        '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/champ-select-planning-intro.jpg',
+    const { banIntentChampionId } = getBans();
+    const action = getAction();
+
+    if (action === 'ban') {
+      return loadChampionBackgroundImg('splashPath', banIntentChampionId);
+    }
+
+    if (championId !== 0 || championPickIntent !== 0) {
+      return loadChampionBackgroundImg(
+        'splashPath',
+        championId || championPickIntent,
+        selectedSkinId,
       );
     }
-    return loadChampionBackgroundImg(
-      'splashPath',
-      championId || championPickIntent,
-      selectedSkinId,
+
+    return genericImg(
+      '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/champ-select-planning-intro.jpg',
     );
   };
 

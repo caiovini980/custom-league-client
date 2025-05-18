@@ -26,6 +26,8 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
     'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
     'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/perks.json',
+    'plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json',
     'plugins/rcp-be-lol-game-data/global/default/v1/champions',
     'plugins/rcp-fe-lol-shared-components/global/default/unranked.png',
     'plugins/rcp-fe-lol-shared-components/global/default/iron.png',
