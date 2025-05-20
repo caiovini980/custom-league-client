@@ -8,71 +8,110 @@ import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 import { app } from 'electron';
 import fs from 'fs-extra';
 import {
+  createHttp1Request,
   Credentials,
   HttpRequestOptions,
-  LeagueClient,
-  authenticate,
-  createHttp1Request,
-  createWebSocketConnection,
+  LeagueWebSocket,
 } from 'league-connect';
 import path from 'node:path';
+import { AppConfigService } from '@main/modules/app-config/app-config.service';
+import * as https from 'node:https';
 
 @Service()
 export class LeagueClientService
   extends ServiceAbstract
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  private newCredentials!: Credentials;
-  private client!: LeagueClient;
+  private credentials!: Credentials;
   private isConnected = false;
 
-  constructor(private eventEmitter: EventEmitter2) {
+  constructor(
+    private eventEmitter: EventEmitter2,
+    private appConfigService: AppConfigService,
+  ) {
     super();
   }
 
   async onApplicationBootstrap() {
     this.logger.info('Initiating League Client Service...');
-    this.startAuthenticate();
+    this.listenServer().then();
   }
 
-  startAuthenticate() {
-    authenticate({
-      awaitConnection: true,
-    })
-      .then((credentials) => {
-        const client = new LeagueClient(credentials);
-        this.newCredentials = credentials;
-        this.client = client;
-
-        this.setupConnection();
-        this.client.start();
-      })
-      .catch((err: Error) => {
-        this.logger.error(err.message);
-        this.sendMsgClientDisconnected();
+  private async readLockfileAndGetCredentials() {
+    const { RIOT_CLIENT_PATH } = await this.appConfigService.getAppConfig();
+    if (!RIOT_CLIENT_PATH) {
+      return;
+    }
+    const lockfilePath = path.join(
+      RIOT_CLIENT_PATH,
+      '..',
+      'League of Legends',
+      'lockfile',
+    );
+    try {
+      const lockfileString = await fs.readFile(lockfilePath, {
+        encoding: 'utf8',
       });
+      const [_, processId, appPort, password] = lockfileString.split(':');
+      this.credentials = {
+        pid: Number(processId),
+        port: Number(appPort),
+        password,
+      };
+    } catch (e) {
+      this.logger.error('Error on read lockfile');
+      this.logger.error(e);
+    }
+  }
+
+  private async listenServer() {
+    await this.readLockfileAndGetCredentials();
+    try {
+      const res = await this.rawHandleEndpoint(
+        'GET',
+        '/riot-messaging-service/v1/state',
+        undefined,
+      );
+      if (res.ok && !this.isConnected) {
+        await this.startConnection();
+      }
+    } catch (e) {
+      // @ts-ignore
+      if ('code' in e) {
+        if (e.code === 'ECONNREFUSED') {
+          this.sendMsgClientDisconnected();
+        }
+      } else {
+        this.logger.error(e);
+      }
+    }
+    setTimeout(() => {
+      this.listenServer();
+    }, 1000);
   }
 
   async onApplicationShutdown(_signal?: string) {
     this.logger.info('Stopping League Client Service...');
     await this.launchUX();
-    this.client.stop();
-  }
-
-  setupConnection(): void {
-    this.tryConnection();
-    this.client.on('connect', (newCredentials) => {
-      this.newCredentials = newCredentials;
-      this.tryConnection();
-    });
-
-    this.client.on('disconnect', () => {
-      this.sendMsgClientDisconnected();
-    });
   }
 
   isLeagueClientConnected() {
     return this.isConnected;
+  }
+
+  async rawHandleEndpoint(
+    method: HttpRequestOptions['method'],
+    url: string,
+    body: unknown,
+  ) {
+    return await createHttp1Request(
+      {
+        method: method,
+        url: url,
+        body: body,
+      },
+      this.credentials,
+    );
   }
 
   async handleEndpoint<T = unknown>(
@@ -87,7 +126,7 @@ export class LeagueClientService
           url: url,
           body: body,
         },
-        this.newCredentials,
+        this.credentials,
       );
 
       let bodyRes = response.text();
@@ -136,18 +175,7 @@ export class LeagueClientService
     this.logger.info('Client instance disconnected.');
   }
 
-  private async tryConnection() {
-    const res = await this.handleEndpoint(
-      'GET',
-      '/riot-messaging-service/v1/state',
-      undefined,
-    );
-    if (!res.ok) {
-      setTimeout(() => {
-        this.tryConnection();
-      }, 1000);
-      return;
-    }
+  private async startConnection() {
     this.startWb();
     const regionRes = await this.handleEndpoint<RiotClientRegionLocale>(
       'GET',
@@ -166,33 +194,34 @@ export class LeagueClientService
         region: regionRes.body.region,
         version: 'latest', //systemRes.body.version.substring(0, 4),
       });
+      this.launchUX();
       return;
     }
-    setTimeout(() => {
-      this.tryConnection();
-    }, 1000);
   }
 
   private startWb() {
-    createWebSocketConnection({
-      authenticationOptions: {
-        awaitConnection: true,
+    const { password, port } = this.credentials;
+    const url = `wss://riot:${password}@127.0.0.1:${port}`;
+    const ws = new LeagueWebSocket(url, {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`riot:${password}`).toString('base64')}`,
       },
-      maxRetries: -1,
-    }).then((ws) => {
-      ws.on('message', (message) => {
-        try {
-          const msgString = Buffer.from(message as Buffer)
-            .toString('utf-8')
-            .trim();
-          if (!msgString) return;
-          const msgParsed = JSON.parse(msgString);
-          this.saveLogFile(msgParsed);
-          this.sendMsgToRender('onLeagueClientEvent', msgParsed);
-        } catch (e) {
-          this.logger.error(e);
-        }
-      });
+      agent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
+    });
+    ws.on('message', (message) => {
+      try {
+        const msgString = Buffer.from(message as Buffer)
+          .toString('utf-8')
+          .trim();
+        if (!msgString) return;
+        const msgParsed = JSON.parse(msgString);
+        this.saveLogFile(msgParsed);
+        this.sendMsgToRender('onLeagueClientEvent', msgParsed);
+      } catch (e) {
+        this.logger.error(e);
+      }
     });
   }
 

@@ -31,6 +31,14 @@ async function bootstrap() {
         bypassCSP: true,
       },
     },
+    {
+      scheme: 'local-media',
+      privileges: {
+        secure: true,
+        supportFetchAPI: true,
+        bypassCSP: true,
+      },
+    },
   ]);
 
   await app.whenReady();

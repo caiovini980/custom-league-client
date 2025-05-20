@@ -115,8 +115,9 @@ export class WinstonLoggerService extends CommonLogger {
 
   error(message: unknown, ...optionalParam: unknown[]) {
     if (this.context === 'InstanceLoader') {
-      this.logger.error(message);
-      this.logger.error(optionalParam[0]);
+      // @ts-ignore
+      this.logger.error(message.toString());
+      this.logger.error(optionalParam);
       return;
     }
     this.logger.error(this.buildWithOptionalParam(message, optionalParam));

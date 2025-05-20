@@ -178,10 +178,10 @@ export const ChampSelectContext = ({
     const action = getAction();
 
     if (action === 'ban') {
-      return loadChampionBackgroundImg('splashPath', banIntentChampionId);
-    }
-
-    if (championId !== 0 || championPickIntent !== 0) {
+      if (banIntentChampionId !== 0) {
+        return loadChampionBackgroundImg('splashPath', banIntentChampionId);
+      }
+    } else if (championId !== 0 || championPickIntent !== 0) {
       return loadChampionBackgroundImg(
         'splashPath',
         championId || championPickIntent,

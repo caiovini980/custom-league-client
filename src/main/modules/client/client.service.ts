@@ -42,7 +42,12 @@ export class ClientService
     const appConfig = await this.appConfigService.getAppConfig();
     spawn(
       `${appConfig.RIOT_CLIENT_PATH}\\RiotClientServices.exe`,
-      ['--launch-product=league_of_legends', '--launch-patchline=live'],
+      [
+        '--launch-product=league_of_legends',
+        '--launch-patchline=live',
+        '--',
+        '--headless',
+      ],
       {
         detached: true,
         stdio: 'ignore',
@@ -82,12 +87,14 @@ export class ClientService
 
   async changeShowClient(value: boolean) {
     this.showClient = value;
-    setTimeout(() => {
-      this.makeRequest({
-        method: 'POST',
-        uri: '/riotclient/launch-ux',
-        data: undefined,
-      });
-    }, 200);
+    if (value) {
+      setTimeout(() => {
+        this.makeRequest({
+          method: 'POST',
+          uri: '/riotclient/launch-ux',
+          data: undefined,
+        });
+      }, 200);
+    }
   }
 }

@@ -1,13 +1,13 @@
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
-import {storeActions, useStore} from '@render/zustand/store';
+import { storeActions, useStore } from '@render/zustand/store';
 import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { CustomCheckBox } from '@render/components/input';
 
 export const AppConfig = () => {
   const { appConfig, client } = useElectronHandle();
   const config = useStore().leagueClient.appConfig();
-  const isClientOpen = useStore().leagueClient.isClientOpen()
+  const isClientOpen = useStore().leagueClient.isClientOpen();
 
   const onClickChangeRiotPath = () => {
     appConfig.setConfig({

@@ -28,20 +28,16 @@ export const useLeagueImage = () => {
 
   const profileIcon = (id: Undefined<Id>) => {
     if (id === undefined) id = 0;
-    return link(
-      `plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${id}.jpg`,
-    );
+    return lolGameDataImg(`/lol-game-data/assets/v1/profile-icons/${id}.jpg`);
   };
 
   const lolGameDataImg = (url: string) => {
-    return link(
-      `plugins/rcp-be-lol-game-data/global/default/${url.replace('/lol-game-data/assets/', '').toLowerCase()}`,
-    );
+    return `local-media://${url}`;
   };
 
   const championIcon = (id: Id) => {
-    return link(
-      `plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id || -1}.png`,
+    return lolGameDataImg(
+      `/lol-game-data/assets/v1/champion-icons/${id || -1}.png`,
     );
   };
 
@@ -91,7 +87,7 @@ export const useLeagueImage = () => {
       }
       return lolGameDataImg(skin[art]);
     }
-    return lolGameDataImg('');
+    return '';
   };
 
   return {
