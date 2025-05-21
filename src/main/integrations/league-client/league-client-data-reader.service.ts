@@ -13,10 +13,15 @@ import { translateJsonMap } from '@shared/utils/translate.util';
 import fs from 'fs-extra';
 import { Perk } from '@shared/typings/lol/json/perk';
 import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
+import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
 
 @Service()
 export class LeagueClientDataReaderService extends ServiceAbstract {
   private resourcePath = '';
+
+  constructor(private leagueClientService: LeagueClientService) {
+    super();
+  }
 
   async readGameData(info: ClientStatusConnected['info']) {
     this.logger.info('Reading game data');
@@ -29,74 +34,70 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
     this.sendMsgToRender('onLoadGameData', {
       status: 'complete',
       info: {
-        champions: this.readChampionData(),
-        spells: this.readSpellData(),
-        items: this.readItemData(),
-        maps: this.readMapData(),
-        queues: this.readQueueData(),
-        perks: this.readPerksData(),
-        perkStyles: this.readPerkStylesData(),
+        champions: await this.readChampionData(),
+        spells: await this.readSpellData(),
+        items: await this.readItemData(),
+        maps: await this.readMapData(),
+        queues: await this.readQueueData(),
+        perks: await this.readPerksData(),
+        perkStyles: await this.readPerkStylesData(),
         translate: this.translate(),
       },
     });
     this.logger.info('Read complete');
   }
 
-  private readPerksData() {
-    const perksString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/perks.json',
-    );
+  private async readPerksData() {
+    const perksString = await this.readFileFromLolGameData('v1/perks.json');
     return JSON.parse(perksString) as Perk[];
   }
 
-  private readPerkStylesData() {
-    const perkStylesString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json',
-    );
+  private async readPerkStylesData() {
+    const perkStylesString =
+      await this.readFileFromLolGameData('v1/perkstyles.json');
     return JSON.parse(perkStylesString).styles as PerkStyles[];
   }
 
-  private readChampionData() {
-    const championSummaryString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json',
+  private async readChampionData() {
+    const championSummaryString = await this.readFileFromLolGameData(
+      'v1/champion-summary.json',
     );
 
     const championSummaryList = JSON.parse(
       championSummaryString,
     ) as ChampionSummary[];
-    return championSummaryList.map((c) => {
-      const championString = this.readFile(
-        `plugins/rcp-be-lol-game-data/global/default/v1/champions/${c.id}.json`,
+
+    const champions: Champion[] = [];
+
+    for (const c of championSummaryList) {
+      const championString = await this.readFileFromLolGameData(
+        `v1/champions/${c.id}.json`,
       );
-      return JSON.parse(championString) as Champion;
-    });
+      champions.push(JSON.parse(championString) as Champion);
+    }
+
+    return champions;
   }
 
-  private readSpellData() {
-    const summonerSpellString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json',
+  private async readSpellData() {
+    const summonerSpellString = await this.readFileFromLolGameData(
+      'v1/summoner-spells.json',
     );
     return JSON.parse(summonerSpellString) as SummonerSpells[];
   }
 
-  private readItemData() {
-    const itemString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
-    );
+  private async readItemData() {
+    const itemString = await this.readFileFromLolGameData('v1/items.json');
     return JSON.parse(itemString) as Item[];
   }
 
-  private readMapData() {
-    const mapString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
-    );
+  private async readMapData() {
+    const mapString = await this.readFileFromLolGameData('v1/maps.json');
     return JSON.parse(mapString) as Map[];
   }
 
-  private readQueueData() {
-    const queueString = this.readFile(
-      'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
-    );
+  private async readQueueData() {
+    const queueString = await this.readFileFromLolGameData('v1/queues.json');
     return JSON.parse(queueString) as Queue[];
   }
 
@@ -118,7 +119,7 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
           `plugins/${tPath}/global/default`,
           `${filename}.json`,
         );
-        return JSON.parse(this.readFile(p)) as Record<string, string>;
+        return JSON.parse(this.readFileDownloaded(p)) as Record<string, string>;
       };
       return keys.reduce((prev, curr) => {
         return Object.assign(prev, {
@@ -131,7 +132,24 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
     }
   }
 
-  private readFile(filePath: string) {
+  private async readFileFromLolGameData(filePath: string) {
+    const res = await this.leagueClientService.rawHandleEndpoint(
+      'GET',
+      `/lol-game-data/assets/${filePath}`,
+      undefined,
+    );
+    if (res.ok) {
+      const fileString = res.text();
+      // REMOVE BOM
+      if (fileString.charCodeAt(0) === 0xfeff) {
+        return fileString.slice(1);
+      }
+      return fileString;
+    }
+    throw new Error(`Cannot getting: ${filePath}`);
+  }
+
+  private readFileDownloaded(filePath: string) {
     const s = fs.readFileSync(path.join(this.resourcePath, filePath), {
       encoding: 'utf8',
     });

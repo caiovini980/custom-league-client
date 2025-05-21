@@ -1,4 +1,4 @@
-import { Avatar, Divider, Stack, Typography } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -6,6 +6,7 @@ import { RankedQueueStats } from '@render/layouts/Profile/RankedStats/RankedQueu
 import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
+import { CircularIcon } from '@render/components/CircularIcon';
 
 interface RankedStatsProps {
   summonerData: LolSummonerV1Summoners_Id;
@@ -42,9 +43,9 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
         px: 7,
       }}
     >
-      <Avatar
+      <CircularIcon
         src={profileIcon(summonerData.profileIconId)}
-        sx={{ width: iconSize, height: iconSize }}
+        size={iconSize}
       />
       <Typography>{summonerData.gameName}</Typography>
       <Typography>({summonerData.summonerLevel})</Typography>

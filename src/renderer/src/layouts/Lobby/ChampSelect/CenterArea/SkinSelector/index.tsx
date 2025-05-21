@@ -41,9 +41,7 @@ export const SkinSelector = () => {
   const handleChangeSkinId = (skinId: number) => {
     makeRequest('PATCH', '/lol-champ-select/v1/session/my-selection', {
       selectedSkinId: skinId,
-    }).then((res) => {
-      console.log(res.body);
-    });
+    }).then();
   };
 
   const renderChroma = (skin: LolChampSelectV1SkinCarouselSkins) => {

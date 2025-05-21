@@ -82,7 +82,7 @@ export class LeagueClientService
           this.sendMsgClientDisconnected();
         }
       } else {
-        this.logger.error(e);
+        this.logger.error(`Error Server: ${e}`);
       }
     }
     setTimeout(() => {

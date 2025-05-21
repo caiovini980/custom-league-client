@@ -37,13 +37,13 @@ export class AppService
       const urlS = request.url.replace('media://', '');
       const filePath = path.join(this.getResourcePath(), urlS);
       const raw = `https://raw.communitydragon.org/${urlS}`;
-      this.logger.info(`Getting media: ${raw}`);
       const ft = net
         .fetch(raw)
         .then((res) => {
           if (res.ok) {
             return res.arrayBuffer();
           }
+          this.logger.error(`Error getting media: ${raw}`);
           return null;
         })
         .then((arrayBuffer) => {
@@ -63,18 +63,27 @@ export class AppService
 
     protocol.handle('local-media', async (request) => {
       const urlS = request.url.replace('local-media://', '');
-      this.logger.info(`Getting local media: ${urlS}`);
-      const data = await this.leagueClientService.rawHandleEndpoint(
-        'GET',
-        urlS,
-        undefined,
-      );
-      if (data.ok) {
-        return new Response(data.buffer());
+      try {
+        const data = await this.leagueClientService.rawHandleEndpoint(
+          'GET',
+          urlS,
+          undefined,
+        );
+        if (data.ok) {
+          return new Response(data.buffer());
+        }
+        this.logger.error(`Error on getting local media: ${urlS}`);
+        this.logger.error(data.text());
+        return new Response(null, {
+          status: 404,
+        });
+      } catch (e) {
+        this.logger.error(`Error on getting local media: ${urlS}`);
+        this.logger.error(e);
+        return new Response(null, {
+          status: 404,
+        });
       }
-      return new Response(null, {
-        status: 404,
-      });
     });
   }
 }

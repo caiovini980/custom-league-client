@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   ButtonBase,
   LinearProgress,
@@ -8,6 +7,7 @@ import {
 } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useStore } from '@render/zustand/store';
+import { CircularIcon } from '@render/components/CircularIcon';
 
 export const SummonerInfo = () => {
   const { profileIcon } = useLeagueImage();
@@ -26,7 +26,7 @@ export const SummonerInfo = () => {
       px={1}
       component={ButtonBase}
     >
-      <Avatar src={profileIcon(currentSummoner.profileIconId)} />
+      <CircularIcon src={profileIcon(currentSummoner.profileIconId)} />
       <Stack
         direction={'column'}
         width={'100%'}

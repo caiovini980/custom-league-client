@@ -1,5 +1,4 @@
 import {
-  Avatar,
   ListItem,
   ListItemAvatar,
   Stack,
@@ -27,6 +26,7 @@ import { formatDateTime, secondsToDisplayTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
 import { useState } from 'react';
 import { FaDownload, FaPlay } from 'react-icons/fa6';
+import { CircularIcon } from '@render/components/CircularIcon';
 
 interface GameHistoryItemProps {
   game: LolMatchHistoryV1productsLol_Id_Matches['games']['games'][number];
@@ -162,7 +162,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
       }}
     >
       <ListItemAvatar sx={{ position: 'relative' }}>
-        <Avatar src={summaryGameData.championImg} />
+        <CircularIcon src={summaryGameData.championImg} />
         <Typography
           sx={{
             position: 'absolute',

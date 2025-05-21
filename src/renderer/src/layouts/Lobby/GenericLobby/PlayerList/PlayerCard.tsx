@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Card,
   CardContent,
   CardHeader,
@@ -14,6 +13,7 @@ import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
 import { PositionIcon } from './PositionIcon';
+import { CircularIcon } from '@render/components/CircularIcon';
 
 interface PlayerCardProps {
   isOwner: boolean;
@@ -46,7 +46,7 @@ export const PlayerCard = ({
   return (
     <Card sx={{ width: 240, opacity: member.ready ? 1 : 0.5 }}>
       <CardHeader
-        avatar={<Avatar src={profileIcon(summoner?.profileIconId)} />}
+        avatar={<CircularIcon src={profileIcon(summoner?.profileIconId)} />}
         title={
           <>
             <img

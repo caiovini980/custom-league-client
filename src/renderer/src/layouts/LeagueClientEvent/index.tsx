@@ -43,6 +43,7 @@ export const LeagueClientEvent = () => {
 
   useLeagueClientEvent('all', (data, event) => {
     const ignore = [
+      'riotclient/ux-state/request',
       'lol-clash',
       'client-config',
       'patcher',

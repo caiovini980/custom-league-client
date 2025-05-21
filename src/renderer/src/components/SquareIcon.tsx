@@ -1,28 +1,7 @@
-import { Avatar, Box } from '@mui/material';
+import { LazyAvatar, LazyAvatarProps } from '@render/components/LazyAvatar';
 
-interface SquareIconProps {
-  src: string;
-  size?: number;
-  grayScale?: boolean;
-}
+interface SquareIconProps extends Omit<LazyAvatarProps, 'variant'> {}
 
-export const SquareIcon = ({
-  src,
-  size = 20,
-  grayScale = false,
-}: SquareIconProps) => {
-  if (!src) {
-    return <Box height={size} width={size} />;
-  }
-  return (
-    <Avatar
-      variant={'square'}
-      src={src}
-      sx={{
-        height: size,
-        width: size,
-        filter: `grayscale(${grayScale ? 1 : 0})`,
-      }}
-    />
-  );
+export const SquareIcon = (props: SquareIconProps) => {
+  return <LazyAvatar variant={'square'} {...props} />;
 };

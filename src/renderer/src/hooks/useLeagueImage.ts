@@ -32,7 +32,7 @@ export const useLeagueImage = () => {
   };
 
   const lolGameDataImg = (url: string) => {
-    return `local-media://${url}`;
+    return `local-media://${url.toLowerCase()}`;
   };
 
   const championIcon = (id: Id) => {
@@ -44,7 +44,7 @@ export const useLeagueImage = () => {
   const spellIcon = (id: Id) => {
     const spellPath = spells.find((s) => String(s.id) === String(id));
     if (spellPath) {
-      return lolGameDataImg(spellPath.iconPath.toLowerCase());
+      return lolGameDataImg(spellPath.iconPath);
     }
     return '';
   };
@@ -52,7 +52,7 @@ export const useLeagueImage = () => {
   const itemIcon = (id: Id) => {
     const item = items.find((i) => String(i.id) === String(id));
     if (item) {
-      return lolGameDataImg(item.iconPath.toLowerCase());
+      return lolGameDataImg(item.iconPath);
     }
     return '';
   };
@@ -85,7 +85,7 @@ export const useLeagueImage = () => {
       if (!skin) {
         skin = championSkins[0];
       }
-      return lolGameDataImg(skin[art]);
+      return lolGameDataImg(skin[art].slice(1));
     }
     return '';
   };

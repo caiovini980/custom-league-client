@@ -19,13 +19,6 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
   private FILE_LIST_TO_DENY: string[] = [];
 
   private FILE_LIST_TO_DOWNLOAD = [
-    'plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/items.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/maps.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/queues.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/perks.json',
-    'plugins/rcp-be-lol-game-data/global/default/v1/perkstyles.json',
     'plugins/rcp-fe-lol-shared-components/global/default/unranked.png',
     'plugins/rcp-fe-lol-shared-components/global/default/iron.png',
     'plugins/rcp-fe-lol-shared-components/global/default/bronze.png',
