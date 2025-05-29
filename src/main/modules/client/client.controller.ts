@@ -32,4 +32,9 @@ export class ClientController {
   async changeShowClient(@Payload() payload: boolean) {
     return this.clientService.changeShowClient(payload);
   }
+
+  @IpcHandle('priorityApp')
+  async priorityApp() {
+    return this.clientService.priorityApp();
+  }
 }

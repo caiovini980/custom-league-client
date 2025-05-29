@@ -91,7 +91,7 @@ export const Lobby = () => {
     return <InGame />;
   }
 
-  if (gameFlow?.phase === 'Reconnect') {
+  if (['FailedToLaunch', 'Reconnect'].includes(gameFlow?.phase ?? '')) {
     return <Reconnect />;
   }
 

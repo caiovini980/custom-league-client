@@ -25,6 +25,7 @@ export interface IpcFunction {
     setConfig: (data: SetAppConfigData) => void;
   };
   client: {
+    priorityApp: () => void;
     changeShowClient: (value: boolean) => void;
     reloadGameData: () => void;
     startLeagueClient: () => void;

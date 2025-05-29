@@ -49,6 +49,10 @@ import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { LolPerksV1Styles } from '@shared/typings/lol/response/lolPerksV1Styles';
 import { LolPerksV1CurrentPage } from '@shared/typings/lol/request/lolPerksV1CurrentPage';
 import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { LolChampSelectV1OngoingPickOrderSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPickOrderSwap';
+import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
+import { LolHonorV2V1Config } from '@shared/typings/lol/response/lolHonorV2V1Config';
+import { LolChampSelectV1OngoingChampionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingChampionSwap';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -93,16 +97,27 @@ interface ClientEndpoint {
   '/lol-champ-select/v1/bannable-champion-ids': EndpointOnlyResponse<LolChampSelectV1BannableChampionIds>;
   '/lol-champ-select/v1/disabled-champion-ids': EndpointOnlyResponse<LolChampSelectV1DisabledChampionIds>;
   '/lol-champ-select/v1/timer': EndpointEmpty;
-  '/lol-champ-select/v1/session/champion-swaps/{digits}/accept': EndpointEmpty;
-  '/lol-champ-select/v1/session/champion-swaps/{digits}/cancel': EndpointEmpty;
-  '/lol-champ-select/v1/session/champion-swaps/{digits}/decline': EndpointEmpty;
-  '/lol-champ-select/v1/session/champion-swaps/{digits}/request': EndpointEmpty;
   '/lol-champ-select/v1/session/my-selection/reroll': EndpointEmpty;
   '/lol-champ-select/v1/session/bench/swap/{digits}': EndpointEmpty;
   '/lol-champ-select/v1/session/actions/{digits}/complete': EndpointEmpty;
   '/lol-champ-select/v1/session/actions/{digits}': EndpointOnlyRequest<
     Partial<LolChampSelectV1SessionActions_Id>
   >;
+  '/lol-champ-select/v1/ongoing-pick-order-swap': EndpointOnlyResponse<LolChampSelectV1OngoingPickOrderSwap>;
+  '/lol-champ-select/v1/session/pick-order-swaps/{digits}/accept': EndpointEmpty;
+  '/lol-champ-select/v1/session/pick-order-swaps/{digits}/cancel': EndpointEmpty;
+  '/lol-champ-select/v1/session/pick-order-swaps/{digits}/decline': EndpointEmpty;
+  '/lol-champ-select/v1/session/pick-order-swaps/{digits}/request': EndpointEmpty;
+  '/lol-champ-select/v1/ongoing-position-swap': EndpointOnlyResponse<LolChampSelectV1OngoingPositionSwap>;
+  '/lol-champ-select/v1/session/position-swaps/{digits}/accept': EndpointEmpty;
+  '/lol-champ-select/v1/session/position-swaps/{digits}/cancel': EndpointEmpty;
+  '/lol-champ-select/v1/session/position-swaps/{digits}/decline': EndpointEmpty;
+  '/lol-champ-select/v1/session/position-swaps/{digits}/request': EndpointEmpty;
+  '/lol-champ-select/v1/ongoing-champion-swap': EndpointOnlyResponse<LolChampSelectV1OngoingChampionSwap>;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/accept': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/cancel': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/decline': EndpointEmpty;
+  '/lol-champ-select/v1/session/champion-swaps/{digits}/request': EndpointEmpty;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   //Lol Match History
@@ -115,6 +130,7 @@ interface ClientEndpoint {
   '/lol-remedy/v1/remedy-notifications': EndpointOnlyResponse<
     LolRemedyV1RemedyNotifications[]
   >;
+  '/lol-remedy/v1/ack-remedy-notification/{uuid}': EndpointEmpty;
   // Lol Summoner
   '/lol-summoner/v1/current-summoner': EndpointOnlyResponse<LolSummonerV1CurrentSummoner>;
   '/lol-summoner/v1/summoners/{digits}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
@@ -122,6 +138,7 @@ interface ClientEndpoint {
   '/lol-summoner/v2/summoners?ids={digits}': EndpointOnlyResponse<
     LolSummonerV1Summoners_Id[]
   >;
+  '/lol-summoner/v2/summoners/puuid/{uuid}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
   // Lol Game Queue
   '/lol-game-queues/v1/queues': EndpointOnlyResponse<LolGameQueuesV1Queues[]>;
   // Lol Game Flow
@@ -131,6 +148,7 @@ interface ClientEndpoint {
   '/lol-gameflow/v1/gameflow-phase': EndpointOnlyResponse<LolGameFlowV1GameFlowPhase>;
   // Lol Honor
   '/lol-honor-v2/v1/ballot': EndpointOnlyResponse<LolHonorV2V1Ballot>;
+  '/lol-honor-v2/v1/config': EndpointOnlyResponse<LolHonorV2V1Config>;
   '/lol-honor/v1/honor': EndpointOnlyRequest<LolHonorV1Honor>;
   // Lol Lobby
   '/lol-lobby/v2/lobby': EndpointData<LolLobbyV2LobbyReq, LolLobbyV2LobbyRes>;
@@ -174,6 +192,8 @@ interface ClientEndpoint {
   '/lol-vanguard/v1/session': EndpointOnlyResponse<LolVanguardV1Session>;
   // Patcher
   '/patcher/v1/products/league_of_legends/state': EndpointOnlyResponse<PatcherV1ProductsLeagueOfLegendState>;
+  // Process Control
+  '/process-control/v1/process/quit': EndpointEmpty;
   // System
   '/system/v1/builds': EndpointOnlyResponse<SystemV1Builds>;
 }

@@ -116,7 +116,6 @@ export const ChampionSelectList = () => {
       buildEventUrl('/lol-champ-select/v1/session/actions/{digits}', actionId),
       {
         championId: champion.id,
-        //completed: true,
       },
     ).then();
   };

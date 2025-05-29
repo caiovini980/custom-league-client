@@ -28,16 +28,19 @@ export const useLeagueImage = () => {
 
   const profileIcon = (id: Undefined<Id>) => {
     if (id === undefined) id = 0;
-    return lolGameDataImg(`/lol-game-data/assets/v1/profile-icons/${id}.jpg`);
+    return link(
+      `plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${id}.jpg`,
+    );
   };
 
   const lolGameDataImg = (url: string) => {
-    return `local-media://${url.toLowerCase()}`;
+    const urlNormalize = url.toLowerCase().replace('lol-game-data/assets/', '');
+    return link(`plugins/rcp-be-lol-game-data/global/default/${urlNormalize}`);
   };
 
   const championIcon = (id: Id) => {
-    return lolGameDataImg(
-      `/lol-game-data/assets/v1/champion-icons/${id || -1}.png`,
+    return link(
+      `plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id || -1}.png`,
     );
   };
 

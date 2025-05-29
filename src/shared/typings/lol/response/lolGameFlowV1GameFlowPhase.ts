@@ -9,4 +9,5 @@ export type LolGameFlowV1GameFlowPhase =
   | 'WaitingForStats'
   | 'PreEndOfGame'
   | 'EndOfGame'
+  | 'FailedToLaunch'
   | 'Reconnect';

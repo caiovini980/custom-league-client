@@ -8,6 +8,7 @@ export const CentralizedStack = (props: PropsWithChildren) => {
       justifyContent={'center'}
       alignItems={'center'}
       height={'100%'}
+      width={'100%'}
       rowGap={2}
     >
       {props.children}

@@ -1,25 +1,18 @@
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { Stack } from '@mui/material';
 import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
 import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
 import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
-import config from '@render/utils/config.util';
 import { CenterArea } from '@render/layouts/Lobby/ChampSelect/CenterArea';
 import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { useStore } from '@render/zustand/store';
 
 interface ChampSelectProps {
   gameMode: string;
 }
 
 export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
-  const [session, setSession] = useState<LolChampSelectV1Session>();
-
-  useLeagueClientEvent('/lol-champ-select/v1/session', (data) => {
-    setSession(data);
-  });
+  const session = useStore().lobby.champSelect();
 
   if (!session) {
     return <LoadingScreen fullArea />;
@@ -34,7 +27,6 @@ export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
         overflow={'auto'}
         p={1}
         rowGap={1}
-        pb={`${config.bottomBarOffset}px`}
       >
         <Timer />
         <AramBenchChampions />

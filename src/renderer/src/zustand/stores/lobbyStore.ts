@@ -3,17 +3,20 @@ import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmak
 import { createStore } from 'zustand-x';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 
 export interface MatchMakingState {
   lobby: Null<LolLobbyV2Lobby>;
   gameFlow: Null<LolGameflowV1Session>;
   matchMaking: Null<LolMatchmakingV1Search>;
+  champSelect: Null<LolChampSelectV1Session>;
 }
 
 const initialState: MatchMakingState = {
   lobby: null,
   gameFlow: null,
   matchMaking: null,
+  champSelect: null,
 };
 
 export const lobbyStore = createStore('lobby')<MatchMakingState>(initialState, {

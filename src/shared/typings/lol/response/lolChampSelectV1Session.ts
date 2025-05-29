@@ -22,14 +22,26 @@ export interface LolChampSelectV1Session {
   localPlayerCellId: number;
   lockedEventIndex: number;
   myTeam: LolChampSelectV1SessionTeam[];
-  pickOrderSwaps: unknown[];
-  positionSwaps: unknown[];
+  pickOrderSwaps: LolChampSelectV1SessionPickOrderSwap[];
+  positionSwaps: LolChampSelectV1SessionPositionSwap[];
   rerollsRemaining: number;
   showQuitButton: boolean;
   skipChampionSelect: boolean;
   theirTeam: LolChampSelectV1SessionTeam[];
   timer: LolChampSelectV1SessionTimer;
   trades: LolChampSelectV1SessionTrade[];
+}
+
+export interface LolChampSelectV1SessionPickOrderSwap {
+  cellId: number;
+  id: number;
+  state: 'AVAILABLE' | 'INVALID' | 'BUSY';
+}
+
+export interface LolChampSelectV1SessionPositionSwap {
+  cellId: number;
+  id: number;
+  state: 'AVAILABLE' | 'INVALID' | 'BUSY';
 }
 
 export interface LolChampSelectV1SessionAction {
@@ -104,5 +116,5 @@ export interface LolChampSelectV1SessionBenchChampions {
 export interface LolChampSelectV1SessionTrade {
   cellId: number;
   id: number;
-  state: 'AVAILABLE' | 'INVALID';
+  state: 'AVAILABLE' | 'INVALID' | 'BUSY';
 }

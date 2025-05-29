@@ -25,6 +25,14 @@ export const AppConfig = () => {
     client.reloadGameData();
   };
 
+  const onClickCloseClient = () => {
+    client.makeRequest({
+      method: 'POST',
+      uri: '/process-control/v1/process/quit',
+      data: undefined,
+    });
+  };
+
   const getConfig = (key: keyof GetAppConfigResponse) => {
     return config?.[key] ?? '-';
   };
@@ -43,6 +51,10 @@ export const AppConfig = () => {
     {
       primaryText: 'Reload Game Data',
       onClick: onClickReloadGameData,
+    },
+    {
+      primaryText: 'Close Client',
+      onClick: onClickCloseClient,
     },
   ];
 

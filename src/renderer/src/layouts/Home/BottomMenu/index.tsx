@@ -3,6 +3,8 @@ import { Null } from '@shared/typings/generic.typing';
 import { SyntheticEvent } from 'react';
 import { FaGamepad, FaUser } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
+import config from '@render/utils/config.util';
+import { FaHome } from 'react-icons/fa';
 
 export const BottomMenu = () => {
   const navigate = useNavigate();
@@ -14,9 +16,15 @@ export const BottomMenu = () => {
 
   const menus = [
     {
+      id: '3ee462ea-d40d-435f-abfc-00a841474447',
+      icon: FaHome,
+      path: '',
+      title: 'Home',
+    },
+    {
       id: '12e5cc37-a2bd-4b3d-88c3-beeeee1c4707',
       icon: FaGamepad,
-      path: '',
+      path: 'lobby',
       title: 'Lobby',
     },
     {
@@ -29,7 +37,14 @@ export const BottomMenu = () => {
 
   return (
     <BottomNavigation
-      sx={{ borderRadius: 8, overflow: 'hidden', zIndex: (t) => t.zIndex.fab }}
+      sx={{
+        height: config.topBarHeight,
+        backgroundColor: 'transparent',
+        flexShrink: 0,
+        overflow: 'hidden',
+        zIndex: (t) => t.zIndex.fab,
+        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+      }}
       value={location.pathname.substring(1)}
       onChange={handleChange}
       showLabels

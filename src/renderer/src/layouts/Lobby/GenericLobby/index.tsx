@@ -6,7 +6,6 @@ import { PlayerList } from '@render/layouts/Lobby/GenericLobby/PlayerList';
 import { Restriction } from '@render/layouts/Lobby/GenericLobby/Restriction';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLobby } from '@render/hooks/useLobby';
-import config from '@render/utils/config.util';
 
 export const GenericLobby = () => {
   const { makeRequest } = useLeagueClientRequest();
@@ -31,7 +30,6 @@ export const GenericLobby = () => {
       justifyContent={'center'}
       width={'100%'}
       overflow={'auto'}
-      pb={`${config.bottomBarOffset}px`}
     >
       <Typography textAlign={'center'}>{getQueueName()}</Typography>
       <PlayerList lobby={lobby} />

@@ -24,6 +24,7 @@ interface ChampSelectContextState {
   currentActionIndex: number;
   currentCellId: number;
   currentPlayer: LolChampSelectV1SessionTeam;
+  summonerData: LolChampSelectV1Summoners_Id;
   currentAction: Actions;
   currentPlayerAction: Undefined<LolChampSelectV1SessionAction>;
   disabledChampionList: number[];
@@ -211,6 +212,7 @@ export const ChampSelectContext = ({
         banPlayerActionId: getBanPlayerActionId(),
         pickPlayerActionId: getPickPlayerActionId(),
         isPlayerAction: summonerData.isActingNow,
+        summonerData,
       }}
     >
       <Box

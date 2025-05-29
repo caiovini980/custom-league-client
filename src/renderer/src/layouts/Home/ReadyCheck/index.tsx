@@ -92,7 +92,7 @@ const StackBox = (props: StackProps) => {
     <Stack
       direction={'column'}
       p={1}
-      border={(t) => `1px solid ${t.palette.divider}`}
+      borderBottom={(t) => `1px solid ${t.palette.divider}`}
       {...props}
     />
   );

@@ -24,7 +24,7 @@ export const LazyAvatar = ({
     <Avatar
       ref={containerRef}
       variant={variant}
-      src={isVisible ? src : ''}
+      src={isVisible ? src : undefined}
       sx={{
         height: size,
         width: size,

@@ -3,6 +3,8 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { useEffect } from 'react';
+import { electronHandle } from '@render/utils/electronFunction.util';
 
 export const ActionButton = () => {
   const { makeRequest } = useLeagueClientRequest();
@@ -18,6 +20,12 @@ export const ActionButton = () => {
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+
+  useEffect(() => {
+    if (isPlayerAction) {
+      electronHandle.client.priorityApp();
+    }
+  }, [isPlayerAction]);
 
   const onClickReRoll = () => {
     makeRequest(

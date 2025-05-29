@@ -1,44 +1,27 @@
-import { ButtonBase, Paper, Typography } from '@mui/material';
+import { ButtonBase, Paper, Stack, Typography } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import {
   LolHonorV2V1BallotEligible,
   LolHonorV2V1BallotHonoredPlayer,
 } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useEffect, useState } from 'react';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { PropsWithChildren } from 'react';
 
 interface HonorCardProps {
   eligiblePlayer: LolHonorV2V1BallotEligible;
   honoredPlayers: LolHonorV2V1BallotHonoredPlayer[];
   amountVote: number;
+  summonerName: string;
 }
 
 export const HonorCard = ({
   eligiblePlayer,
   amountVote,
   honoredPlayers,
+  summonerName,
 }: HonorCardProps) => {
   const { lolGameDataImg, genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-
-  const [summoner, setSummoner] = useState<LolSummonerV1Summoners_Id>();
-
-  useEffect(() => {
-    makeRequest(
-      'GET',
-      buildEventUrl(
-        '/lol-summoner/v1/summoners/{digits}',
-        eligiblePlayer.summonerId,
-      ),
-      undefined,
-    ).then((res) => {
-      if (res.ok) {
-        setSummoner(res.body);
-      }
-    });
-  }, [eligiblePlayer.summonerId]);
 
   const onClickPlayer = () => {
     makeRequest('POST', '/lol-honor/v1/honor', {
@@ -67,7 +50,7 @@ export const HonorCard = ({
         width: '100%',
         maxWidth: 220,
         height: '100%',
-        background: `linear-gradient(0deg, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0) 100%), url(${lolGameDataImg(eligiblePlayer.skinSplashPath)})`,
+        background: `linear-gradient(0deg, rgba(0,0,0,0.6) ${isHonored ? '100%' : '30%'}, rgba(0,0,0,0) 80%), url(${lolGameDataImg(eligiblePlayer.skinSplashPath)})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -75,6 +58,9 @@ export const HonorCard = ({
         display: 'flex',
         justifyContent: 'end',
         flexDirection: 'column',
+        '&:hover': {
+          backgroundBlendMode: 'lighten',
+        },
       }}
       variant={'outlined'}
       disabled={disabled()}
@@ -87,8 +73,22 @@ export const HonorCard = ({
           )}
         />
       )}
-      <Typography fontSize={'0.9rem'}>{summoner?.gameName}</Typography>
+      <Typography fontSize={'0.9rem'}>{summonerName}</Typography>
       <Typography fontSize={'0.7rem'}>{eligiblePlayer.championName}</Typography>
     </Paper>
+  );
+};
+
+export const HonorCardContainer = ({ children }: PropsWithChildren) => {
+  return (
+    <Stack
+      direction={'row'}
+      width={'100%'}
+      height={'100%'}
+      justifyContent={'space-between'}
+      columnGap={2}
+    >
+      {children}
+    </Stack>
   );
 };

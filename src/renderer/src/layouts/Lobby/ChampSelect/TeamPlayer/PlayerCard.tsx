@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { useStore } from '@render/zustand/store';
+import { SwapButton } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapButton';
 
 interface TeamPlayerCardProps {
   slotId: number;
@@ -71,7 +72,7 @@ export const TeamPlayerCard = ({
       p={1}
       height={80}
       width={270}
-      columnGap={0.5}
+      columnGap={1}
       alignItems={'center'}
       justifyContent={'flex-start'}
       sx={{
@@ -79,7 +80,9 @@ export const TeamPlayerCard = ({
         overflow: 'hidden',
         borderRadius: '10px',
         zIndex: 0,
-        backgroundColor: summonerData?.isActingNow ? '#b6863d' : '',
+        backgroundColor: summonerData?.isActingNow
+          ? 'rgba(255,255,255,0.22)'
+          : '',
         '&::before': {
           content: "''",
           zIndex: -1,
@@ -113,12 +116,17 @@ export const TeamPlayerCard = ({
       </Stack>
       <CircularIcon size={50} src={championIcon(player.championId)} />
       {summonerData.shouldShowBanIntentIcon && (
-        <SquareIcon src={championIcon(summonerData.banIntentChampionId)} />
+        <SquareIcon
+          src={championIcon(summonerData.banIntentChampionId)}
+          size={30}
+        />
       )}
       <Stack
         direction={'column'}
         rowGap={0.2}
+        alignItems={isEnemyTeam ? 'flex-end' : 'flex-start'}
         sx={{
+          width: '100%',
           color: summonerData.isSelf ? '#fff669' : undefined,
           '& p': {
             letterSpacing: '1.5px',
@@ -140,13 +148,25 @@ export const TeamPlayerCard = ({
           <>
             <Typography fontSize={'1rem'}>
               {rcpFeLolChampSelectTrans(
-                `summoner_assigned_position_${summonerData.assignedPosition.toLocaleLowerCase()}`,
+                `summoner_assigned_position_${summonerData.assignedPosition.toLowerCase()}`,
               )}
             </Typography>
-            <Typography fontSize={'0.8rem'}>{summonerData.gameName}</Typography>
+            <Typography fontSize={'0.7rem'}>{summonerData.gameName}</Typography>
           </>
         )}
       </Stack>
+      {!isEnemyTeam && (
+        <SwapButton
+          slotId={slotId}
+          cellId={summonerData.cellId}
+          summonerName={summonerData.gameName}
+          position={summonerData.assignedPosition.toLowerCase()}
+          championName={summonerData.championName}
+          showPickOrderSwap={summonerData.showSwaps}
+          showPositionSwap={summonerData.showPositionSwaps}
+          showChampionSwap={summonerData.showTrades}
+        />
+      )}
     </Stack>
   );
 };

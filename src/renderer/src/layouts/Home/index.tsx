@@ -7,12 +7,11 @@ import { PropsWithChildren } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
 import { Invitations } from '@render/layouts/Home/Invitations';
+import { ChampSelectFocus } from '@render/layouts/Home/ChampSelectFocus';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const { info: setCurrentSummoner } = storeActions.currentSummoner;
-
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
-    setCurrentSummoner(data);
+    storeActions.currentSummoner.info(data);
   });
 
   useLeagueClientEvent('/lol-lobby/v2/lobby', (data) => {
@@ -29,13 +28,15 @@ export const Home = ({ children }: PropsWithChildren) => {
 
   useLeagueClientEvent('/lol-gameflow/v1/gameflow-phase', (data) => {
     if (['None', 'GameStart', 'InProgress'].includes(data)) {
-      storeActions.lobby.gameFlow(null);
-      storeActions.lobby.lobby(null);
-      storeActions.lobby.matchMaking(null);
+      storeActions.lobby.resetState();
     }
     if (['ChampSelect', 'Lobby'].includes(data)) {
       storeActions.lobby.matchMaking(null);
     }
+  });
+
+  useLeagueClientEvent('/lol-champ-select/v1/session', (data) => {
+    storeActions.lobby.champSelect(data);
   });
 
   return (
@@ -45,24 +46,17 @@ export const Home = ({ children }: PropsWithChildren) => {
       height={'inherit'}
       width={'100%'}
     >
-      <Box
+      <Stack
+        direction={'column'}
         overflow={'auto'}
         height={'100%'}
         width={'100%'}
-        position={'relative'}
       >
-        {children}
-        <Box
-          position={'absolute'}
-          bottom={12}
-          right={0}
-          left={0}
-          display={'flex'}
-          justifyContent={'center'}
-        >
-          <BottomMenu />
+        <BottomMenu />
+        <Box display={'flex'} height={'100%'} width={'100%'} overflow={'auto'}>
+          {children}
         </Box>
-      </Box>
+      </Stack>
       <Invitations />
       <Stack
         direction={'column'}
@@ -75,6 +69,7 @@ export const Home = ({ children }: PropsWithChildren) => {
         <ReadyCheck />
         <Chat />
       </Stack>
+      <ChampSelectFocus />
     </Stack>
   );
 };

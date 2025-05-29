@@ -85,6 +85,16 @@ export class ClientService
     );
   }
 
+  async priorityApp() {
+    this.mainWin.show();
+    this.mainWin.setAlwaysOnTop(true, 'screen-saver');
+    this.mainWin.flashFrame(true);
+    setTimeout(() => {
+      this.mainWin.flashFrame(false);
+      this.mainWin.setAlwaysOnTop(false);
+    }, 5000);
+  }
+
   async changeShowClient(value: boolean) {
     this.showClient = value;
     if (value) {

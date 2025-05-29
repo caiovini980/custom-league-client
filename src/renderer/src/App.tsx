@@ -9,6 +9,8 @@ import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
 import { JSX } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
+import { Info } from '@render/layouts/Info';
+import ErrorBoundary from '@render/components/ErrorBoundary';
 
 export const App = (): JSX.Element => {
   return (
@@ -21,15 +23,18 @@ export const App = (): JSX.Element => {
       <CustomThemeProvider>
         <HashRouter>
           <Stack direction={'column'} height={'100vh'}>
-            <CheckLeagueClient>
-              <LeagueClientEvent />
-              <Home>
-                <Routes>
-                  <Route path={'/'} Component={Lobby} />
-                  <Route path={'/profile'} Component={Profile} />
-                </Routes>
-              </Home>
-            </CheckLeagueClient>
+            <ErrorBoundary>
+              <CheckLeagueClient>
+                <LeagueClientEvent />
+                <Home>
+                  <Routes>
+                    <Route path={'/'} Component={Info} />
+                    <Route path={'/lobby'} Component={Lobby} />
+                    <Route path={'/profile'} Component={Profile} />
+                  </Routes>
+                </Home>
+              </CheckLeagueClient>
+            </ErrorBoundary>
             <BottomBar />
           </Stack>
         </HashRouter>

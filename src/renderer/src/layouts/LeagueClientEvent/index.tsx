@@ -14,8 +14,10 @@ import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol
 interface ErrorModal {
   eventName: string;
   priority: number;
+  title?: string;
   msg: string;
   mode: 'warning' | 'loading' | 'fatal-error';
+  onClickAction?: () => void;
 }
 
 export const LeagueClientEvent = () => {
@@ -24,7 +26,9 @@ export const LeagueClientEvent = () => {
 
   const [errors, setErrors] = useState<ErrorModal[]>([]);
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const rcpFeLolSocialTransPlayerBehavior = rcpFeLolSocial(
+    'trans-player-behavior',
+  );
 
   const addError = (err: ErrorModal) => {
     setErrors((prev) => [
@@ -48,6 +52,10 @@ export const LeagueClientEvent = () => {
       'client-config',
       'patcher',
       'lol-patcher',
+      'lol-patch',
+      'lol-league-session',
+      'lol-rso-auth',
+      'entitlements',
       'lol-chat',
       'lol-hovercard',
       'lol-premade-voice',
@@ -119,7 +127,6 @@ export const LeagueClientEvent = () => {
     '/lol-remedy/v1/remedy-notifications',
     (state, event) => {
       if (state.length) {
-        // TODO: check if is same payload every time
         const payload = JSON.parse(
           state[0].message,
         ) as LolRemedyV1RemedyNotificationsTransgression;
@@ -127,27 +134,38 @@ export const LeagueClientEvent = () => {
         makeRequest(
           'GET',
           buildEventUrl(
-            '/lol-summoner/v1/summoner-profile?puuid={uuid}',
+            '/lol-summoner/v2/summoners/puuid/{uuid}',
             payload.offenderPuuid,
           ),
           undefined,
         ).then((res) => {
           if (!res.ok) return;
-          if (payload.transgressionType === 'AWAY_FROM_KEYBOARD') {
-            const msg1 = rcpFeLolSocialTrans(
-              `remedy_feedback_offender_${payload.transgressionType}$html`,
-              '',
-            );
-            const msg2 = rcpFeLolSocialTrans(
-              `remedy_received_notification_body_top_${payload.transgressionType}_bystander_no_remedies_received`,
-            );
-            addError({
-              eventName: event,
-              mode: 'warning',
-              priority: 1,
-              msg: `${msg1} ${msg2}`,
-            });
-          }
+          const msg1 = rcpFeLolSocialTransPlayerBehavior(
+            `remedy_feedback_offender_${payload.transgressionType}$html`,
+            res.body.gameName,
+          );
+          const msg2 = rcpFeLolSocialTransPlayerBehavior(
+            `remedy_received_notification_body_top_${payload.transgressionType}_bystander_no_remedies_received`,
+          );
+
+          addError({
+            title: rcpFeLolSocialTransPlayerBehavior(
+              'remedy_received_notification_title_reporter',
+            ),
+            eventName: event,
+            mode: 'warning',
+            priority: 1,
+            msg: `${msg1} <br><br> ${msg2}`,
+            onClickAction: () =>
+              makeRequest(
+                'PUT',
+                buildEventUrl(
+                  '/lol-remedy/v1/ack-remedy-notification/{uuid}',
+                  state[0].mailId,
+                ),
+                undefined,
+              ),
+          });
         });
       } else {
         removeError(eventName);
@@ -155,7 +173,7 @@ export const LeagueClientEvent = () => {
     },
   );
 
-  const { msg, mode, eventName } = ((): ErrorModal => {
+  const { title, msg, mode, eventName, onClickAction } = ((): ErrorModal => {
     const errorMap: Record<ErrorModal['mode'], number> = {
       'fatal-error': 0,
       loading: 1,
@@ -182,6 +200,7 @@ export const LeagueClientEvent = () => {
       hiddenBtnConfirm
       maxWidth={'xs'}
       fullWidth
+      title={title}
     >
       <Stack
         justifyContent={'center'}
@@ -191,13 +210,21 @@ export const LeagueClientEvent = () => {
       >
         <Typography
           textAlign={'center'}
+          sx={{
+            '& > b': {
+              color: 'yellow',
+            },
+          }}
           dangerouslySetInnerHTML={{ __html: msg }}
         />
         {mode === 'loading' && <CircularProgress />}
         {mode === 'warning' && (
           <CustomButton
             variant={'outlined'}
-            onClick={() => removeError(eventName)}
+            onClick={() => {
+              onClickAction?.();
+              removeError(eventName);
+            }}
           >
             Ok
           </CustomButton>

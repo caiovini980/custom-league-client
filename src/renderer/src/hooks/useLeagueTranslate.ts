@@ -18,6 +18,12 @@ export const useLeagueTranslate = () => {
   const translate = (path: TranslatePath, source: string) => {
     const data = translateData[path][source];
     return (key: string, ...args: unknown[]) => {
+      if (!data[key]) {
+        console.warn(
+          `Translate key [ ${key} ] not found in path: ${path} -> ${source}`,
+        );
+        return '';
+      }
       return args.reduce<string>((prev, curr) => {
         return prev.replace(/{{.+}}/, String(curr));
       }, data[key]);

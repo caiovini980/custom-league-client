@@ -2,9 +2,10 @@ import { LinearProgress, Stack, Typography } from '@mui/material';
 import CustomDialog from '@render/components/CustomDialog';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { electronHandle } from '@render/utils/electronFunction.util';
 
 interface ReadyCheckModalProps {
   autoAccept: boolean;
@@ -17,6 +18,12 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
 
   const [matchReadyCheck, setMatchReadyCheck] =
     useState<LolMatchmakingV1ReadyCheck>();
+
+  useEffect(() => {
+    if (matchReadyCheck?.state === 'InProgress') {
+      electronHandle.client.priorityApp();
+    }
+  }, [matchReadyCheck?.state]);
 
   useLeagueClientEvent(
     '/lol-matchmaking/v1/ready-check',
