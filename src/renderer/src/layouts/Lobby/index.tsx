@@ -11,6 +11,8 @@ import { InGame } from '@render/layouts/Lobby/InGame';
 import { Reconnect } from '@render/layouts/Lobby/Reconnect';
 import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
 import { QueueList } from '@render/layouts/Lobby/QueueList';
+import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
+import { CentralizedStack } from '@render/components/CentralizedStack';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
@@ -76,11 +78,19 @@ export const Lobby = () => {
   }
 
   if (!isAvailable) {
-    return <LoadingScreen height={'100%'} />;
+    return (
+      <CentralizedStack>
+        <LoadingScreen height={'100%'} />
+      </CentralizedStack>
+    );
   }
 
   if (['WaitingForStats', 'GameStart'].includes(gameFlow?.phase ?? 'None')) {
-    return <LoadingScreen height={'100%'} />;
+    return (
+      <CentralizedStack>
+        <LoadingScreen height={'100%'} />
+      </CentralizedStack>
+    );
   }
 
   if (gameFlow?.phase === 'ChampSelect') {
@@ -100,11 +110,17 @@ export const Lobby = () => {
   }
 
   if (gameFlow?.phase === 'EndOfGame') {
-    return;
+    return <EndOfGame />;
   }
 
   return (
-    <Stack direction={'row'} height={'100%'} width={'100%'} overflow={'auto'}>
+    <Stack
+      direction={'row'}
+      height={'100%'}
+      width={'100%'}
+      overflow={'auto'}
+      position={'relative'}
+    >
       <QueueList />
       <Divider orientation={'vertical'} />
       <GenericLobby />

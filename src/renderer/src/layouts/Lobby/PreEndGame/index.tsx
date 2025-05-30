@@ -14,6 +14,7 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { CentralizedStack } from '@render/components/CentralizedStack';
 
 export const PreEndGame = () => {
   const { rcpFeLolHonor, rcpFeLolPostgame } = useLeagueTranslate();
@@ -60,7 +61,11 @@ export const PreEndGame = () => {
   }, [honorData]);
 
   if (!honorData || !playersData.length) {
-    return <LoadingScreen fullArea />;
+    return (
+      <CentralizedStack>
+        <LoadingScreen height={'100%'} />
+      </CentralizedStack>
+    );
   }
 
   return (
