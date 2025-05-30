@@ -24,7 +24,7 @@ interface ChampSelectContextState {
   currentActionIndex: number;
   currentCellId: number;
   currentPlayer: LolChampSelectV1SessionTeam;
-  summonerData: LolChampSelectV1Summoners_Id;
+  areSummonerActionsComplete: boolean;
   currentAction: Actions;
   currentPlayerAction: Undefined<LolChampSelectV1SessionAction>;
   disabledChampionList: number[];
@@ -68,6 +68,7 @@ export const ChampSelectContext = ({
 
   function getSlotId() {
     const player = getSummonerFromTeam();
+    if (session.isLegacyChampSelect) return -1;
     return player.team === 1 ? player.cellId : player.cellId - 5;
   }
 
@@ -79,7 +80,13 @@ export const ChampSelectContext = ({
     const s = session.myTeam.find(
       (t) => t.cellId === session.localPlayerCellId,
     );
-    if (!s) throw new Error('Player not found in team');
+    if (!s) {
+      return {
+        selectedSkinId: 0,
+        championId: 0,
+        championPickIntent: 0,
+      } as LolChampSelectV1SessionTeam;
+    }
     return s;
   }
 
@@ -190,12 +197,17 @@ export const ChampSelectContext = ({
       );
     }
 
+    const gameModeParse: Record<string, string> = {
+      ARAM: 'aram',
+      CLASSIC: 'classic_sru',
+    };
+
+    const gameModePath = gameModeParse[gameMode] ?? 'classic_sru';
+
     return genericImg(
-      '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/classic_sru/img/champ-select-planning-intro.jpg',
+      `/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/${gameModePath}/img/parties-background.jpg`,
     );
   };
-
-  if (!summonerData) return null;
 
   return (
     <context.Provider
@@ -211,8 +223,9 @@ export const ChampSelectContext = ({
         gameMode,
         banPlayerActionId: getBanPlayerActionId(),
         pickPlayerActionId: getPickPlayerActionId(),
-        isPlayerAction: summonerData.isActingNow,
-        summonerData,
+        isPlayerAction: summonerData?.isActingNow ?? false,
+        areSummonerActionsComplete:
+          summonerData?.areSummonerActionsComplete ?? false,
       }}
     >
       <Box

@@ -53,6 +53,7 @@ import { LolChampSelectV1OngoingPickOrderSwap } from '@shared/typings/lol/respon
 import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
 import { LolHonorV2V1Config } from '@shared/typings/lol/response/lolHonorV2V1Config';
 import { LolChampSelectV1OngoingChampionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingChampionSwap';
+import { LolSpectatorV1SpectateLaunch } from '@shared/typings/lol/request/lolSpectatorV1SpectateLaunch';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -72,6 +73,7 @@ interface ClientEndpoint {
   // Riot Messaging Service
   '/riot-messaging-service/v1/state': EndpointOnlyResponse<RiotMessagingServiceV1State>;
   // Lol Chat
+  '/lol-chat/v1/me': EndpointOnlyResponse<LolChatV1Friends>;
   '/lol-chat/v1/friends': EndpointOnlyResponse<LolChatV1Friends[]>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
@@ -118,6 +120,8 @@ interface ClientEndpoint {
   '/lol-champ-select/v1/session/champion-swaps/{digits}/cancel': EndpointEmpty;
   '/lol-champ-select/v1/session/champion-swaps/{digits}/decline': EndpointEmpty;
   '/lol-champ-select/v1/session/champion-swaps/{digits}/request': EndpointEmpty;
+
+  '/lol-champ-select-legacy/v1/session': EndpointOnlyResponse<LolChampSelectV1Session>;
   // Lol Collections
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   //Lol Match History
@@ -186,6 +190,8 @@ interface ClientEndpoint {
   '/lol-perks/v1/styles': EndpointOnlyResponse<LolPerksV1Styles[]>;
   // Lol Ranked
   '/lol-ranked/v1/ranked-stats/{uuid}': EndpointOnlyResponse<LolRankedV1RankedStats_Id>;
+  // Lol Spectator
+  '/lol-spectator/v1/spectate/launch': EndpointOnlyRequest<LolSpectatorV1SpectateLaunch>;
   // Lol Shutdown
   '/lol-shutdown/v1/notification': EndpointOnlyResponse<LolShutdownV1Notification>;
   // Lol Vanguard

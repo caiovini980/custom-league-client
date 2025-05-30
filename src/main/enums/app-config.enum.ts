@@ -9,6 +9,9 @@ export class AppConfigEnum<V = unknown> extends EnumAbstract<AppConfigEnum> {
   static RIOT_CLIENT_PATH = new AppConfigEnum('Riot Client Path', (v) => {
     return v;
   });
+  static THEME_MODE = new AppConfigEnum('Theme Mode', (v) => {
+    return v;
+  });
 
   convertValue: Converter<V>;
 

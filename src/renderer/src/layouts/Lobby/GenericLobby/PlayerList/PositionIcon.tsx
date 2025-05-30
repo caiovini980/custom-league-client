@@ -96,7 +96,7 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
               }}
             >
               <IconButton
-                disabled={!isOwner}
+                disabled={!isOwner || !member.ready}
                 onClick={() => setTooltipOpen(position)}
                 sx={{
                   display:

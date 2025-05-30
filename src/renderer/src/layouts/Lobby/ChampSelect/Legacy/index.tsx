@@ -1,26 +1,26 @@
-import { LoadingScreen } from '@render/components/LoadingScreen';
 import { Stack } from '@mui/material';
-import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
-import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
 import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
-import { CenterArea } from '@render/layouts/Lobby/ChampSelect/CenterArea';
+import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
+import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
 import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useStore } from '@render/zustand/store';
-import { Legacy } from '@render/layouts/Lobby/ChampSelect/Legacy';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { useState } from 'react';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { LoadingScreen } from '@render/components/LoadingScreen';
 
-interface ChampSelectProps {
+interface LegacyProps {
   gameMode: string;
 }
 
-export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
-  const session = useStore().lobby.champSelect();
+export const Legacy = ({ gameMode }: LegacyProps) => {
+  const [session, setSession] = useState<LolChampSelectV1Session>();
+
+  useLeagueClientEvent('/lol-champ-select-legacy/v1/session', (data) => {
+    setSession(data);
+  });
 
   if (!session) {
     return <LoadingScreen fullArea />;
-  }
-
-  if (session.isLegacyChampSelect) {
-    return <Legacy gameMode={gameMode} />;
   }
 
   return (
@@ -43,7 +43,6 @@ export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
           overflow={'auto'}
         >
           <TeamPlayer />
-          <CenterArea />
           <TeamPlayer isEnemyTeam />
         </Stack>
       </Stack>

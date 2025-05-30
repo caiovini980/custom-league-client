@@ -44,7 +44,8 @@ export const SwapButton = ({
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
-  const { session, currentCellId, summonerData } = useChampSelectContext();
+  const { session, currentCellId, areSummonerActionsComplete } =
+    useChampSelectContext();
 
   const [openSwapTooltip, setOpenModalTooltip] = useState(false);
   const [pickOrderSwapData, setPickOrderSwapData] =
@@ -99,7 +100,7 @@ export const SwapButton = ({
         <Typography textAlign={'center'}>
           {rcpFeLolChampSelectTrans('swap_request_title_local_player')}
         </Typography>
-        {pickSwapId !== -1 && !summonerData.areSummonerActionsComplete && (
+        {pickSwapId !== -1 && !areSummonerActionsComplete && (
           <CustomButton
             variant={'outlined'}
             onClick={() => onClickSwap('pick-order', pickSwapId)}

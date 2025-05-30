@@ -56,7 +56,7 @@ export const LeagueClientEvent = () => {
       'lol-league-session',
       'lol-rso-auth',
       'entitlements',
-      'lol-chat',
+      //'lol-chat',
       'lol-hovercard',
       'lol-premade-voice',
       'riot-messaging-service',

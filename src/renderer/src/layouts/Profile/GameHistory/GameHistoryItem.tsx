@@ -155,7 +155,7 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
   return (
     <ListItem
       sx={{
-        background: alpha(summaryGameData.win ? '#76ff68' : '#ff7a7a', 0.1),
+        background: alpha(summaryGameData.win ? '#11520b' : '#540808', 0.6),
         '& p': {
           fontSize: '0.8rem',
         },
@@ -174,9 +174,10 @@ export const GameHistoryItem = ({ game }: GameHistoryItemProps) => {
             textAlign: 'center',
             width: 18,
             height: 18,
-            background: theme.palette.getContrastText(
-              theme.palette.text.primary,
+            color: theme.palette.getContrastText(
+              theme.palette.background.default,
             ),
+            background: theme.palette.background.default,
           }}
         >
           {summaryGameData.level}

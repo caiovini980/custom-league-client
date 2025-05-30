@@ -39,7 +39,12 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
       container
       spacing={2}
       justifyContent={'center'}
-      sx={{ overflow: 'auto', px: 1, '& p': { fontSize: '0.8rem' } }}
+      sx={{
+        color: 'inherit',
+        overflow: 'auto',
+        px: 1,
+        '& p': { fontSize: '0.8rem' },
+      }}
     >
       {stats.queues.map((q) => (
         <Grid key={q.queueType} size={{ xs: 6 }}>
@@ -50,6 +55,7 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
             variant={'outlined'}
             p={1}
             sx={{
+              color: 'inherit',
               background: 'transparent',
             }}
           >

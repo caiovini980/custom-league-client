@@ -5,12 +5,36 @@ import { CircularIcon } from '@render/components/CircularIcon';
 import config from '@render/utils/config.util';
 import { alpha } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { useState } from 'react';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { getChatAvailabilityColor } from '@render/utils/chat.util';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 export const SummonerInfo = () => {
   const navigate = useNavigate();
   const { profileIcon } = useLeagueImage();
+  const { rcpFeLolSocial } = useLeagueTranslate();
 
   const currentSummoner = useStore().currentSummoner.info();
+  const [chatData, setChatData] = useState<LolChatV1Friends>();
+
+  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+
+  useLeagueClientEvent('/lol-chat/v1/me', (data) => {
+    setChatData(data);
+  });
+
+  const getChatStats = () => {
+    const chat = chatData;
+    if (!chat) return;
+    const gameStatus = chat.lol?.gameStatus;
+    let stats: string = chat.availability;
+    if (gameStatus && gameStatus !== 'outOfGame') {
+      stats = gameStatus;
+    }
+    return rcpFeLolSocialTrans(`availability_${stats}`);
+  };
 
   const onClick = () => {
     navigate('/profile');
@@ -54,6 +78,15 @@ export const SummonerInfo = () => {
       >
         <Typography textAlign={'center'}>
           {currentSummoner.gameName} ({currentSummoner.summonerLevel})
+        </Typography>
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '0.7rem',
+            color: getChatAvailabilityColor(chatData?.availability ?? ''),
+          }}
+        >
+          {getChatStats()}
         </Typography>
       </Stack>
     </Stack>

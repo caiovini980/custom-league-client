@@ -39,7 +39,6 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
       rowGap={1}
       width={650}
       sx={{
-        py: 3,
         px: 7,
       }}
     >

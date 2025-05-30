@@ -1,25 +1,22 @@
 import { createTheme, responsiveFontSizes } from '@mui/material';
 import { useMemo } from 'react';
+import { useStore } from '@render/zustand/store';
 
 export const useCustomTheme = () => {
+  const config = useStore().leagueClient.appConfig();
+  const isDarkMode = config?.THEME_MODE === 'DARK';
+
   return useMemo(
     () =>
       responsiveFontSizes(
         createTheme({
           palette: {
-            mode: 'dark',
+            mode: isDarkMode ? 'dark' : 'light',
             primary: {
-              main: '#00a0c7',
+              main: '#007a94',
             },
             secondary: {
               main: '#95160C',
-            },
-            text: {
-              primary: '#e5e5e5',
-            },
-            background: {
-              default: '#212121',
-              paper: '#2c2c2c',
             },
             error: {
               main: '#e05252',
@@ -47,6 +44,6 @@ export const useCustomTheme = () => {
           },
         }),
       ),
-    [],
+    [isDarkMode],
   );
 };

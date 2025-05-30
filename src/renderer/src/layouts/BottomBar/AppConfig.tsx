@@ -21,6 +21,14 @@ export const AppConfig = () => {
     client.changeShowClient(!isClientOpen);
   };
 
+  const onClickLightMode = () => {
+    const mode = getConfig('THEME_MODE') === 'DARK' ? 'LIGHT' : 'DARK';
+    appConfig.setConfig({
+      name: 'THEME_MODE',
+      value: mode,
+    });
+  };
+
   const onClickReloadGameData = () => {
     client.reloadGameData();
   };
@@ -38,6 +46,11 @@ export const AppConfig = () => {
   };
 
   const btn = [
+    {
+      primaryText: 'Light Mode',
+      onClick: onClickLightMode,
+      toggle: getConfig('THEME_MODE') === 'LIGHT',
+    },
     {
       primaryText: 'Change Riot Client Path',
       secondaryText: getConfig('RIOT_CLIENT_PATH'),

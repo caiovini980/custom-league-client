@@ -4,6 +4,7 @@ import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends'
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChatItemMenu } from '@render/layouts/Home/Chat/ChatItemMenu';
 import { CircularIcon } from '@render/components/CircularIcon';
+import { getChatAvailabilityColor } from '@render/utils/chat.util';
 
 interface ChatItemProps {
   chatFriend: LolChatV1Friends;
@@ -16,19 +17,6 @@ export const ChatItem = ({ chatFriend, onClick }: ChatItemProps) => {
 
   const iconSize = 30;
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-
-  const getColor = (availability: string) => {
-    if (availability === 'chat') {
-      return '#71ff89';
-    }
-    if (availability === 'away') {
-      return '#ff6464';
-    }
-    if (availability === 'dnd') {
-      return '#61a5ff';
-    }
-    return undefined;
-  };
 
   const getChatStats = (chat: LolChatV1Friends) => {
     const gameStatus = chat.lol?.gameStatus;
@@ -71,7 +59,7 @@ export const ChatItem = ({ chatFriend, onClick }: ChatItemProps) => {
             secondary: {
               sx: {
                 fontSize: '0.7rem',
-                color: getColor(chatFriend.availability),
+                color: getChatAvailabilityColor(chatFriend.availability),
               },
             },
           }}

@@ -30,6 +30,16 @@ export const ChatItemMenu = ({
 
   const menus = [
     {
+      label: 'Spectate Game',
+      disabled: friend.lol?.gameStatus !== 'inGame' || !!lobby,
+      iconPath: '',
+      onClick: () => {
+        makeRequest('POST', '/lol-spectator/v1/spectate/launch', {
+          puuid: friend.puuid,
+        });
+      },
+    },
+    {
       label: rcpFeLolSocialTrans('context_menu_invite_to_game'),
       disabled:
         friend.availability !== 'chat' ||
@@ -61,7 +71,9 @@ export const ChatItemMenu = ({
                   minWidth: 30,
                 }}
               >
-                <img src={genericImg(m.iconPath)} alt="" width={20} />
+                {m.iconPath && (
+                  <img src={genericImg(m.iconPath)} alt="" width={20} />
+                )}
               </ListItemIcon>
               <ListItemText>{m.label}</ListItemText>
             </ListItemButton>

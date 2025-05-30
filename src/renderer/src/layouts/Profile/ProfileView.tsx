@@ -12,6 +12,7 @@ import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummo
 import { useState } from 'react';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { capitalize } from '@render/utils/stringUtil';
+import { alpha } from '@mui/material/styles';
 
 interface ProfileViewProps {
   summonerId: number;
@@ -53,7 +54,9 @@ export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
       width={'100%'}
       alignItems={'center'}
       sx={{
-        background: `linear-gradient(0deg, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0) 100%), url(${backgroundUrl})`,
+        color: 'white',
+        background: (t) =>
+          `linear-gradient(0deg, ${alpha(t.palette.background.default, 0.55)} 40%, rgba(0,0,0,0) 100%), url(${backgroundUrl})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',

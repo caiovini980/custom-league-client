@@ -91,7 +91,7 @@ export const TeamPlayerCard = ({
           background: `url(${skinUrl})`,
           backgroundSize: 'auto 250px',
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: '0px -20px',
+          backgroundPosition: '-10px -45px',
           transform: isEnemyTeam ? 'scaleX(-1)' : undefined,
           filter: 'blur(0px)',
           maskImage:

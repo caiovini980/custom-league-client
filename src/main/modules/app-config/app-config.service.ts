@@ -32,6 +32,10 @@ export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
 
         break;
       }
+
+      default: {
+        await this.saveConfig(data.name, data.value);
+      }
     }
 
     this.sendMsgToRender('onChangeAppConfig', await this.getAppConfig());
