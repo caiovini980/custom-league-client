@@ -1,0 +1,16 @@
+import { AbstractGenerator, GeneratorOptions } from '../abstract-generator';
+
+export class Generator extends AbstractGenerator {
+  options(): GeneratorOptions {
+    // Adjust here
+    return {
+      name: 'My Generator Name',
+      title: 'Create {{Title}}',
+    };
+  }
+
+  async generate(): Promise<void> {
+    // Doc: https://github.com/SBoudrias/Inquirer.js/blob/main/packages/prompts/README.md
+    // Your code here
+  }
+}

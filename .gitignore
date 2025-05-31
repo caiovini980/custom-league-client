@@ -1,0 +1,12 @@
+node_modules
+dist
+.chromium
+out
+.DS_Store
+*.log*
+.env
+.db
+.idea
+.vscode
+.temp
+*.tsbuildinfo

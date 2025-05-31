@@ -1,0 +1,6 @@
+import { RepositoryAbstract } from '@main/abstracts/repository.abstract';
+import { Repository } from '@main/decorators/repository.decorator';
+import { {{entity-pascal-case}} } from '@main/modules/{{module-name}}/{{module-name}}.entity';
+
+@Repository({{entity-pascal-case}})
+export class {{repository-pascal-case}} extends RepositoryAbstract<{{entity-pascal-case}}> {}

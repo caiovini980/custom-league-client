@@ -1,0 +1,7 @@
+import { AbstractMigration } from '../../abstract-migration';
+
+export class {{FileName}} extends AbstractMigration {
+  constructor() {
+    super({{FileName}});
+  }
+}

@@ -1,0 +1,137 @@
+import { useEffect, useState } from 'react';
+import {
+  buildEventUrl,
+  useLeagueClientEvent,
+} from '@render/hooks/useLeagueClientEvent';
+import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
+import { Stack } from '@mui/material';
+import { CustomIconButton, CustomTextField } from '@render/components/input';
+import { FaPlus, FaTrash } from 'react-icons/fa6';
+import { SlotPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/SlotPerks';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+
+export interface PerkEdit {
+  id: number;
+  name: string;
+  isValid: boolean;
+  primaryPerkId: number;
+  secondaryPerkId: number;
+  primarySlotPerksId: number[];
+  secondarySlotPerksId: number[];
+  statSlotPerksId: number[];
+}
+
+export const RuneEdit = () => {
+  const { makeRequest } = useLeagueClientRequest();
+  const { genericImg } = useLeagueImage();
+
+  const [rune, setRune] = useState<LolPerksV1Pages>();
+  const [perksEdit, setPerkEdit] = useState<PerkEdit>();
+
+  useLeagueClientEvent('/lol-perks/v1/currentpage', (data) => {
+    setRune(data);
+  });
+
+  const handleEditPerk = (value: Partial<PerkEdit>) => {
+    if (!perksEdit) return;
+    const newValue = {
+      ...perksEdit,
+      ...value,
+    };
+    setPerkEdit(newValue);
+
+    makeRequest(
+      'PUT',
+      buildEventUrl('/lol-perks/v1/pages/{digits}', perksEdit.id),
+      {
+        name: newValue.name,
+        primaryStyleId: newValue.primaryPerkId,
+        subStyleId: newValue.secondaryPerkId,
+        selectedPerkIds: [
+          ...newValue.primarySlotPerksId,
+          ...newValue.secondarySlotPerksId,
+          ...newValue.statSlotPerksId,
+        ],
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (!rune) return;
+    setPerkEdit({
+      id: rune.id,
+      name: rune.name,
+      isValid: rune.isValid,
+      primaryPerkId: rune.primaryStyleId,
+      secondaryPerkId: rune.subStyleId,
+      primarySlotPerksId: rune.selectedPerkIds.slice(0, 4),
+      secondarySlotPerksId: rune.selectedPerkIds.slice(4, 6),
+      statSlotPerksId: rune.selectedPerkIds.slice(6, 9),
+    });
+  }, [rune]);
+
+  if (!perksEdit) return null;
+
+  // /plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/ultbook/img/one-page-tutorial-bg.png
+  // /plugins/rcp-fe-lol-collections/global/default/perks/images/construct/${perksEdit.primaryPerkId}/environment.jpg
+
+  const bgUrl = genericImg(
+    '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/ultbook/img/one-page-tutorial-bg.png',
+  );
+
+  return (
+    <Stack
+      direction={'column'}
+      p={3}
+      height={'100%'}
+      rowGap={5}
+      sx={{
+        background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${bgUrl})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Stack direction={'row'} columnGap={1} width={'min-content'}>
+        <CustomTextField
+          debounceTime={200}
+          value={perksEdit.name}
+          sx={{ width: 300 }}
+          onChangeText={(text) =>
+            handleEditPerk({
+              name: text,
+            })
+          }
+          startIcon={
+            !perksEdit.isValid && <FaExclamationTriangle color={'yellow'} />
+          }
+        />
+        <CustomIconButton disabled>
+          <FaPlus size={16} />
+        </CustomIconButton>
+        <CustomIconButton>
+          <FaTrash size={16} />
+        </CustomIconButton>
+      </Stack>
+      <Stack direction={'row'} justifyContent={'space-evenly'}>
+        <SlotPerks
+          type={'primary'}
+          handleEditPerk={handleEditPerk}
+          perkEdit={perksEdit}
+        />
+        <SlotPerks
+          type={'secondary'}
+          handleEditPerk={handleEditPerk}
+          perkEdit={perksEdit}
+        />
+        <SlotPerks
+          type={'stat'}
+          handleEditPerk={handleEditPerk}
+          perkEdit={perksEdit}
+        />
+      </Stack>
+    </Stack>
+  );
+};
