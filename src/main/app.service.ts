@@ -17,7 +17,9 @@ export class AppService
     private leagueClientService: LeagueClientService,
   ) {
     super();
-    fs.mkdirSync(this.getResourcePath());
+    if (!fs.existsSync(this.getResourcePath())) {
+      fs.mkdirSync(this.getResourcePath());
+    }
   }
 
   async onApplicationBootstrap(): Promise<void> {

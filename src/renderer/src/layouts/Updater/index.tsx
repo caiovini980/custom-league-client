@@ -97,6 +97,7 @@ export const Updater = () => {
         {updateStatus === 'downloading' && updateComponent()}
       </Stack>
       <CustomDialog
+        title={'Updater'}
         open={openModal}
         handleClose={() => setOpenModal(false)}
         labelBtnCancel={'Close'}
@@ -104,9 +105,12 @@ export const Updater = () => {
       >
         {updateStatus === 'downloading' && updateComponent(true)}
         {updateStatus === 'available' && (
-          <CustomButton variant={'outlined'} onClick={onClickQuit}>
-            Quit And Install update
-          </CustomButton>
+          <Stack direction={'column'} alignItems={'center'} rowGap={2}>
+            <Typography>Download complete. Click to install</Typography>
+            <CustomButton variant={'outlined'} onClick={onClickQuit}>
+              Quit And Install update
+            </CustomButton>
+          </Stack>
         )}
       </CustomDialog>
     </>
