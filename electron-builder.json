@@ -17,13 +17,10 @@
     "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
   ],
   "asarUnpack": ["resources/**", "out/main/chunks/*.node"],
-  "publish": {
-    "provider": "generic",
-    "url": "https://example.com/auto-updates"
-  },
   "win": {
     "target": "nsis",
-    "verifyUpdateCodeSignature": false
+    "verifyUpdateCodeSignature": false,
+    "publish": ["github"]
   },
   "linux": {
     "category": "Utility",
