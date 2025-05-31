@@ -13,7 +13,7 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
         const isDev = !app.isPackaged;
         const win = new BrowserWindow({
           icon: nativeImage.createFromPath(appIcon),
-          title: 'League Client Helper',
+          title: 'Decent League Client',
           width: 1024,
           height: 768,
           show: false,
