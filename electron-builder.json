@@ -2,7 +2,7 @@
   "appId": "com.electron.{name}",
   "productName": "electron-template",
   "directories": {
-    "buildResources": "build"
+    "buildResources": "resources"
   },
   "npmRebuild": false,
   "files": [
