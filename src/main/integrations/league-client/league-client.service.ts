@@ -151,7 +151,6 @@ export class LeagueClientService
   }
 
   private sendMsgClientConnected(info: ClientStatusConnected['info']) {
-    this.isConnected = true;
     if (
       process.env.MAIN_VITE_KILL_LAUNCHER_ON_START === 'true' ||
       app.isPackaged
@@ -159,12 +158,15 @@ export class LeagueClientService
       this.killUX();
     }
     this.logger.info('Client instance connected.');
-    fs.writeFileSync(this.getClientInfoPath(), JSON.stringify(info));
+    fs.writeFileSync(this.getClientInfoPath(), JSON.stringify(info), {
+      encoding: 'utf-8',
+    });
     this.sendMsgToRender('clientStatus', {
       connected: true,
       info,
     });
     this.eventEmitter.emit('client.connected', info);
+    this.isConnected = true;
   }
 
   private sendMsgClientDisconnected() {
@@ -176,7 +178,6 @@ export class LeagueClientService
   }
 
   private async startConnection() {
-    this.startWb();
     const regionRes = await this.handleEndpoint<RiotClientRegionLocale>(
       'GET',
       '/riotclient/region-locale',
@@ -189,6 +190,7 @@ export class LeagueClientService
     );
 
     if (regionRes.ok && systemRes.ok) {
+      this.startWb();
       this.sendMsgClientConnected({
         locale: regionRes.body.locale,
         region: regionRes.body.region,
