@@ -34,10 +34,14 @@ export const useElectronListen = <K extends keyof IpcMainToRenderer>(
   cb: (...args: Parameters<IpcMainToRenderer[K]>) => void,
 ) => {
   useEffect(() => {
-    const { unsubscribe } = electronListen[ev](cb);
+    try {
+      const { unsubscribe } = electronListen[ev](cb);
 
-    return () => {
-      unsubscribe();
-    };
+      return () => {
+        unsubscribe();
+      };
+    } catch (e) {
+      throw Error(`Electron Listen [ ${ev} ]: ${e}`);
+    }
   }, [ev]);
 };

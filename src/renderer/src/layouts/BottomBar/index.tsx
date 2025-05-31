@@ -7,6 +7,7 @@ import {
 import { storeActions } from '@render/zustand/store';
 import { useEffect, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
+import { Updater } from '@render/layouts/Updater';
 
 export const BottomBar = () => {
   const { appConfig } = useElectronHandle();
@@ -45,11 +46,13 @@ export const BottomBar = () => {
     <Paper>
       <Stack
         direction={'row'}
+        columnGap={2}
         justifyContent={'flex-end'}
         height={30}
         width={'100%'}
         p={0.5}
       >
+        <Updater />
         <IconButton size={'small'} onClick={() => openDrawer('config')}>
           <FaCog size={10} />
         </IconButton>

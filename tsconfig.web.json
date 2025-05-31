@@ -24,5 +24,6 @@
       "@render/utils/*": ["src/utils/*"],
       "@render/typings/*": ["src/typings/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "out", "dist", "logs"]
 }

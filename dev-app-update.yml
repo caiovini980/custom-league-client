@@ -1,0 +1,4 @@
+owner: caiovini980
+repo: custom-league-client
+provider: github
+updaterCacheDirName: league-client-helper-updater

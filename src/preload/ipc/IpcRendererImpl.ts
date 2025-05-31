@@ -12,6 +12,10 @@ export class IpcRendererImpl {
         getConfig: null,
         setConfig: null,
       },
+      updater: {
+        check: null,
+        quitAndInstallUpdate: null,
+      },
       client: {
         priorityApp: null,
         getClientStatus: null,
@@ -29,7 +33,9 @@ export class IpcRendererImpl {
       },
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
-      serverUp: null,
+      onDownloadingUpdate: null,
+      onUpdateComplete: null,
+      onCheckingForUpdate: null,
       clientStatus: null,
       onChangeAppConfig: null,
       onLeagueClientEvent: null,

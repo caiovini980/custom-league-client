@@ -30,7 +30,7 @@ jobs:
         run: npm install
 
       - name: Build Electron App
-        run: npm run build:win
+        run: npm run build:win:publish
 
       # Opcional: salvar os artefatos gerados
       - name: Upload artifacts

@@ -16,6 +16,7 @@ import {
   ClientEndpointKeys,
   ClientEndpointResponse,
 } from '@shared/typings/lol/clientEndpoint';
+import { ProgressInfo } from 'electron-updater';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -23,6 +24,10 @@ export interface IpcFunction {
   appConfig: {
     getConfig: () => GetAppConfigResponse;
     setConfig: (data: SetAppConfigData) => void;
+  };
+  updater: {
+    check: () => boolean;
+    quitAndInstallUpdate: () => void;
   };
   client: {
     priorityApp: () => void;
@@ -44,7 +49,9 @@ export interface IpcFunction {
 }
 
 export interface IpcMainToRenderer extends Record<string, RVoid> {
-  serverUp: (up: boolean) => void;
+  onDownloadingUpdate: (data: ProgressInfo) => void;
+  onUpdateComplete: () => void;
+  onCheckingForUpdate: () => void;
   clientStatus: (status: ClientStatusResponse) => void;
   onChangeAppConfig: (configs: GetAppConfigResponse) => void;
   onLeagueClientEvent: (data: unknown) => void;
