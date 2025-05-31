@@ -2,7 +2,8 @@ import { join } from 'node:path';
 import { optimizer } from '@electron-toolkit/utils';
 import { ElectronModule } from '@main/ipc';
 import { DynamicModule } from '@nestjs/common';
-import { BrowserWindow, Menu, app, shell } from 'electron';
+import { BrowserWindow, Menu, app, nativeImage, shell } from 'electron';
+import appIcon from '../../../resources/icon.png?asset';
 
 export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
   {
@@ -11,7 +12,8 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
       function createWindow() {
         const isDev = !app.isPackaged;
         const win = new BrowserWindow({
-          title: 'League Client Helper',
+          icon: nativeImage.createFromPath(appIcon),
+          title: 'Decent League Client',
           width: 1024,
           height: 768,
           show: false,

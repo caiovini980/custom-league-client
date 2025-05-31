@@ -1,8 +1,8 @@
 {
   "appId": "com.electron.{name}",
-  "productName": "electron-template",
+  "productName": "Decent League Client",
   "directories": {
-    "buildResources": "build"
+    "buildResources": "resources"
   },
   "npmRebuild": false,
   "files": [

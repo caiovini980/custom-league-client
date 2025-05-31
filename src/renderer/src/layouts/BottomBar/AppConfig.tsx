@@ -50,6 +50,7 @@ export const AppConfig = () => {
       primaryText: 'Light Mode',
       onClick: onClickLightMode,
       toggle: getConfig('THEME_MODE') === 'LIGHT',
+      hidden: true,
     },
     {
       primaryText: 'Change Riot Client Path',
@@ -73,14 +74,19 @@ export const AppConfig = () => {
 
   return (
     <List>
-      {btn.map((b) => (
-        <ListItem key={b.primaryText} disablePadding>
-          <ListItemButton onClick={b.onClick}>
-            <ListItemText primary={b.primaryText} secondary={b.secondaryText} />
-            {b.toggle !== undefined && <CustomCheckBox checked={b.toggle} />}
-          </ListItemButton>
-        </ListItem>
-      ))}
+      {btn
+        .filter((b) => !b.hidden)
+        .map((b) => (
+          <ListItem key={b.primaryText} disablePadding>
+            <ListItemButton onClick={b.onClick}>
+              <ListItemText
+                primary={b.primaryText}
+                secondary={b.secondaryText}
+              />
+              {b.toggle !== undefined && <CustomCheckBox checked={b.toggle} />}
+            </ListItemButton>
+          </ListItem>
+        ))}
     </List>
   );
 };

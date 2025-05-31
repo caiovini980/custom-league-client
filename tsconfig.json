@@ -2,6 +2,9 @@
   "files": [],
   "include": ["src/shared/**/*"],
   "compilerOptions": {
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strictBindCallApply": false,
@@ -17,5 +20,6 @@
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.web.json" }
-  ]
+  ],
+  "exclude": ["node_modules", "out", "dist", "logs"]
 }

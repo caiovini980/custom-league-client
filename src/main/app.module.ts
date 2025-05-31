@@ -12,6 +12,7 @@ import { Module } from '@nestjs/common';
 
 // Modules
 
+import { UpdaterModule } from '@main/modules/updater/updater.module';
 import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
 import { LobbyModule } from '@main/modules/lobby/lobby.module';
@@ -34,6 +35,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ClientModule,
     AppConfigModule,
     SummonerModule,
+    UpdaterModule,
   ],
 })
 export class AppModule {}

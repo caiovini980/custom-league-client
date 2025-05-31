@@ -34,8 +34,8 @@ export const App = (): JSX.Element => {
                   </Routes>
                 </Home>
               </CheckLeagueClient>
+              <BottomBar />
             </ErrorBoundary>
-            <BottomBar />
           </Stack>
         </HashRouter>
       </CustomThemeProvider>
