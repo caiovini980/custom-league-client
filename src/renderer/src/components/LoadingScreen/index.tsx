@@ -6,6 +6,7 @@ import {
   TypographyProps,
 } from '@mui/material';
 import { useStyles } from './styles';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 
 type Colors = CircularProgressProps['color'] | TypographyProps['color'];
 
@@ -20,12 +21,13 @@ export interface LoadingScreenProps {
 
 export const LoadingScreen = ({
   loading = true,
-  loadingText = 'Loading...',
+  loadingText,
   height = 150,
   backdrop = false,
   fullArea = false,
   color,
 }: LoadingScreenProps) => {
+  const { localTranslate } = useLocalTranslate();
   const classes = useStyles({ isBackDrop: backdrop, full: fullArea });
 
   if (!loading) return null;
@@ -42,7 +44,9 @@ export const LoadingScreen = ({
         size={50}
         color={color as CircularProgressProps['color']}
       />
-      <Typography color={color}>{loadingText}</Typography>
+      <Typography color={color}>
+        {loadingText ?? localTranslate('loading')}
+      </Typography>
     </Container>
   );
 };

@@ -5,8 +5,10 @@ import { FaGamepad, FaUser } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import config from '@render/utils/config.util';
 import { FaHome } from 'react-icons/fa';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 
 export const BottomMenu = () => {
+  const { localTranslate } = useLocalTranslate();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,19 +21,19 @@ export const BottomMenu = () => {
       id: '3ee462ea-d40d-435f-abfc-00a841474447',
       icon: FaHome,
       path: '',
-      title: 'Home',
+      title: localTranslate('home_menu_button'),
     },
     {
       id: '12e5cc37-a2bd-4b3d-88c3-beeeee1c4707',
       icon: FaGamepad,
       path: 'lobby',
-      title: 'Lobby',
+      title: localTranslate('lobby_menu_button'),
     },
     {
       id: '6bd77f91-70f7-45c0-b62c-60283e8f167a',
       icon: FaUser,
       path: 'profile',
-      title: 'Profile',
+      title: localTranslate('profile_menu_button'),
     },
   ];
 

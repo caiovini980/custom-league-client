@@ -9,8 +9,10 @@ import {
 import { storeActions, useStore } from '@render/zustand/store';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
+  const { localTranslate } = useLocalTranslate();
   const { client } = useElectronHandle();
   const {
     isConnected: setIsConnected,
@@ -21,6 +23,7 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const gameDataLoaded = useStore().gameData.loaded();
   const { setGameData, loaded: setGameDataLoaded } = storeActions.gameData;
   const isConnected = useStore().leagueClient.isConnected();
+  const isClientOpen = useStore().leagueClient.isClientOpen();
 
   const [loadingGameData, setLoadingGameData] = useState({
     percent: 0,
@@ -30,7 +33,7 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   useLeagueClientEvent(
     '/riotclient/pre-shutdown/begin',
     () => {
-      storeActions.leagueClient.resetState();
+      storeActions.leagueClient.isAvailable(false);
       storeActions.lobby.resetState();
       storeActions.currentSummoner.resetState();
     },
@@ -41,10 +44,8 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
 
   const setClientStatus = (status: ClientStatusResponse) => {
     setIsConnected(status.connected);
-    if (status.connected) {
-      setVersion(status.info.version);
-      setLocale(status.info.locale);
-    }
+    setVersion(status.info.version);
+    setLocale(status.info.locale);
   };
 
   useElectronListen('clientStatus', (data) => {
@@ -64,6 +65,7 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!gameDataLoaded && isConnected) {
       client.reloadGameData();
+      client.changeShowClient(isClientOpen);
     }
   }, [gameDataLoaded, isConnected]);
 
@@ -101,7 +103,7 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
         alignItems={'center'}
       >
         <LoadingScreen
-          loadingText={`Loading game data ${loadingGameData.percent}%`}
+          loadingText={`${localTranslate('loading_game_data')} ${loadingGameData.percent}%`}
         />
         <LinearProgress
           sx={{ width: '60%' }}

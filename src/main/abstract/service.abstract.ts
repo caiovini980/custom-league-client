@@ -24,10 +24,18 @@ export abstract class ServiceAbstract extends LoggerAbstract {
     return path.join(this.getResourcePath(), 'clientInfo.json');
   }
 
-  protected getClientStatusInfo() {
-    return JSON.parse(
-      fs.readFileSync(this.getClientInfoPath(), { encoding: 'utf8' }),
-    ) as ClientStatusConnected['info'];
+  protected getClientStatusInfo(): ClientStatusConnected['info'] {
+    try {
+      return fs.readJSONSync(
+        this.getClientInfoPath(),
+      ) as ClientStatusConnected['info'];
+    } catch (e) {
+      return {
+        locale: '',
+        region: '',
+        version: '',
+      };
+    }
   }
 
   protected sendMsgToRender<K extends keyof IpcMainToRenderer>(

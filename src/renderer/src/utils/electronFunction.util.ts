@@ -21,7 +21,7 @@ export const useElectronHandle = () => {
           ...prev,
           [key]: (...args: unknown[]) =>
             fn(...args).catch((err) => {
-              throw err;
+              throw JSON.parse(err.message);
             }),
         };
       }, {}),

@@ -1,5 +1,5 @@
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useMemo, useRef, useState} from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { LolChampSelectV1SkinCarouselSkins } from '@shared/typings/lol/response/lolChampSelectV1SkinCarouselSkins';
 import {
   Box,
@@ -14,13 +14,13 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { ChromaSelector } from '@render/layouts/Lobby/ChampSelect/CenterArea/SkinSelector/ChromaSelector';
-import {useChampSelectContext} from "@render/layouts/Lobby/ChampSelect/ChampSelectContext";
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 
 export const SkinSelector = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { lolGameDataImg } = useLeagueImage();
   const carouselRef = useRef<Carousel>(null);
-  const { currentPlayer } = useChampSelectContext()
+  const { currentPlayer } = useChampSelectContext();
 
   const [skins, setSkins] = useState<LolChampSelectV1SkinCarouselSkins[]>([]);
 
@@ -52,9 +52,12 @@ export const SkinSelector = () => {
   };
 
   const index = useMemo(() => {
-    const skinIndex = skins.findIndex((s) => s.id === currentPlayer.selectedSkinId)
-    return skinIndex === -1 ? 0 : skinIndex
-  }, [skins.length, currentPlayer.selectedSkinId])
+    const skinIndex = skins.findIndex((s) => {
+      if (s.id === currentPlayer.selectedSkinId) return true;
+      return s.childSkins.some((cs) => cs.id === currentPlayer.selectedSkinId);
+    });
+    return skinIndex === -1 ? 0 : skinIndex;
+  }, [skins.length, currentPlayer.selectedSkinId]);
 
   if (!skins.length) return;
 

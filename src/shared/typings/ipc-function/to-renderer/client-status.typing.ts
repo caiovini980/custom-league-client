@@ -1,5 +1,10 @@
 export interface ClientStatusDisconnected {
   connected: false;
+  info: {
+    region: string;
+    locale: string;
+    version: string;
+  };
 }
 
 export interface ClientStatusConnected {

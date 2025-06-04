@@ -18,8 +18,7 @@ interface ChampionMasteryProps {
 export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { loadChampionBackgroundImg } = useLeagueImage();
-  const { rcpFeLolSharedComponents, rcpFeLolMatchHistory } =
-    useLeagueTranslate();
+  const { rcpFeLolSharedComponents, rcpFeLolParties } = useLeagueTranslate();
   const champions = useStore().gameData.champions();
 
   const [championMastery, setChampionMastery] =
@@ -28,7 +27,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const transChampionMastery = rcpFeLolSharedComponents(
     'trans-champion-mastery',
   );
-  rcpFeLolMatchHistory('trans');
+  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
 
   const getChampionName = (id: number) => {
     return champions.find((c) => c.id === id)?.name ?? '';
@@ -80,10 +79,13 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
               sx={{ flex: 0 }}
             />
             <Typography variant={'caption'}>
-              Champion Points: {formatCurrency(cm.championPoints, 0)}
+              {rcpFeLolPartiesTrans(
+                'parties_point_eligibility_tooltip_masteries',
+              )}
+              : {formatCurrency(cm.championPoints, 0)}
             </Typography>
             <Typography variant={'caption'}>
-              Last Play Time: {formatDateTime(cm.lastPlayTime)}
+              {formatDateTime(cm.lastPlayTime)}
             </Typography>
           </Stack>
         </LazyImage>

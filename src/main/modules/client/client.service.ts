@@ -10,6 +10,7 @@ import {
 } from '@shared/typings/ipc-function/handle/client.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { OnApplicationBootstrap } from '@nestjs/common';
+import { IpcException } from '@main/exceptions/ipc.exception';
 
 @Service()
 export class ClientService
@@ -28,7 +29,10 @@ export class ClientService
 
   onApplicationBootstrap() {
     setInterval(() => {
-      if (!this.showClient) {
+      if (
+        !this.showClient &&
+        this.leagueClientService.isLeagueClientConnected()
+      ) {
         this.leagueClientService.handleEndpoint(
           'POST',
           '/riotclient/kill-ux',
@@ -57,14 +61,9 @@ export class ClientService
 
   getClientStatus(): ClientStatusResponse {
     const isConnected = this.leagueClientService.isLeagueClientConnected();
-    if (isConnected) {
-      return {
-        connected: true,
-        info: this.getClientStatusInfo(),
-      };
-    }
     return {
-      connected: false,
+      connected: isConnected,
+      info: this.getClientStatusInfo(),
     };
   }
 
@@ -80,9 +79,13 @@ export class ClientService
   }
 
   async reloadGameData() {
-    await this.leagueClientDataDownloadService.downloadGameData(
-      this.getClientStatusInfo(),
-    );
+    if (this.leagueClientService.isLeagueClientConnected()) {
+      await this.leagueClientDataDownloadService.downloadGameData(
+        this.getClientStatusInfo(),
+      );
+      return;
+    }
+    throw new IpcException('unknownError', 'Client not connected');
   }
 
   async priorityApp() {

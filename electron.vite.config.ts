@@ -46,7 +46,7 @@ export default defineConfig({
       }),
       swcPlugin(),
       externalizeDepsPlugin({
-        exclude: ['better-sqlite3'],
+        exclude: ['better-sqlite3', 'mime', 'p-limit'],
       }),
       bytecodePlugin(),
       checkerTs('./tsconfig.node.json'),

@@ -3,17 +3,27 @@ import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { storeActions, useStore } from '@render/zustand/store';
 import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { CustomCheckBox } from '@render/components/input';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 
 export const AppConfig = () => {
+  const { snackError } = useSnackNotification();
+  const { localTranslate } = useLocalTranslate();
   const { appConfig, client } = useElectronHandle();
   const config = useStore().leagueClient.appConfig();
   const isClientOpen = useStore().leagueClient.isClientOpen();
 
   const onClickChangeRiotPath = () => {
-    appConfig.setConfig({
-      name: 'RIOT_CLIENT_PATH',
-      value: null,
-    });
+    appConfig
+      .setConfig({
+        name: 'RIOT_CLIENT_PATH',
+        value: null,
+      })
+      .catch((err) => {
+        if ('description' in err) {
+          snackError(err.description);
+        }
+      });
   };
 
   const onClickToggleClient = () => {
@@ -47,27 +57,27 @@ export const AppConfig = () => {
 
   const btn = [
     {
-      primaryText: 'Light Mode',
+      primaryText: localTranslate('light_mode'),
       onClick: onClickLightMode,
       toggle: getConfig('THEME_MODE') === 'LIGHT',
       hidden: true,
     },
     {
-      primaryText: 'Change Riot Client Path',
+      primaryText: localTranslate('change_riot_client_path'),
       secondaryText: getConfig('RIOT_CLIENT_PATH'),
       onClick: onClickChangeRiotPath,
     },
     {
-      primaryText: 'Toggle Show Client',
+      primaryText: localTranslate('toggle_show_client'),
       onClick: onClickToggleClient,
       toggle: isClientOpen,
     },
     {
-      primaryText: 'Reload Game Data',
+      primaryText: localTranslate('reload_game_data'),
       onClick: onClickReloadGameData,
     },
     {
-      primaryText: 'Close Client',
+      primaryText: localTranslate('close_client'),
       onClick: onClickCloseClient,
     },
   ];

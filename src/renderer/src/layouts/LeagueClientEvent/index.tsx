@@ -139,18 +139,42 @@ export const LeagueClientEvent = () => {
           ),
           undefined,
         ).then((res) => {
-          if (!res.ok) return;
-          const msg1 = rcpFeLolSocialTransPlayerBehavior(
-            `remedy_feedback_offender_${payload.transgressionType}$html`,
-            res.body.gameName,
+          let player = '';
+          const reportPerson = payload.didReportOffender
+            ? 'reporter'
+            : 'bystander';
+
+          let msg1 = rcpFeLolSocialTransPlayerBehavior(
+            `remedy_received_notification_body_top_${payload.transgressionType}_${reportPerson}_no_remedies_received`,
           );
-          const msg2 = rcpFeLolSocialTransPlayerBehavior(
-            `remedy_received_notification_body_top_${payload.transgressionType}_bystander_no_remedies_received`,
-          );
+          let msg2 = '';
+
+          if (!msg1) {
+            msg1 = rcpFeLolSocialTransPlayerBehavior(
+              `remedy_received_notification_body_top_UNKNOWN_${reportPerson}_no_remedies_received`,
+            );
+          }
+
+          if (res.ok && res.body) {
+            player = `${res.body.gameName}#${res.body.tagLine}`;
+            msg1 = rcpFeLolSocialTransPlayerBehavior(
+              `remedy_feedback_offender_${payload.transgressionType}$html`,
+              player,
+            );
+            if (!msg1) {
+              msg1 = rcpFeLolSocialTransPlayerBehavior(
+                'remedy_feedback_offender_UNKNOWN$html',
+                player,
+              );
+            }
+            msg2 = rcpFeLolSocialTransPlayerBehavior(
+              `remedy_received_notification_body_bottom_${reportPerson}`,
+            );
+          }
 
           addError({
             title: rcpFeLolSocialTransPlayerBehavior(
-              'remedy_received_notification_title_reporter',
+              `remedy_received_notification_title_${reportPerson}`,
             ),
             eventName: event,
             mode: 'warning',
@@ -212,7 +236,7 @@ export const LeagueClientEvent = () => {
           textAlign={'center'}
           sx={{
             '& > b': {
-              color: 'yellow',
+              color: '#e9a61e',
             },
           }}
           dangerouslySetInnerHTML={{ __html: msg }}

@@ -40,7 +40,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     super();
   }
 
-  private async fetchFileList(url: string): Promise<string[]> {
+  private async fetchFileList(locale: string, url: string): Promise<string[]> {
     const filterAllow: RegExp[] = this.FILE_LIST_TO_DOWNLOAD.map(
       (r) => new RegExp(r),
     );
@@ -49,7 +49,9 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     );
 
     Object.keys(translateJsonMap).forEach((k) => {
-      filterAllow.push(new RegExp(`plugins/${k}/global/default/trans(.*)json`));
+      filterAllow.push(
+        new RegExp(`plugins/${k}/global/${locale.toLowerCase()}/trans(.*)json`),
+      );
     });
 
     const urls: string[] = [];
@@ -171,10 +173,11 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     const version = 'latest';
     this.logger.info('Downloading file list...');
     const filteredUrls = await this.fetchFileList(
+      info.locale,
       this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('{version}', version),
     );
 
-    const output = this.getLolGameDataResourcePath(version);
+    const output = this.getResourcePath();
     await fs.ensureDir(output);
 
     this.logger.info('Starting downloading...');
