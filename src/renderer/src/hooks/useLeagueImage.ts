@@ -16,14 +16,12 @@ type Tier =
 
 export const useLeagueImage = () => {
   const champions = useStore().gameData.champions();
-  const version = useStore().leagueClient.version();
   const spells = useStore().gameData.spells();
   const items = useStore().gameData.items();
 
   const link = (path: string) => {
     if (!path) return '';
-    if (!version) return '';
-    return `media://${version}/${path}`;
+    return `media://${path}`;
   };
 
   const profileIcon = (id: Undefined<Id>) => {

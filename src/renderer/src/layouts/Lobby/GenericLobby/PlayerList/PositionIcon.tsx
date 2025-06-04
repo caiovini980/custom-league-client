@@ -16,20 +16,36 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
 
   const iconSize = 20;
 
-  const [tooltipOpen, setTooltipOpen] = useState('');
+  const [tooltipOpenIndex, setTooltipOpenIndex] = useState(-1);
 
   const changePosition = (
     location: 'first' | 'second',
     position: PositionPreference,
   ) => {
-    const firstPreference =
+    let firstPreference = member.firstPositionPreference;
+    let secondPreference = member.secondPositionPreference;
+
+    if (location === 'first') {
+      firstPreference = position;
+    }
+    if (location === 'second') {
+      secondPreference = position;
+    }
+
+    if (
+      firstPreference === member.secondPositionPreference &&
       location === 'first'
-        ? position
-        : (member.firstPositionPreference as PositionPreference);
-    const secondPreference =
+    ) {
+      secondPreference = member.firstPositionPreference;
+    }
+
+    if (
+      secondPreference === member.firstPositionPreference &&
       location === 'second'
-        ? position
-        : (member.secondPositionPreference as PositionPreference);
+    ) {
+      firstPreference = member.secondPositionPreference;
+    }
+
     makeRequest(
       'PUT',
       '/lol-lobby/v2/lobby/members/localMember/position-preferences',
@@ -73,7 +89,7 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
   };
 
   return (
-    <ClickAwayListener onClickAway={() => setTooltipOpen('')}>
+    <ClickAwayListener onClickAway={() => setTooltipOpenIndex(-1)}>
       <Stack
         direction={'row'}
         justifyContent={'center'}
@@ -86,7 +102,7 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
               key={i}
               title={titleTooltip(i === 0 ? 'first' : 'second')}
               arrow
-              open={position === tooltipOpen}
+              open={i === tooltipOpenIndex}
               slotProps={{
                 tooltip: {
                   sx: {
@@ -97,7 +113,7 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
             >
               <IconButton
                 disabled={!isOwner || !member.ready}
-                onClick={() => setTooltipOpen(position)}
+                onClick={() => setTooltipOpenIndex(i)}
                 sx={{
                   display:
                     i === 1 && member.firstPositionPreference === 'FILL'

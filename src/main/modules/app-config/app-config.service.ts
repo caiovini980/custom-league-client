@@ -8,6 +8,9 @@ import {
   type SetAppConfigData,
 } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { dialog } from 'electron';
+import path from 'node:path';
+import fs from 'fs-extra';
+import { IpcException } from '@main/exceptions/ipc.exception';
 
 @ServiceRepo(AppConfigRepository)
 export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
@@ -27,6 +30,17 @@ export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
           properties: ['openDirectory'],
         });
         if (!paths) return;
+
+        const riotClientServicesExePath = path.join(
+          paths[0],
+          'RiotClientServices.exe',
+        );
+        if (!fs.existsSync(riotClientServicesExePath)) {
+          throw new IpcException(
+            'badRequest',
+            'This is not a Riot Client Path',
+          );
+        }
 
         await this.saveConfig(data.name, paths[0]);
 

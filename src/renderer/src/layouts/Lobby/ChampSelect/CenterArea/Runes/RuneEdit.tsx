@@ -87,7 +87,7 @@ export const RuneEdit = () => {
       p={3}
       height={'100%'}
       rowGap={5}
-      sx={{
+      style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${bgUrl})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',

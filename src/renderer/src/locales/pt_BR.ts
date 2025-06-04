@@ -1,0 +1,19 @@
+export default {
+  loading: 'Carregando',
+  home_menu_button: 'Início',
+  lobby_menu_button: 'Lobby',
+  profile_menu_button: 'Perfil',
+  loading_game_data: 'Carregando dados do jogo',
+  riot_client_path_configured: 'Caminho do Client Riot configurado com sucesso',
+  need_configure_riot_client_path:
+    'Você precisa configurar o caminho do "Cliente Riot"',
+  configure_riot_client_path_button: 'Configurar o caminho do Cliente Riot',
+  eg: 'Ex.:',
+  waiting_for_league_client: 'Esperando pelo Cliente LoL...',
+  start_league_client_button: 'Iniciar Cliente LoL',
+  light_mode: 'Modo Claro',
+  change_riot_client_path: 'Alterar Pasta do Cliente Riot',
+  toggle_show_client: 'Alternar Mostrar Cliente',
+  reload_game_data: 'Recarregar dados de jogo',
+  close_client: 'Fechar Cliente',
+};

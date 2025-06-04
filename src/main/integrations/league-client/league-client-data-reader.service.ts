@@ -29,7 +29,7 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
       status: 'reading',
       info: null,
     });
-    this.resourcePath = this.getLolGameDataResourcePath(info.version);
+    this.resourcePath = this.getResourcePath();
 
     this.sendMsgToRender('onLoadGameData', {
       status: 'complete',
@@ -41,7 +41,7 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
         queues: await this.readQueueData(),
         perks: await this.readPerksData(),
         perkStyles: await this.readPerkStylesData(),
-        translate: this.translate(),
+        translate: this.translate(info.locale),
       },
     });
     this.logger.info('Read complete');
@@ -101,22 +101,22 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
     return JSON.parse(queueString) as Queue[];
   }
 
-  private translate() {
+  private translate(locale: string) {
     return Object.keys(translateJsonMap).reduce(
       (prev, curr) => {
         return Object.assign(prev, {
-          [curr]: this.translatePath(curr, translateJsonMap[curr]),
+          [curr]: this.translatePath(locale, curr, translateJsonMap[curr]),
         });
       },
       {} as LoadGameDataComplete['info']['translate'],
     );
   }
 
-  private translatePath(tPath: string, keys: string[]) {
+  private translatePath(locale: string, tPath: string, keys: string[]) {
     try {
       const translateFile = (filename: string) => {
         const p = path.join(
-          `plugins/${tPath}/global/default`,
+          `plugins/${tPath}/global/${locale.toLowerCase()}`,
           `${filename}.json`,
         );
         return JSON.parse(this.readFileDownloaded(p)) as Record<string, string>;

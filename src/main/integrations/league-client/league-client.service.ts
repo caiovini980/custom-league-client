@@ -1,6 +1,6 @@
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
-import { OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
+import { OnApplicationShutdown } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
@@ -20,7 +20,7 @@ import * as https from 'node:https';
 @Service()
 export class LeagueClientService
   extends ServiceAbstract
-  implements OnApplicationBootstrap, OnApplicationShutdown
+  implements OnApplicationShutdown
 {
   private credentials!: Credentials;
   private isConnected = false;
@@ -30,11 +30,6 @@ export class LeagueClientService
     private appConfigService: AppConfigService,
   ) {
     super();
-  }
-
-  async onApplicationBootstrap() {
-    this.logger.info('Initiating League Client Service...');
-    this.listenServer().then();
   }
 
   private async readLockfileAndGetCredentials() {
@@ -64,7 +59,7 @@ export class LeagueClientService
     }
   }
 
-  private async listenServer() {
+  async startListenServer() {
     await this.readLockfileAndGetCredentials();
     try {
       const res = await this.rawHandleEndpoint(
@@ -86,7 +81,7 @@ export class LeagueClientService
       }
     }
     setTimeout(() => {
-      this.listenServer();
+      this.startListenServer();
     }, 1000);
   }
 
@@ -158,9 +153,7 @@ export class LeagueClientService
       this.killUX();
     }
     this.logger.info('Client instance connected.');
-    fs.writeFileSync(this.getClientInfoPath(), JSON.stringify(info), {
-      encoding: 'utf-8',
-    });
+    fs.writeJSONSync(this.getClientInfoPath(), info);
     this.sendMsgToRender('clientStatus', {
       connected: true,
       info,
@@ -173,6 +166,7 @@ export class LeagueClientService
     this.isConnected = false;
     this.sendMsgToRender('clientStatus', {
       connected: false,
+      info: this.getClientStatusInfo(),
     });
     this.logger.info('Client instance disconnected.');
   }
@@ -190,13 +184,13 @@ export class LeagueClientService
     );
 
     if (regionRes.ok && systemRes.ok) {
+      const [major, minor] = systemRes.body.version.split('.');
       this.startWb();
       this.sendMsgClientConnected({
         locale: regionRes.body.locale,
         region: regionRes.body.region,
-        version: 'latest', //systemRes.body.version.substring(0, 4),
+        version: `${major}.${minor}`,
       });
-      this.launchUX();
       return;
     }
   }

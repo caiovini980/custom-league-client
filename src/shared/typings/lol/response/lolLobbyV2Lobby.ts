@@ -1,4 +1,5 @@
 import { Null } from '@shared/typings/generic.typing';
+import { PositionPreference } from '@shared/typings/lol/request/lolLobbyV2LobbyMembersLocalMemberPositionPreferences';
 
 export interface LolLobbyV2Lobby {
   canStartActivity: boolean;
@@ -104,7 +105,8 @@ interface Member {
   botId: string;
   botPosition: string;
   botUuid: string;
-  firstPositionPreference: string;
+  firstPositionPreference: PositionPreference;
+  secondPositionPreference: PositionPreference;
   intraSubteamPosition: unknown;
   isBot: boolean;
   isLeader: boolean;
@@ -113,7 +115,6 @@ interface Member {
   playerSlots: unknown[];
   puuid: string;
   ready: boolean;
-  secondPositionPreference: string;
   showGhostedBanner: boolean;
   strawberryMapId: unknown;
   subteamIndex: unknown;

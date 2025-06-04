@@ -30,7 +30,7 @@ export const ChatItemMenu = ({
 
   const menus = [
     {
-      label: 'Spectate Game',
+      label: rcpFeLolSocialTrans('context_menu_spectate_game'),
       disabled: friend.lol?.gameStatus !== 'inGame' || !!lobby,
       iconPath: '',
       onClick: () => {
