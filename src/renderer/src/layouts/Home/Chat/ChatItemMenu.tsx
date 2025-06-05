@@ -1,16 +1,17 @@
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { PropsWithChildren } from 'react';
-import {
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-} from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { List, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useStore } from '@render/zustand/store';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+
+interface LolPartyData {
+  summoners: number[];
+  queueId: number;
+  partyId: string;
+  maxPlayers: number;
+}
 
 interface ChatItemMenuProps {
   friend: LolChatV1Friends;
@@ -20,19 +21,63 @@ export const ChatItemMenu = ({
   friend,
   children,
 }: PropsWithChildren<ChatItemMenuProps>) => {
-  const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
   const lobby = useStore().lobby.lobby();
+  const gameFlow = useStore().lobby.gameFlow();
+  const currentSummoner = useStore().currentSummoner.info();
 
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
+  const disableInviteToGame = () => {
+    const conditionsToDisable: boolean[] = [
+      friend.availability === 'dnd',
+      !lobby,
+    ];
+
+    if (lobby) {
+      conditionsToDisable.push(!lobby.localMember.allowedInviteOthers);
+      conditionsToDisable.push(
+        lobby.members.some((m) => m.puuid === friend.puuid),
+      );
+    }
+
+    return conditionsToDisable.some(Boolean);
+  };
+
+  const hiddenOpenParty = () => {
+    if (!friend.lol?.pty) return true;
+    if (!currentSummoner) return true;
+    if (gameFlow?.phase === 'Matchmaking') return true;
+    const data = JSON.parse(friend.lol.pty) as LolPartyData;
+    return data.summoners.includes(currentSummoner.summonerId);
+  };
+
+  const getPartyId = () => {
+    if (!friend.lol?.pty) return '';
+    const data = JSON.parse(friend.lol.pty) as LolPartyData;
+    return data.partyId;
+  };
+
   const menus = [
+    {
+      label: rcpFeLolSocialTrans('roster_open_party_join_button'),
+      disabled: false,
+      hidden: hiddenOpenParty(),
+      onClick: () => {
+        makeRequest(
+          'POST',
+          buildEventUrl('/lol-lobby/v2/party/{uuid}/join', getPartyId()),
+          undefined,
+        ).then((res) => {
+          console.log(res);
+        });
+      },
+    },
     {
       label: rcpFeLolSocialTrans('context_menu_spectate_game'),
       disabled: friend.lol?.gameStatus !== 'inGame' || !!lobby,
-      iconPath: '',
       onClick: () => {
         makeRequest('POST', '/lol-spectator/v1/spectate/launch', {
           puuid: friend.puuid,
@@ -41,10 +86,7 @@ export const ChatItemMenu = ({
     },
     {
       label: rcpFeLolSocialTrans('context_menu_invite_to_game'),
-      disabled:
-        friend.availability !== 'chat' ||
-        !lobby?.localMember.allowedInviteOthers,
-      iconPath: '/plugins/rcp-fe-lol-social/global/default/add_person_mask.png',
+      disabled: disableInviteToGame(),
       onClick: () => {
         makeRequest('POST', '/lol-lobby/v2/lobby/invitations', [
           {
@@ -59,26 +101,19 @@ export const ChatItemMenu = ({
   const ChatMenu = () => {
     return (
       <List dense sx={{ p: 0 }}>
-        {menus.map((m) => {
-          return (
-            <ListItemButton
-              key={m.label}
-              disabled={m.disabled}
-              onClick={m.onClick}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 30,
-                }}
+        {menus
+          .filter((m) => !m.hidden)
+          .map((m) => {
+            return (
+              <ListItemButton
+                key={m.label}
+                disabled={m.disabled}
+                onClick={m.onClick}
               >
-                {m.iconPath && (
-                  <img src={genericImg(m.iconPath)} alt="" width={20} />
-                )}
-              </ListItemIcon>
-              <ListItemText>{m.label}</ListItemText>
-            </ListItemButton>
-          );
-        })}
+                <ListItemText>{m.label}</ListItemText>
+              </ListItemButton>
+            );
+          })}
       </List>
     );
   };

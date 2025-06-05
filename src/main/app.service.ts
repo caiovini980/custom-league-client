@@ -52,6 +52,7 @@ export class AppService
 
       const headers = {
         'Content-Type': mime.getType(urlS) || 'image/*',
+        'Cache-Control': 'public, max-age=31536000'
       };
 
       if (fs.existsSync(filePath) && !isNeedUpdateImageCache) {

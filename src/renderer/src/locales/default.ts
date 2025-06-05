@@ -12,7 +12,8 @@ export default {
   start_league_client_button: 'Start League Client',
   light_mode: 'Light Mode',
   change_riot_client_path: 'Change Riot Client Path',
-  toggle_show_client: 'Toggle Show Client',
+  toggle_show_client: 'Show Client',
   reload_game_data: 'Reload Game Data',
   close_client: 'Close Client',
+  keep_status: 'Keep Status',
 };

@@ -54,6 +54,9 @@ import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/respons
 import { LolHonorV2V1Config } from '@shared/typings/lol/response/lolHonorV2V1Config';
 import { LolChampSelectV1OngoingChampionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingChampionSwap';
 import { LolSpectatorV1SpectateLaunch } from '@shared/typings/lol/request/lolSpectatorV1SpectateLaunch';
+import { LolPerksV1RecommendedChampionPositions } from '@shared/typings/lol/response/lolPerksV1RecommendedChampionPositions';
+import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
+import { LolChatV1Me } from '@shared/typings/lol/request/lolChatV1Me';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -73,8 +76,9 @@ interface ClientEndpoint {
   // Riot Messaging Service
   '/riot-messaging-service/v1/state': EndpointOnlyResponse<RiotMessagingServiceV1State>;
   // Lol Chat
-  '/lol-chat/v1/me': EndpointOnlyResponse<LolChatV1Friends>;
+  '/lol-chat/v1/me': EndpointData<LolChatV1Me, LolChatV1Friends>;
   '/lol-chat/v1/friends': EndpointOnlyResponse<LolChatV1Friends[]>;
+  '/lol-chat/v1/friends/{id}': EndpointOnlyResponse<LolChatV1Friends>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
   '/lol-chat/v1/friend-counts': EndpointOnlyResponse<LolChatV1FriendCounts>;
@@ -158,7 +162,14 @@ interface ClientEndpoint {
   '/lol-lobby/v2/lobby': EndpointData<LolLobbyV2LobbyReq, LolLobbyV2LobbyRes>;
   '/lol-lobby/v2/lobby/matchmaking/search': EndpointEmpty;
   '/lol-lobby/v2/lobby/members': EndpointOnlyResponse<LolLobbyV2LobbyMembers[]>;
+  '/lol-lobby/v2/lobby/members/{digits}/grant-invite': EndpointEmpty;
+  '/lol-lobby/v2/lobby/members/{digits}/kick': EndpointEmpty;
+  '/lol-lobby/v2/lobby/members/{digits}/promote': EndpointEmpty;
+  '/lol-lobby/v2/lobby/members/{digits}/revoke-invite': EndpointEmpty;
+  '/lol-lobby/v2/lobby/partyType': EndpointOnlyRequest<string>;
   '/lol-lobby/v2/play-again': EndpointEmpty;
+  '/lol-lobby/v2/play-again-decline': EndpointEmpty;
+  '/lol-lobby/v2/party/{uuid}/join': EndpointEmpty;
   '/lol-lobby/v2/lobby/members/localMember/position-preferences': EndpointOnlyRequest<LolLobbyV2LobbyMembersLocalMemberPositionPreferences>;
   '/lol-lobby/v2/lobby/invitations': EndpointOnlyRequest<
     LolLobbyV2LobbyInvitations[]
@@ -178,7 +189,7 @@ interface ClientEndpoint {
   '/lol-matchmaking/v1/ready-check/accept': EndpointEmpty;
   '/lol-matchmaking/v1/ready-check/decline': EndpointEmpty;
   // Lol Perks
-  '/lol-perks/v1/pages': EndpointOnlyResponse<LolPerksV1Pages[]>;
+  '/lol-perks/v1/pages': EndpointData<LolPerksV1Pages_Id, LolPerksV1Pages[]>;
   '/lol-perks/v1/pages/{digits}': EndpointData<
     LolPerksV1Pages_Id,
     LolPerksV1Pages
@@ -186,6 +197,10 @@ interface ClientEndpoint {
   '/lol-perks/v1/currentpage': EndpointData<
     LolPerksV1CurrentPage,
     LolPerksV1Pages
+  >;
+  '/lol-perks/v1/recommended-champion-positions': EndpointOnlyResponse<LolPerksV1RecommendedChampionPositions>;
+  '/lol-perks/v1/recommended-pages/champion/{digits}/position/{string}/map/{digits}': EndpointOnlyResponse<
+    LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id[]
   >;
   '/lol-perks/v1/styles': EndpointOnlyResponse<LolPerksV1Styles[]>;
   // Lol Ranked

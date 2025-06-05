@@ -6,10 +6,12 @@ import config from '@render/utils/config.util';
 import { alpha } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { getChatAvailabilityColor } from '@render/utils/chat.util';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { CustomIconButton } from '@render/components/input';
+import { EditChatStatus } from '@render/layouts/Home/SummonerInfo/EditChatStatus';
 
 export const SummonerInfo = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export const SummonerInfo = () => {
 
   const currentSummoner = useStore().currentSummoner.info();
   const [chatData, setChatData] = useState<LolChatV1Friends>();
+  const [openModal, setOpenModal] = useState(false);
 
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
@@ -40,55 +43,71 @@ export const SummonerInfo = () => {
     navigate('/profile');
   };
 
+  const onClickEditStatus = (ev: MouseEvent) => {
+    ev.stopPropagation();
+    setOpenModal(true);
+  };
+
   if (!currentSummoner) {
     return <Box height={config.topBarHeight} />;
   }
 
   return (
-    <Stack
-      direction={'row'}
-      height={config.topBarHeight}
-      width={'100%'}
-      alignItems={'center'}
-      flexShrink={0}
-      px={1}
-      component={ButtonBase}
-      onClick={onClick}
-      sx={{
-        borderBottom: (t) => `1px solid ${t.palette.divider}`,
-        position: 'relative',
-        zIndex: 1,
-        '&:after': {
-          content: "''",
-          backgroundColor: (t) => alpha(t.palette.primary.main, 0.3),
-          position: 'absolute',
-          height: '100%',
-          width: `${currentSummoner.percentCompleteForNextLevel}%`,
-          left: 0,
-          zIndex: -1,
-        },
-      }}
-    >
-      <CircularIcon src={profileIcon(currentSummoner.profileIconId)} />
+    <>
       <Stack
-        direction={'column'}
+        direction={'row'}
+        height={config.topBarHeight}
         width={'100%'}
-        justifyContent={'center'}
+        alignItems={'center'}
+        flexShrink={0}
         px={1}
+        sx={{
+          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          position: 'relative',
+          zIndex: 1,
+          '&:after': {
+            content: "''",
+            backgroundColor: (t) => alpha(t.palette.primary.main, 0.3),
+            position: 'absolute',
+            height: '100%',
+            width: `${currentSummoner.percentCompleteForNextLevel}%`,
+            left: 0,
+            zIndex: -1,
+          },
+        }}
       >
-        <Typography textAlign={'center'}>
-          {currentSummoner.gameName} ({currentSummoner.summonerLevel})
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: 'bold',
-            fontSize: '0.7rem',
-            color: getChatAvailabilityColor(chatData?.availability ?? ''),
-          }}
+        <CustomIconButton onClick={onClick}>
+          <CircularIcon src={profileIcon(currentSummoner.profileIconId)} />
+        </CustomIconButton>
+        <Stack
+          direction={'column'}
+          width={'100%'}
+          justifyContent={'center'}
+          px={1}
         >
-          {getChatStats()}
-        </Typography>
+          <Typography textAlign={'center'}>
+            {currentSummoner.gameName} ({currentSummoner.summonerLevel})
+          </Typography>
+          <Typography
+            component={ButtonBase}
+            onClick={onClickEditStatus}
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '0.7rem',
+              color: getChatAvailabilityColor(chatData?.availability ?? ''),
+            }}
+          >
+            {getChatStats()}
+          </Typography>
+        </Stack>
       </Stack>
-    </Stack>
+      {chatData && (
+        <EditChatStatus
+          chatData={chatData}
+          open={openModal}
+          handleClose={() => setOpenModal(false)}
+        />
+      )}
+    </>
   );
 };

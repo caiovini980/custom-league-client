@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CircularProgress,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -14,8 +7,10 @@ import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummo
 import { useEffect, useState } from 'react';
 import { PositionIcon } from './PositionIcon';
 import { CircularIcon } from '@render/components/CircularIcon';
+import { PlayerCardMenu } from '@render/layouts/Lobby/GenericLobby/PlayerList/PlayerCardMenu';
 
 interface PlayerCardProps {
+  isLeader: boolean;
   isOwner: boolean;
   member: LolLobbyV2Lobby['members'][number];
   showPositionSelector: boolean;
@@ -24,6 +19,7 @@ interface PlayerCardProps {
 export const PlayerCard = ({
   member,
   isOwner,
+  isLeader,
   showPositionSelector,
 }: PlayerCardProps) => {
   const { makeRequest } = useLeagueClientRequest();
@@ -44,46 +40,47 @@ export const PlayerCard = ({
   }, [member.summonerId]);
 
   return (
-    <Card sx={{ width: 240, opacity: member.ready ? 1 : 0.5 }}>
-      <CardHeader
-        avatar={<CircularIcon src={profileIcon(summoner?.profileIconId)} />}
-        title={
-          <>
-            <img
-              alt={'icon-crown'}
-              src={genericImg(
-                'plugins/rcp-fe-lol-parties/global/default/icon-crown.png',
-              )}
-              style={{
-                display: member.isLeader ? 'block' : 'none',
-                height: 15,
-                width: 15,
-              }}
-            />
-            <Typography>{summoner?.gameName}</Typography>
-          </>
-        }
-        subheader={summoner?.summonerLevel}
-        slotProps={{
-          title: {
-            direction: 'row',
-            alignItems: 'center',
-            columnGap: 1,
-            component: Stack,
-          },
-        }}
-      />
-      <CardContent
-        component={Stack}
-        direction={'column'}
+    <Stack
+      component={Paper}
+      direction={'column'}
+      rowGap={1}
+      p={1}
+      position={'relative'}
+      justifyContent={'center'}
+      alignItems={'center'}
+      sx={{ width: 180, opacity: member.ready ? 1 : 0.5 }}
+    >
+      <Box sx={{ position: 'absolute', top: 3, right: 3 }}>
+        {!isOwner && (
+          <PlayerCardMenu member={member} isCurrentLeader={isLeader} />
+        )}
+      </Box>
+      <CircularIcon src={profileIcon(summoner?.profileIconId)} size={60} />
+      <Stack
+        direction={'row'}
+        columnGap={0.5}
         alignItems={'center'}
-        rowGap={2}
+        flexShrink={0}
       >
+        <img
+          alt={'icon-crown'}
+          src={genericImg(
+            'plugins/rcp-fe-lol-parties/global/default/icon-crown.png',
+          )}
+          style={{
+            display: member.isLeader ? 'block' : 'none',
+            height: 15,
+            width: 15,
+          }}
+        />
+        <Typography sx={{ width: '100%' }}>{summoner?.gameName}</Typography>
+      </Stack>
+      <Stack direction={'column'} alignItems={'center'} rowGap={2}>
         {showPositionSelector && (
           <PositionIcon member={member} isOwner={isOwner} />
         )}
         {!member.ready && <CircularProgress size={14} />}
-      </CardContent>
-    </Card>
+      </Stack>
+    </Stack>
   );
 };

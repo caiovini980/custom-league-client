@@ -11,17 +11,16 @@ import {
   HonorCard,
 } from '@render/layouts/Lobby/PreEndGame/HonorCard';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { CentralizedStack } from '@render/components/CentralizedStack';
+import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
 
 export const PreEndGame = () => {
-  const { rcpFeLolHonor, rcpFeLolPostgame } = useLeagueTranslate();
+  const { rcpFeLolHonor } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
   const rcpFeLolHonorTrans = rcpFeLolHonor('trans');
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
 
   const [honorData, setHonorData] = useState<LolHonorV2V1Ballot>();
   const [playersData, setPlayersData] = useState<LolSummonerV1Summoners_Id[]>(
@@ -34,10 +33,6 @@ export const PreEndGame = () => {
 
   const getSummonerName = (summonerId: number) => {
     return playersData.find((p) => p.summonerId === summonerId)?.gameName ?? '';
-  };
-
-  const onClickPlayAgain = () => {
-    makeRequest('POST', '/lol-lobby/v2/play-again', undefined).then();
   };
 
   useEffect(() => {
@@ -109,9 +104,7 @@ export const PreEndGame = () => {
         ))}
       </HonorCardContainer>
       <Stack direction={'column'} alignItems={'center'}>
-        <CustomButton onClick={onClickPlayAgain} variant={'contained'}>
-          {rcpFeLolPostgameTrans('career_postgame_button_play_again')}
-        </CustomButton>
+        <EndGameActionButton />
       </Stack>
     </Stack>
   );

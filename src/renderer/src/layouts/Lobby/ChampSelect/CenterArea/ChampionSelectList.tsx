@@ -14,6 +14,7 @@ import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { FaTimes } from 'react-icons/fa';
+import { LolPerksV1RecommendedChampionPositions } from '@shared/typings/lol/response/lolPerksV1RecommendedChampionPositions';
 
 export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
@@ -36,6 +37,8 @@ export const ChampionSelectList = () => {
     useState<LolChampSelectV1PickableChampionIds>([]);
   const [bannableChampion, setBannableChampion] =
     useState<LolChampSelectV1BannableChampionIds>([]);
+  const [recommendedChampionPosition, setRecommendedChampionPosition] =
+    useState<LolPerksV1RecommendedChampionPositions>({});
   const { championIcon } = useLeagueImage();
 
   useLeagueClientEvent('/lol-champ-select/v1/all-grid-champions', (data) => {
@@ -50,34 +53,29 @@ export const ChampionSelectList = () => {
   useLeagueClientEvent('/lol-champ-select/v1/pickable-champion-ids', (data) => {
     setPickableChampion(data);
   });
+  useLeagueClientEvent(
+    '/lol-perks/v1/recommended-champion-positions',
+    (data) => {
+      setRecommendedChampionPosition(data);
+    },
+  );
 
   const position = ['top', 'jungle', 'middle', 'bottom', 'utility'];
 
-  const filterByPosition = (roles: string[], position: string) => {
+  const filterByPosition = (championId: number, position: string) => {
     if (!position) return true;
-    const rolesEx = [
-      'mage',
-      'support',
-      'fighter',
-      'tank',
-      'marksman',
-      'assassin',
-    ];
-    const rolesPosition: Record<string, string[]> = {
-      top: ['fighter', 'tank'],
-      jungle: ['tank', 'fighter'],
-      middle: ['mage', 'assassin'],
-      bottom: ['marksman'],
-      utility: ['support'],
-    };
-    return (rolesPosition[position] ?? rolesEx).some((r) => roles.includes(r));
+    const championPosition = recommendedChampionPosition[championId];
+    if (!championPosition) return true;
+    return championPosition.recommendedPositions
+      .map((p) => p.toLowerCase())
+      .includes(position);
   };
 
   const getChampionFiltered = () => {
     const filtered = champions.filter((c) => {
       const matches: boolean[] = [
         !disabledChampion.includes(c.id),
-        filterByPosition(c.roles, positionFilter),
+        filterByPosition(c.id, positionFilter),
         c.name.toLowerCase().includes(championNameFilter.toLowerCase()),
       ];
       return matches.every(Boolean);

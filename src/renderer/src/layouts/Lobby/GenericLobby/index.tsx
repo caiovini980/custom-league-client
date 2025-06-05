@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { CustomButton } from '@render/components/input';
+import { CustomButton, CustomCheckBox } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { MatchMakingStats } from '@render/layouts/Lobby/GenericLobby/MatchMakingStats';
 import { PlayerList } from '@render/layouts/Lobby/GenericLobby/PlayerList';
@@ -15,9 +15,17 @@ export const GenericLobby = () => {
   const lobby = getLobby();
   const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
 
-  function onReturnMainMenuButtonClicked() {
-    makeRequest('DELETE', '/lol-lobby/v2/lobby', undefined);
-  }
+  const onReturnMainMenuButtonClicked = () => {
+    makeRequest('DELETE', '/lol-lobby/v2/lobby', undefined).then();
+  };
+
+  const toggleOpenGroup = (isOpen: boolean) => {
+    makeRequest(
+      'PUT',
+      '/lol-lobby/v2/lobby/partyType',
+      isOpen ? 'open' : 'closed',
+    ).then();
+  };
 
   if (!lobby || phase === 'None') return;
 
@@ -32,6 +40,12 @@ export const GenericLobby = () => {
       overflow={'auto'}
     >
       <Typography textAlign={'center'}>{getQueueName()}</Typography>
+      <CustomCheckBox
+        label={rcpFeLolPartiesTrans('parties_open_party_status_header')}
+        checked={lobby.partyType === 'open'}
+        onChange={toggleOpenGroup}
+        disabled={!lobby.localMember.allowedToggleInvite}
+      />
       <PlayerList lobby={lobby} />
       <Restriction restrictions={lobby.restrictions ?? []} />
       <MatchMakingStats canStartActivity={canStartActivity()} />

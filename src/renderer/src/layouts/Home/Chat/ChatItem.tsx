@@ -25,7 +25,7 @@ export const ChatItem = ({ chatFriend, onClick }: ChatItemProps) => {
       stats = gameStatus;
     }
     const statsT = rcpFeLolSocialTrans(`availability_${stats}`);
-    if (chat.productName) {
+    if (chat.product !== 'league_of_legends' && chat.productName) {
       return `${statsT} (${chat.productName})`;
     }
     return statsT;

@@ -5,7 +5,7 @@ const tempFile = fs.readFileSync(path.join(process.cwd(), '.temp'), {
   encoding: 'utf-8',
 });
 
-const baseDir = path.join(tempFile.trim(), 'latest', 'plugins');
+const baseDir = path.join(tempFile.trim(), 'plugins');
 const searchWord = process.argv[2]; // palavra que você quer buscar
 const fileRegex = /^(.*)\.json$/;
 

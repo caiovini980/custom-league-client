@@ -31,7 +31,9 @@ export const Home = ({ children }: PropsWithChildren) => {
       storeActions.lobby.resetState();
     }
     if (['ChampSelect', 'Lobby'].includes(data)) {
-      storeActions.lobby.matchMaking(null);
+      setTimeout(() => {
+        storeActions.lobby.matchMaking(null);
+      }, 1000);
     }
   });
 
