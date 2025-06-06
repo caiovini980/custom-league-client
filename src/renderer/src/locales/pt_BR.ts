@@ -13,7 +13,8 @@ export default {
   start_league_client_button: 'Iniciar Cliente LoL',
   light_mode: 'Modo Claro',
   change_riot_client_path: 'Alterar Pasta do Cliente Riot',
-  toggle_show_client: 'Alternar Mostrar Cliente',
+  toggle_show_client: 'Mostrar Cliente',
   reload_game_data: 'Recarregar dados de jogo',
   close_client: 'Fechar Cliente',
+  keep_status: 'Manter status',
 };

@@ -5,21 +5,21 @@ import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 
-export interface MatchMakingState {
+export interface LobbyState {
   lobby: Null<LolLobbyV2Lobby>;
   gameFlow: Null<LolGameflowV1Session>;
   matchMaking: Null<LolMatchmakingV1Search>;
   champSelect: Null<LolChampSelectV1Session>;
 }
 
-const initialState: MatchMakingState = {
+const initialState: LobbyState = {
   lobby: null,
   gameFlow: null,
   matchMaking: null,
   champSelect: null,
 };
 
-export const lobbyStore = createStore('lobby')<MatchMakingState>(initialState, {
+export const lobbyStore = createStore('lobby')<LobbyState>(initialState, {
   devtools: { enabled: true },
 }).extendActions((set) => ({
   resetState: () => {

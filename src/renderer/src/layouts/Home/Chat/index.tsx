@@ -62,6 +62,15 @@ export const Chat = () => {
     loadEventDataFriends();
   });
 
+  useLeagueClientEvent('/lol-chat/v1/friends/{id}', (data) => {
+    setChat((chat) =>
+      chat.map((c) => {
+        if (c.id === data.id) return data;
+        return c;
+      }),
+    );
+  });
+
   const filterChatByGroup = (groupId: number) => {
     const currentChat = chat.filter((c) => c.displayGroupId === groupId);
 

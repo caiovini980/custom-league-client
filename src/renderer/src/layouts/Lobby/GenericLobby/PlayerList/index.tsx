@@ -7,6 +7,10 @@ interface PlayerListProps {
 }
 
 export const PlayerList = ({ lobby }: PlayerListProps) => {
+  const isLeader =
+    lobby.members.find((m) => m.summonerId === lobby.localMember.summonerId)
+      ?.isLeader ?? false;
+
   return (
     <Grid container spacing={2} justifyContent={'center'}>
       {lobby.members.map((m) => (
@@ -15,6 +19,7 @@ export const PlayerList = ({ lobby }: PlayerListProps) => {
             member={m}
             isOwner={m.summonerId === lobby.localMember.summonerId}
             showPositionSelector={lobby.gameConfig.showPositionSelector}
+            isLeader={isLeader}
           />
         </Grid>
       ))}

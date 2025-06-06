@@ -22,8 +22,9 @@ export const QueueList = () => {
 
   useEffect(() => {
     makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
+      const queuesAvailable = [400, 420, 440, 480, 450];
       if (res.ok) {
-        setQueueList(res.body);
+        setQueueList(res.body.filter((q) => queuesAvailable.includes(q.id)));
       }
     });
   }, []);
@@ -125,23 +126,25 @@ export const QueueList = () => {
       dense
       disablePadding
     >
-      {getQueuesGrouped().map((qGrouped) => (
-        <Fragment key={qGrouped.name}>
-          <ListSubheader component="div" sx={{ textAlign: 'center' }}>
-            {qGrouped.name}
-          </ListSubheader>
-          {qGrouped.queues.map((q) => (
-            <ListItemButton
-              key={q.id}
-              onClick={() => onClickQueue(q)}
-              selected={q.id === gameFlow?.gameData.queue.id}
-              disabled={gameFlow?.phase === 'Matchmaking'}
-            >
-              <ListItemText>{getQueueNameByQueueId(q.id)}</ListItemText>
-            </ListItemButton>
-          ))}
-        </Fragment>
-      ))}
+      {getQueuesGrouped()
+        .filter((q) => q.queues.length)
+        .map((qGrouped) => (
+          <Fragment key={qGrouped.name}>
+            <ListSubheader component="div" sx={{ textAlign: 'center' }}>
+              {qGrouped.name}
+            </ListSubheader>
+            {qGrouped.queues.map((q) => (
+              <ListItemButton
+                key={q.id}
+                onClick={() => onClickQueue(q)}
+                selected={q.id === gameFlow?.gameData.queue.id}
+                disabled={gameFlow?.phase === 'Matchmaking'}
+              >
+                <ListItemText>{getQueueNameByQueueId(q.id)}</ListItemText>
+              </ListItemButton>
+            ))}
+          </Fragment>
+        ))}
     </List>
   );
 };

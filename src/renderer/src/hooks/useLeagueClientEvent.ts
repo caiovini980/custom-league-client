@@ -29,7 +29,9 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   );
 
   const regexMap = {
+    '{id}': '.+',
     '{digits}': '[0-9]+',
+    '{string}': '[a-zA-Z]+',
     '{uuid}':
       '[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}',
   };
@@ -95,6 +97,6 @@ export const buildEventUrl = <K extends keyof EventMessageMap>(
   ...params: (string | number)[]
 ) => {
   return params.reduce((prev, curr) => {
-    return String(prev).replace(/\{.+}/, String(curr));
+    return String(prev).replace(/\{.+?}/, String(curr));
   }, url) as K;
 };
