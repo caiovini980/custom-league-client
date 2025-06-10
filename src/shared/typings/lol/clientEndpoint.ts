@@ -61,6 +61,8 @@ import { LolYourShopV1Offers } from '@shared/typings/lol/response/lolYourShopV1O
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { LolChallengesV1SummaryPlayerDataPlayer_Id } from '@shared/typings/lol/response/lolChallengesV1SummaryPlayerDataPlayer_Id';
+import { LolInventoryV1WalletAll } from '@shared/typings/lol/response/lolInventoryV1WalletAll';
+import { LolSummonerV1AliasLookup } from '@shared/typings/lol/response/lolSummonerV1AliasLookup';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -136,6 +138,8 @@ interface ClientEndpoint {
   '/lol-collections/v1/inventories/{digits}/backdrop': EndpointOnlyResponse<LolCollectionsV1inventories_Id_backdrop>;
   // Lol End Of Game
   '/lol-end-of-game/v1/state/dismiss-stats': EndpointEmpty;
+  // Lol Inventory
+  '/lol-inventory/v1/wallet/ALL': EndpointOnlyResponse<LolInventoryV1WalletAll>;
   // Lol Replay
   '/lol-replays/v1/metadata/{digits}': EndpointOnlyResponse<LolReplaysV1Metadata_Id>;
   '/lol-replays/v1/rofls/{digits}/download': EndpointOnlyRequest<LolReplaysV1Metadata_Id_Download>;
@@ -153,6 +157,7 @@ interface ClientEndpoint {
     LolSummonerV1Summoners_Id[]
   >;
   '/lol-summoner/v2/summoners/puuid/{uuid}': EndpointOnlyResponse<LolSummonerV1Summoners_Id>;
+  '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}': EndpointOnlyResponse<LolSummonerV1AliasLookup>;
   // Lol Game Queue
   '/lol-game-queues/v1/queues': EndpointOnlyResponse<LolGameQueuesV1Queues[]>;
   // Lol Game Flow
