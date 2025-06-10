@@ -17,6 +17,8 @@ import {
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
 import { CustomIconButton } from '@render/components/input';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
 
 interface TeamPlayerCardProps {
   slotId: number;
@@ -36,6 +38,8 @@ export const TeamPlayerCard = ({
   const { championIcon, lolGameDataImg, loadChampionBackgroundImg } =
     useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
+  const { makeRequest } = useLeagueClientRequest();
+  const { snackError } = useSnackNotification();
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
 
@@ -70,6 +74,39 @@ export const TeamPlayerCard = ({
     summonerData?.championId ?? 0,
     summonerData?.skinId,
   );
+
+  const onClickIconChampion = async () => {
+    const error = () => {
+      snackError('Error on open profile');
+    };
+
+    const lookupProfile = await makeRequest(
+      'GET',
+      buildEventUrl(
+        '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
+        player.gameName,
+        player.tagLine,
+      ),
+      undefined,
+    );
+    if (!lookupProfile.ok) {
+      error();
+      return;
+    }
+    const sum = await makeRequest(
+      'GET',
+      buildEventUrl(
+        '/lol-summoner/v2/summoners/puuid/{uuid}',
+        lookupProfile.body.puuid,
+      ),
+      undefined,
+    );
+    if (!sum.ok) {
+      error();
+      return;
+    }
+    profileRef.current?.open(sum.body.summonerId);
+  };
 
   if (!summonerData) return null;
 
@@ -124,7 +161,7 @@ export const TeamPlayerCard = ({
       <CustomIconButton
         sx={{ p: 0.5 }}
         disabled={isEnemyTeam}
-        onClick={() => profileRef.current?.open(player.summonerId)}
+        onClick={onClickIconChampion}
       >
         <CircularIcon size={50} src={championIcon(player.championId)} />
       </CustomIconButton>
