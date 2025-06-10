@@ -1,4 +1,4 @@
-import { BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Box } from '@mui/material';
 import { Null } from '@shared/typings/generic.typing';
 import { SyntheticEvent, useState } from 'react';
 import { FaGamepad, FaStore, FaTags, FaUser } from 'react-icons/fa6';
@@ -8,6 +8,7 @@ import { FaHome } from 'react-icons/fa';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
 
 export const AppMenu = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
@@ -60,6 +61,7 @@ export const AppMenu = () => {
   return (
     <BottomNavigation
       sx={{
+        position: 'relative',
         height: config.topBarHeight,
         backgroundColor: 'transparent',
         flexShrink: 0,
@@ -82,6 +84,9 @@ export const AppMenu = () => {
             sx={{ maxWidth: 'fit-content' }}
           />
         ))}
+      <Box position={'absolute'} right={0} top={0} height={'100%'}>
+        <Wallet />
+      </Box>
     </BottomNavigation>
   );
 };
