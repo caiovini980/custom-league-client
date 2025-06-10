@@ -37,10 +37,11 @@ export const TeamPlayerCard = ({
   const champions = useStore().gameData.champions();
   const { championIcon, lolGameDataImg, loadChampionBackgroundImg } =
     useLeagueImage();
-  const { rcpFeLolChampSelect } = useLeagueTranslate();
+  const { rcpFeLolChampSelect, rcpFeLolPostgame } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
   const { snackError } = useSnackNotification();
 
+  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
 
   const profileRef = useRef<ProfileModalRef>(null);
@@ -77,7 +78,7 @@ export const TeamPlayerCard = ({
 
   const onClickIconChampion = async () => {
     const error = () => {
-      snackError('Error on open profile');
+      snackError(rcpFeLolPostgameTrans('postgame_view_profile_error'));
     };
 
     const lookupProfile = await makeRequest(
