@@ -43,7 +43,7 @@ interface Skin {
   skinType: string;
   rarity: string;
   isLegacy: boolean;
-  splashVideoPath: unknown;
+  splashVideoPath: string | null;
   collectionSplashVideoPath: unknown;
   collectionCardHoverVideoPath: unknown;
   featuresText: unknown;

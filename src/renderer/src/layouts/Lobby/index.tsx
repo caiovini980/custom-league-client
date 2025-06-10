@@ -13,6 +13,7 @@ import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
 import { QueueList } from '@render/layouts/Lobby/QueueList';
 import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
 import { CentralizedStack } from '@render/components/CentralizedStack';
+import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
@@ -89,6 +90,7 @@ export const Lobby = () => {
     return (
       <CentralizedStack>
         <LoadingScreen height={'100%'} />
+        <EndGameActionButton />
       </CentralizedStack>
     );
   }

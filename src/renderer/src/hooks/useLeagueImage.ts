@@ -19,27 +19,32 @@ export const useLeagueImage = () => {
   const spells = useStore().gameData.spells();
   const items = useStore().gameData.items();
 
-  const link = (path: string) => {
+  const link = (path: string, isLocal = false) => {
     if (!path) return '';
+    if (isLocal) {
+      return `local-media://${path.replace('plugins/rcp-be-lol-game-data/global/default', 'lol-game-data/assets')}`;
+    }
     return `media://${path}`;
   };
 
   const profileIcon = (id: Undefined<Id>) => {
     if (id === undefined) id = 0;
-    return link(
-      `plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${id}.jpg`,
-    );
+    return lolGameDataImg(`v1/profile-icons/${id}.jpg`);
   };
 
   const lolGameDataImg = (url: string) => {
     const urlNormalize = url.toLowerCase().replace('lol-game-data/assets/', '');
-    return link(`plugins/rcp-be-lol-game-data/global/default/${urlNormalize}`);
+    return link(
+      `plugins/rcp-be-lol-game-data/global/default/${urlNormalize}`.replace(
+        '//',
+        '/',
+      ),
+      true,
+    );
   };
 
   const championIcon = (id: Id) => {
-    return link(
-      `plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${id || -1}.png`,
-    );
+    return lolGameDataImg(`v1/champion-icons/${id || -1}.png`);
   };
 
   const spellIcon = (id: Id) => {
@@ -76,7 +81,12 @@ export const useLeagueImage = () => {
   };
 
   const loadChampionBackgroundImg = (
-    art: 'loadScreenPath' | 'splashPath' | 'tilePath',
+    art:
+      | 'loadScreenPath'
+      | 'splashPath'
+      | 'tilePath'
+      | 'uncenteredSplashPath'
+      | 'splashVideoPath',
     championId: number,
     skinId = 0,
   ) => {
@@ -86,7 +96,8 @@ export const useLeagueImage = () => {
       if (!skin) {
         skin = championSkins[0];
       }
-      return lolGameDataImg(skin[art].slice(1));
+      const skinPath = skin[art] ?? skin.splashPath;
+      return lolGameDataImg(skinPath.slice(1));
     }
     return '';
   };

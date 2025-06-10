@@ -21,6 +21,10 @@ export const useCustomTheme = () => {
             error: {
               main: '#e05252',
             },
+            matchHistory: {
+              win: '#2a8179',
+              defeat: '#7d2727',
+            },
           },
           typography: {
             fontFamily: 'Nunito',

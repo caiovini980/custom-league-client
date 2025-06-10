@@ -47,17 +47,12 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
 
   return (
     <Grid container spacing={2} sx={{ overflow: 'auto' }}>
-      <LoadingScreen
-        loading={!championMastery}
-        height={'100%'}
-        loadingText={'Loading mastery...'}
-        fullArea
-      />
+      <LoadingScreen loading={!championMastery} height={'100%'} fullArea />
       {championMastery?.map((cm, index) => (
         <LazyImage
           key={cm.championId}
           component={Grid}
-          size={{ xs: 3 }}
+          size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
           src={loadChampionBackgroundImg('tilePath', cm.championId)}
           background={(url) =>
             `linear-gradient(0deg, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0) 100%), url(${url})`

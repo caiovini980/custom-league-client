@@ -1,22 +1,19 @@
-import { Divider, Stack, Typography } from '@mui/material';
+import { Divider, Stack } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { RankedQueueStats } from '@render/layouts/Profile/RankedStats/RankedQueueStats';
 import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
-import { CircularIcon } from '@render/components/CircularIcon';
+import { SummonerDetails } from '@render/layouts/Profile/RankedStats/SummonerDetails';
+import { ChampionMostPlayer } from '@render/layouts/Profile/RankedStats/ChampionMostPlayer';
 
 interface RankedStatsProps {
   summonerData: LolSummonerV1Summoners_Id;
 }
 
 export const RankedStats = ({ summonerData }: RankedStatsProps) => {
-  const { profileIcon } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-
-  const iconSize = 80;
 
   const [rankedStats, setRankedStats] = useState<LolRankedV1RankedStats_Id>();
 
@@ -37,19 +34,37 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
       direction={'column'}
       alignItems={'center'}
       rowGap={1}
-      width={650}
+      p={2}
+      width={'100%'}
+      height={'100%'}
+      overflow={'auto'}
       sx={{
-        px: 7,
+        background:
+          'linear-gradient(to bottom, transparent 15%, rgba(0,0,0,0.9) 55%)',
       }}
     >
-      <CircularIcon
-        src={profileIcon(summonerData.profileIconId)}
-        size={iconSize}
-      />
-      <Typography>{summonerData.gameName}</Typography>
-      <Typography>({summonerData.summonerLevel})</Typography>
+      <Stack
+        direction={'row'}
+        height={'35%'}
+        flexShrink={0}
+        width={'100%'}
+        alignItems={'center'}
+        justifyContent={'flex-start'}
+      >
+        <SummonerDetails summoner={summonerData} />
+      </Stack>
       <Divider orientation={'horizontal'} flexItem />
-      {rankedStats && <RankedQueueStats stats={rankedStats} />}
+      <Stack
+        direction={'row'}
+        width={'100%'}
+        flex={1}
+        justifyContent={'flex-start'}
+        columnGap={1}
+        overflow={'auto'}
+      >
+        <ChampionMostPlayer puuid={summonerData.puuid} />
+        {rankedStats && <RankedQueueStats stats={rankedStats} />}
+      </Stack>
     </Stack>
   );
 };

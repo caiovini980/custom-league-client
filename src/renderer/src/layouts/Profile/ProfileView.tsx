@@ -12,21 +12,21 @@ import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummo
 import { useState } from 'react';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { capitalize } from '@render/utils/stringUtil';
-import { alpha } from '@mui/material/styles';
 
 interface ProfileViewProps {
   summonerId: number;
-  marginBottom?: number;
 }
 
-export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
+export const ProfileView = ({ summonerId }: ProfileViewProps) => {
   const { lolGameDataImg } = useLeagueImage();
-  const { rcpFeLolMatchHistory } = useLeagueTranslate();
+  const { rcpFeLolMatchHistory, rcpFeLolCollections } = useLeagueTranslate();
 
   const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
+  const rcpFeLolCollectionsTrans = rcpFeLolCollections('trans');
 
   const [summonerData, setSummonerData] = useState<LolSummonerV1Summoners_Id>();
   const [backgroundUrl, setBackgroundUrl] = useState('');
+  const [currentTab, setCurrentTab] = useState('overview');
 
   useLeagueClientEvent(
     buildEventUrl(
@@ -45,6 +45,10 @@ export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
     },
   );
 
+  const normalizeTitle = (text: string) => {
+    return capitalize(text.toLowerCase());
+  };
+
   if (!summonerData) return null;
 
   return (
@@ -54,30 +58,52 @@ export const ProfileView = ({ summonerId, marginBottom }: ProfileViewProps) => {
       width={'100%'}
       alignItems={'center'}
       sx={{
+        position: 'relative',
         color: 'white',
-        background: (t) =>
-          `linear-gradient(0deg, ${alpha(t.palette.background.default, 0.55)} 40%, rgba(0,0,0,0) 100%), url(${backgroundUrl})`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        pt: '30vh',
-        pb: marginBottom ? `${marginBottom}px` : 0,
+        zIndex: 0,
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          zIndex: -1,
+          background: `url(${backgroundUrl})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          filter: currentTab !== 'overview' ? 'blur(12px)' : undefined,
+        },
       }}
     >
       <Stack direction={'row'} width={'100%'} height={'100%'}>
-        <RankedStats summonerData={summonerData} />
-        <CustomTab>
+        <CustomTab
+          onChange={(t) => setCurrentTab(t.name)}
+          tabsProps={{
+            orientation: 'horizontal',
+          }}
+        >
           <CustomTabPanel
-            label={capitalize(
-              rcpFeLolMatchHistoryTrans(
-                'MATCH_HISTORY_PROFILE_SUB_MENU_TITLE',
-              ).toLowerCase(),
+            label={normalizeTitle(
+              rcpFeLolMatchHistoryTrans('MATCH_DETAILS_SUB_NAV_TITLE_OVERVIEW'),
+            )}
+            name={'overview'}
+          >
+            <RankedStats summonerData={summonerData} />
+          </CustomTabPanel>
+          <CustomTabPanel
+            label={normalizeTitle(
+              rcpFeLolMatchHistoryTrans('MATCH_HISTORY_PROFILE_SUB_MENU_TITLE'),
             )}
             name={'history'}
           >
             <GameHistory puuid={summonerData.puuid} />
           </CustomTabPanel>
-          <CustomTabPanel label={'Champion Mastery'} name={'mastery'}>
+          <CustomTabPanel
+            label={normalizeTitle(
+              rcpFeLolCollectionsTrans(
+                'collections_sub_nav_collectibles_champions',
+              ),
+            )}
+            name={'mastery'}
+          >
             <ChampionMastery puuid={summonerData.puuid} />
           </CustomTabPanel>
         </CustomTab>

@@ -3,13 +3,15 @@ import { TabMode } from '.';
 
 export const useCustomTabStyle = makeSx((theme) => {
   return {
-    container: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-      overflow: 'auto',
-      position: 'relative',
+    container: (orientation: 'horizontal' | 'vertical') => {
+      return {
+        display: 'flex',
+        flexDirection: orientation === 'vertical' ? 'row' : 'column',
+        width: '100%',
+        height: '100%',
+        overflow: 'auto',
+        position: 'relative',
+      };
     },
     tabContainer: {
       boxShadow: '3px 0px 10px 0px #3434341A',
@@ -36,6 +38,7 @@ export const useCustomTabStyle = makeSx((theme) => {
         };
       }
       return {
+        backgroundColor: 'background.default',
         '& .MuiTabs-indicator': {
           display: 'flex',
           justifyContent: 'center',

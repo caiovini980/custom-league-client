@@ -9,12 +9,23 @@ export const EndGameActionButton = () => {
 
   const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
 
+  const dismissStats = () => {
+    makeRequest('POST', '/lol-end-of-game/v1/state/dismiss-stats', undefined);
+  };
+
   const onClickPlayAgain = () => {
-    makeRequest('POST', '/lol-lobby/v2/play-again', undefined).then();
+    makeRequest('POST', '/lol-lobby/v2/play-again', undefined).then(() => {
+      dismissStats();
+    });
   };
 
   const onClickPlayAgainDecline = () => {
-    makeRequest('POST', '/lol-lobby/v2/play-again-decline', undefined).then();
+    dismissStats();
+    makeRequest('POST', '/lol-lobby/v2/play-again-decline', undefined).then(
+      () => {
+        dismissStats();
+      },
+    );
   };
 
   return (
