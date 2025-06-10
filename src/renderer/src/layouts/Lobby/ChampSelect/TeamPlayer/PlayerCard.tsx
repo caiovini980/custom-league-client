@@ -7,11 +7,16 @@ import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { useStore } from '@render/zustand/store';
 import { SwapButton } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapButton';
+import {
+  ProfileModal,
+  ProfileModalRef,
+} from '@render/layouts/Profile/ProfileModal';
+import { CustomIconButton } from '@render/components/input';
 
 interface TeamPlayerCardProps {
   slotId: number;
@@ -33,6 +38,8 @@ export const TeamPlayerCard = ({
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+
+  const profileRef = useRef<ProfileModalRef>(null);
 
   const [summonerData, setSummonerData] =
     useState<LolChampSelectV1Summoners_Id>();
@@ -114,7 +121,13 @@ export const TeamPlayerCard = ({
           size={25}
         />
       </Stack>
-      <CircularIcon size={50} src={championIcon(player.championId)} />
+      <CustomIconButton
+        sx={{ p: 0.5 }}
+        disabled={isEnemyTeam}
+        onClick={() => profileRef.current?.open(player.summonerId)}
+      >
+        <CircularIcon size={50} src={championIcon(player.championId)} />
+      </CustomIconButton>
       {summonerData.shouldShowBanIntentIcon && (
         <SquareIcon
           src={championIcon(summonerData.banIntentChampionId)}
@@ -167,6 +180,7 @@ export const TeamPlayerCard = ({
           showChampionSwap={summonerData.showTrades}
         />
       )}
+      <ProfileModal ref={profileRef} />
     </Stack>
   );
 };

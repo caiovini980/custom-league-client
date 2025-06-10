@@ -43,6 +43,12 @@ export class AppService
     const limit = pLimit(5);
     const ongoingDownloads = new Map<string, Promise<Response>>();
 
+    const headers = (urlS: string, buffer: Buffer) => ({
+      'Content-Type': mime.getType(urlS) || 'image/*',
+      'Cache-Control': 'public, max-age=31536000',
+      'Content-Length': buffer.length.toString(),
+    });
+
     protocol.handle('media', async (request) => {
       const { version } = this.getClientStatusInfo();
       const urlS = request.url.replace('media://', '');
@@ -50,15 +56,10 @@ export class AppService
       const filePath = path.join(this.getResourcePath(), urlS);
       const raw = `https://raw.communitydragon.org/latest/${urlS}`;
 
-      const headers = {
-        'Content-Type': mime.getType(urlS) || 'image/*',
-        'Cache-Control': 'public, max-age=31536000'
-      };
-
       if (fs.existsSync(filePath) && !isNeedUpdateImageCache) {
         const buffer = fs.readFileSync(filePath);
         return new Response(buffer, {
-          headers,
+          headers: headers(urlS, buffer),
         });
       }
 
@@ -77,9 +78,10 @@ export class AppService
           })
           .then((arrayBuffer) => {
             if (arrayBuffer) {
-              fs.outputFile(filePath, Buffer.from(arrayBuffer));
+              const buffer = Buffer.from(arrayBuffer);
+              fs.outputFile(filePath, buffer);
               return new Response(arrayBuffer, {
-                headers,
+                headers: headers(urlS, buffer),
               });
             }
             return new Response(null, {
@@ -97,27 +99,35 @@ export class AppService
 
     protocol.handle('local-media', async (request) => {
       const urlS = request.url.replace('local-media://', '');
-      try {
-        const data = await this.leagueClientService.rawHandleEndpoint(
-          'GET',
-          urlS,
-          undefined,
-        );
-        if (data.ok) {
-          return new Response(data.buffer());
+      return limit(async () => {
+        if (ongoingDownloads.has(urlS)) {
+          return ongoingDownloads.get(urlS) as Promise<Response>;
         }
-        this.logger.error(`Error on getting local media: ${urlS}`);
-        this.logger.error(data.text());
-        return new Response(null, {
-          status: 404,
-        });
-      } catch (e) {
-        this.logger.error(`Error on getting local media: ${urlS}`);
-        this.logger.error(e);
-        return new Response(null, {
-          status: 404,
-        });
-      }
+        const promise = this.leagueClientService
+          .rawHandleEndpoint('GET', urlS, undefined)
+          .then((res) => {
+            if (res.ok) return res.buffer();
+            this.logger.error(`Error on getting local media: ${urlS}`);
+            return null;
+          })
+          .then((arrayBuffer) => {
+            if (arrayBuffer) {
+              const buffer = Buffer.from(arrayBuffer);
+              return new Response(arrayBuffer, {
+                headers: headers(urlS, buffer),
+              });
+            }
+            return new Response(null, {
+              status: 404,
+            });
+          });
+
+        ongoingDownloads.set(urlS, promise);
+
+        promise.finally(() => ongoingDownloads.delete(urlS));
+
+        return promise;
+      });
     });
   }
 

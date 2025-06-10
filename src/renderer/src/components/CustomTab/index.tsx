@@ -91,7 +91,7 @@ const CustomTab = ({
   }, [index]);
 
   return (
-    <Box sx={classes('container')}>
+    <Box sx={classes('container', tabsProps?.orientation ?? 'horizontal')}>
       <LoadingScreen loading={loading} backdrop />
       <Tabs
         variant="scrollable"

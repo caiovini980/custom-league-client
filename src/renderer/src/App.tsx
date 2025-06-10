@@ -8,9 +8,9 @@ import { Profile } from '@render/layouts/Profile';
 import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
 import { JSX } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import { Info } from '@render/layouts/Info';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ErrorBoundary from '@render/components/ErrorBoundary';
+import { YourShop } from '@render/layouts/YourShop';
 
 export const App = (): JSX.Element => {
   return (
@@ -28,9 +28,10 @@ export const App = (): JSX.Element => {
                 <LeagueClientEvent />
                 <Home>
                   <Routes>
-                    <Route path={'/'} Component={Info} />
+                    <Route path={'/'} element={<Navigate to={'lobby'} />} />
                     <Route path={'/lobby'} Component={Lobby} />
                     <Route path={'/profile'} Component={Profile} />
+                    <Route path={'/yourshop'} Component={YourShop} />
                   </Routes>
                 </Home>
               </CheckLeagueClient>

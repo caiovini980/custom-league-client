@@ -17,7 +17,12 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
     useState<LolMatchHistoryV1productsLol_Id_Matches>();
 
   useLeagueClientEvent(
-    buildEventUrl('/lol-match-history/v1/products/lol/{uuid}/matches', puuid),
+    buildEventUrl(
+      '/lol-match-history/v1/products/lol/{uuid}/matches?begIndex={digits}&endIndex={digits}',
+      puuid,
+      0,
+      30,
+    ),
     (data) => {
       setMatchHistory(data);
     },
@@ -30,6 +35,8 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
         overflow: 'auto',
         width: '100%',
         height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <LoadingScreen loading={!matchHistory} height={'100%'} fullArea />
@@ -42,7 +49,7 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
         </ListItem>
       )}
       {matchHistory?.games.games.map((g) => (
-        <GameHistoryItem key={g.gameId} game={g} />
+        <GameHistoryItem key={g.gameId} game={g} puuid={puuid} />
       ))}
     </List>
   );

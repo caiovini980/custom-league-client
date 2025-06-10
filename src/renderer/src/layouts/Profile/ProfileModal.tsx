@@ -48,8 +48,9 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
         onClick={onCloseModal}
         sx={{
           position: 'absolute',
-          top: 8,
-          right: 8,
+          top: 0,
+          right: 0,
+          zIndex: 3,
         }}
       >
         <FaTimes size={20} />

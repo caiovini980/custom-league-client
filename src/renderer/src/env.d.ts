@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-
+import './styles/@material-ui';
 import { IpcFunction, IpcRendererCallback } from '@shared/typings/ipc.typing';
 
 export type ElectronFunction = {

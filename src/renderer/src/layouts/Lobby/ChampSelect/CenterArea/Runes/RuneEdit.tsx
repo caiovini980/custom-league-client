@@ -4,13 +4,14 @@ import {
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { SlotPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/SlotPerks';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 export interface PerkEdit {
   id: number;
@@ -26,9 +27,12 @@ export interface PerkEdit {
 export const RuneEdit = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { genericImg } = useLeagueImage();
+  const { rcpFeLolCollections } = useLeagueTranslate();
 
   const [rune, setRune] = useState<LolPerksV1Pages>();
   const [perksEdit, setPerkEdit] = useState<PerkEdit>();
+
+  const rcpFeLolCollectionsTransPerks = rcpFeLolCollections('trans-perks');
 
   useLeagueClientEvent('/lol-perks/v1/currentpage', (data) => {
     setRune(data);
@@ -46,6 +50,7 @@ export const RuneEdit = () => {
       'PUT',
       buildEventUrl('/lol-perks/v1/pages/{digits}', perksEdit.id),
       {
+        isTemporary: rune?.isTemporary ?? true,
         name: newValue.name,
         primaryStyleId: newValue.primaryPerkId,
         subStyleId: newValue.secondaryPerkId,
@@ -74,9 +79,6 @@ export const RuneEdit = () => {
 
   if (!perksEdit) return null;
 
-  // /plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/ultbook/img/one-page-tutorial-bg.png
-  // /plugins/rcp-fe-lol-collections/global/default/perks/images/construct/${perksEdit.primaryPerkId}/environment.jpg
-
   const bgUrl = genericImg(
     '/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/gamemodeassets/ultbook/img/one-page-tutorial-bg.png',
   );
@@ -95,6 +97,22 @@ export const RuneEdit = () => {
       }}
     >
       <Stack direction={'row'} columnGap={1} width={'min-content'}>
+        {rune?.isTemporary && (
+          <Stack direction={'row'} alignItems={'center'}>
+            <img
+              src={genericImg(
+                'plugins/rcp-fe-lol-champ-select/global/default/images/perks/rune-recommender-icon.png',
+              )}
+              alt={''}
+              height={18}
+            />
+            <Typography>
+              {rcpFeLolCollectionsTransPerks(
+                'perks_modal_rune_recommender_tab_label_text',
+              )}
+            </Typography>
+          </Stack>
+        )}
         <CustomTextField
           debounceTime={200}
           value={perksEdit.name}

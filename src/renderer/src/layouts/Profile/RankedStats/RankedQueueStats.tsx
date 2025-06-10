@@ -39,15 +39,16 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
       container
       spacing={2}
       justifyContent={'center'}
+      alignItems={'center'}
       sx={{
+        maxWidth: 500,
         color: 'inherit',
         overflow: 'auto',
-        px: 1,
         '& p': { fontSize: '0.8rem' },
       }}
     >
       {stats.queues.map((q) => (
-        <Grid key={q.queueType} size={{ xs: 6 }}>
+        <Grid key={q.queueType}>
           <Stack
             direction={'column'}
             alignItems={'center'}

@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { BottomMenu } from '@render/layouts/Home/BottomMenu';
+import { AppMenu } from '@render/layouts/Home/AppMenu';
 import { Chat } from '@render/layouts/Home/Chat';
 import { storeActions } from '@render/zustand/store';
 import { PropsWithChildren } from 'react';
@@ -54,7 +54,7 @@ export const Home = ({ children }: PropsWithChildren) => {
         height={'100%'}
         width={'100%'}
       >
-        <BottomMenu />
+        <AppMenu />
         <Box display={'flex'} height={'100%'} width={'100%'} overflow={'auto'}>
           {children}
         </Box>

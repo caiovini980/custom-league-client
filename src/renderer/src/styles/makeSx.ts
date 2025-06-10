@@ -3,65 +3,69 @@ import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 
 type FuncSx<O> = (p: O) => SystemStyleObject<Theme>;
 
-type makeSxObject<T extends string, O> = Record<
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type makeSxObject<T extends string, O = any> = Record<
   T,
   SystemStyleObject<Theme> | FuncSx<O>
 >;
 
-type makeSxFuncWithProps<T extends string, P, O> = (
+type makeSxFuncWithProps<T extends string, P> = (
   theme: Theme,
   props: P,
-) => makeSxObject<T, O>;
+) => makeSxObject<T>;
 
-type makeSxFuncWithoutProps<T extends string, O> = (
+type makeSxFuncWithoutProps<T extends string> = (
   theme: Theme,
-) => makeSxObject<T, O>;
+) => makeSxObject<T>;
 
-type makeSxFuncKeyWithProps<T extends string, P, O> = keyof ReturnType<
-  makeSxFuncWithProps<T, P, O>
+type makeSxFuncKeyWithProps<T extends string, P> = keyof ReturnType<
+  makeSxFuncWithProps<T, P>
 >;
 
-type makeSxFuncKeyWithoutProps<T extends string, O> = keyof ReturnType<
-  makeSxFuncWithoutProps<T, O>
+type makeSxFuncKeyWithoutProps<T extends string> = keyof ReturnType<
+  makeSxFuncWithoutProps<T>
 >;
 
-type makeSxReturnWithProps<T extends string, P, O> = (
+type makeSxReturnWithProps<T extends string, P> = (
   props: P,
-) => (
-  key: makeSxFuncKeyWithProps<T, P, O>,
+) => <O>(
+  key: makeSxFuncKeyWithProps<T, P>,
   owerProps?: O,
 ) => (theme: Theme) => SystemStyleObject<Theme>;
 
-type makeSxReturnWithoutProps<T extends string, O> = () => (
-  key: makeSxFuncKeyWithoutProps<T, O>,
+type makeSxReturnWithoutProps<T extends string> = () => <O>(
+  key: makeSxFuncKeyWithoutProps<T>,
   owerProps?: O,
 ) => (theme: Theme) => SystemStyleObject<Theme>;
 
-export function makeSx<T extends string, O>(
-  sx: makeSxFuncWithoutProps<T, O>,
-): makeSxReturnWithoutProps<T, O>;
+export function makeSx<T extends string>(
+  sx: makeSxFuncWithoutProps<T>,
+): makeSxReturnWithoutProps<T>;
 
-export function makeSx<T extends string, P, O>(
-  sx: makeSxFuncWithProps<T, P, O>,
-): makeSxReturnWithProps<T, P, O>;
+export function makeSx<T extends string, P>(
+  sx: makeSxFuncWithProps<T, P>,
+): makeSxReturnWithProps<T, P>;
 
-export function makeSx<T extends string, P, O>(sx: unknown): unknown {
-  return (props?: P) => (key: T, owerProps?: O) => (theme: Theme) => {
-    if (props) {
-      const f = sx as makeSxFuncWithProps<T, P, O>;
-      if (typeof f(theme, props)[key] === 'function') {
-        if (owerProps === undefined) return throwMakeSxError(key, f.toString());
-        return (f(theme, props)[key] as FuncSx<O>)(owerProps);
+export function makeSx<T extends string, P>(sx: unknown): unknown {
+  return (props?: P) =>
+    <O>(key: T, owerProps?: O) =>
+    (theme: Theme) => {
+      if (props) {
+        const f = sx as makeSxFuncWithProps<T, P>;
+        if (typeof f(theme, props)[key] === 'function') {
+          if (owerProps === undefined)
+            return throwMakeSxError(key, f.toString());
+          return (f(theme, props)[key] as FuncSx<O>)(owerProps);
+        }
+        return f(theme, props)[key];
       }
-      return f(theme, props)[key];
-    }
-    const f = sx as makeSxFuncWithoutProps<T, O>;
-    if (typeof f(theme)[key] === 'function') {
-      if (owerProps === undefined) return throwMakeSxError(key, f.toString());
-      return (f(theme)[key] as FuncSx<O>)(owerProps);
-    }
-    return f(theme)[key];
-  };
+      const f = sx as makeSxFuncWithoutProps<T>;
+      if (typeof f(theme)[key] === 'function') {
+        if (owerProps === undefined) return throwMakeSxError(key, f.toString());
+        return (f(theme)[key] as FuncSx<O>)(owerProps);
+      }
+      return f(theme)[key];
+    };
 }
 
 function throwMakeSxError(sxKey: string, fn: string) {

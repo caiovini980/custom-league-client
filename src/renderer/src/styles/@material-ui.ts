@@ -1,7 +1,17 @@
 declare module '@mui/material/styles' {
-  interface Palette {}
+  interface Palette {
+    matchHistory: {
+      win: string;
+      defeat: string;
+    };
+  }
 
-  interface PaletteOptions {}
+  interface PaletteOptions {
+    matchHistory: {
+      win: string;
+      defeat: string;
+    };
+  }
 }
 
 declare module '@mui/material/Button' {

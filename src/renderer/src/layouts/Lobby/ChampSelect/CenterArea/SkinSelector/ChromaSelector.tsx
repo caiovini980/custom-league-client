@@ -16,7 +16,7 @@ export const ChromaSelector = ({
   skin,
   onChangeSkinId,
 }: ChromaSelectorProps) => {
-  const { lolGameDataImg } = useLeagueImage();
+  const { lolGameDataImg, genericImg } = useLeagueImage();
 
   const [parentSkinPath, setParentSkinPath] = useState<Null<string>>(null);
 
@@ -82,6 +82,11 @@ export const ChromaSelector = ({
       minWidth={200}
       p={1}
       component={Paper}
+      sx={{
+        background: `url(${genericImg('plugins/rcp-fe-lol-navigation/global/default/chroma_bg.png')})`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       <img
         src={lolGameDataImg(parentSkinPath ?? skin.chromaPreviewPath)}

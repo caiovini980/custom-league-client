@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { CustomIconButton, CustomSelect } from '@render/components/input';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { FaEdit, FaTimes } from 'react-icons/fa';
 import CustomDialog from '@render/components/CustomDialog';
 import { RuneEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
@@ -11,8 +11,10 @@ import { FaShuffle } from 'react-icons/fa6';
 import { RecommendedPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RecommendedPerks';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { useStore } from '@render/zustand/store';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 
 export const Runes = () => {
+  const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const { currentPlayer } = useChampSelectContext();
   const lobby = useStore().lobby.lobby();
@@ -40,6 +42,9 @@ export const Runes = () => {
       <CustomIconButton
         size={'small'}
         onClick={() => setOpenRecommendedPerkModal(true)}
+        disabled={
+          !(currentPlayer.championId || currentPlayer.championPickIntent)
+        }
       >
         <FaShuffle size={12} />
       </CustomIconButton>
@@ -57,7 +62,20 @@ export const Runes = () => {
         onChangeValue={onChangePage}
         options={runesPage.map((r) => ({
           value: r.id,
-          label: r.name,
+          label: r.isTemporary ? (
+            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
+              <img
+                src={genericImg(
+                  'plugins/rcp-fe-lol-champ-select/global/default/images/perks/rune-recommender-icon.png',
+                )}
+                alt={''}
+                height={18}
+              />
+              <Typography>{r.name}</Typography>
+            </Stack>
+          ) : (
+            r.name
+          ),
         }))}
       />
       <CustomDialog
@@ -91,7 +109,7 @@ export const Runes = () => {
         onSelectPerk={() => setOpenModal(true)}
         perkToChangeId={runesPage.find((r) => r.isTemporary)?.id}
         onClose={() => setOpenRecommendedPerkModal(false)}
-        position={currentPlayer.assignedPosition}
+        position={currentPlayer.assignedPosition || 'middle'}
         championId={
           currentPlayer.championPickIntent || currentPlayer.championId
         }
