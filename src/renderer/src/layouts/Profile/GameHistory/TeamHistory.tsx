@@ -5,6 +5,7 @@ import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
 import { alpha } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
 interface TeamHistoryProps {
   teamIndex: number;
@@ -14,6 +15,8 @@ interface TeamHistoryProps {
 export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
   const { genericImg, championIcon } = useLeagueImage();
   const { rcpFeLolMatchHistory } = useLeagueTranslate();
+
+  const [spriteImage, setSpriteImage] = useState<HTMLImageElement>();
 
   const teamId = teamIndex * 100;
   const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
@@ -50,27 +53,24 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
   })();
 
   const getStatsImage = (index: number) => {
+    if (!spriteImage) return '';
     const width = 80;
     const height = 80;
     const spacing = 0;
-    const url =
-      'plugins/rcp-fe-lol-match-history/global/default/right_icons_grub.png';
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
 
     const ctx = canvas.getContext('2d');
 
-    // Cálculo do Y de onde começa a subimagem
     const y = index * (height + spacing);
-    const img = new Image();
-    img.src = genericImg(url);
 
     if (!ctx) {
       return '';
     }
+
     ctx.drawImage(
-      img, // imagem principal
+      spriteImage, // imagem principal
       0,
       y, // origem da subimagem na imagem principal
       width,
@@ -83,6 +83,16 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
 
     return canvas.toDataURL();
   };
+
+  useEffect(() => {
+    const url =
+      'plugins/rcp-fe-lol-match-history/global/default/right_icons_grub.png';
+    const img = new Image();
+    img.src = genericImg(url);
+    img.onload = () => {
+      setSpriteImage(img);
+    };
+  }, []);
 
   return (
     <Stack direction={'column'} width={'100%'}>
