@@ -5,6 +5,7 @@ import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-co
 import { CustomCheckBox } from '@render/components/input';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { VolumeBar } from './VolumeBar';
 
 export const AppConfig = () => {
   const { snackError } = useSnackNotification();
@@ -97,6 +98,9 @@ export const AppConfig = () => {
             </ListItemButton>
           </ListItem>
         ))}
+      <ListItem>
+        <VolumeBar />
+      </ListItem>
     </List>
   );
 };

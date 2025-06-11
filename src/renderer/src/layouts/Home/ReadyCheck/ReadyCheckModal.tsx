@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { electronHandle } from '@render/utils/electronFunction.util';
+import { AudioPlayer } from '@render/components/AudioPlayer';
 
 interface ReadyCheckModalProps {
   autoAccept: boolean;
@@ -67,7 +68,8 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
         disabled: matchReadyCheck?.playerResponse !== 'None',
       }}
     >
-      {/*<audio src={'party_found.mp3'} autoPlay/>*/}
+      <AudioPlayer path="party_found.mp3" autoPlay={true} />
+
       <Stack
         width={'100%'}
         direction={'column'}
