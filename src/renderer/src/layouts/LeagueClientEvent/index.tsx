@@ -21,7 +21,8 @@ interface ErrorModal {
 }
 
 export const LeagueClientEvent = () => {
-  const { rcpFeLolNavigation, rcpFeLolSocial } = useLeagueTranslate();
+  const { rcpFeLolNavigation, rcpFeLolSocial, rcpFeLolL10n } =
+    useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
   const [errors, setErrors] = useState<ErrorModal[]>([]);
@@ -29,6 +30,10 @@ export const LeagueClientEvent = () => {
   const rcpFeLolSocialTransPlayerBehavior = rcpFeLolSocial(
     'trans-player-behavior',
   );
+  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
+  const rcpFeLolNavigationTrans = rcpFeLolNavigation('trans');
+  const rcpFeLolNavigationTransAppControls =
+    rcpFeLolNavigation('trans-app-controls');
 
   const addError = (err: ErrorModal) => {
     setErrors((prev) => [
@@ -42,7 +47,7 @@ export const LeagueClientEvent = () => {
   };
 
   const closeClient = () => {
-    makeRequest('POST', '/riotclient/pre-shutdown/begin', undefined);
+    makeRequest('POST', '/process-control/v1/process/quit', undefined);
   };
 
   useLeagueClientEvent('all', (data, event) => {
@@ -95,7 +100,7 @@ export const LeagueClientEvent = () => {
 
   useLeagueClientEvent('/lol-shutdown/v1/notification', (state, event) => {
     if (state.reason === 'PlatformMaintenance') {
-      const msg = rcpFeLolNavigation('trans')(
+      const msg = rcpFeLolNavigationTrans(
         state.countdown === 0
           ? 'platform_maintenance_message'
           : 'platform_maintenance_warning_message',
@@ -111,9 +116,10 @@ export const LeagueClientEvent = () => {
 
   useLeagueClientEvent('/lol-login/v1/session', (state, event) => {
     if (!state.connected) {
-      const msg = rcpFeLolNavigation('trans')(
-        `login_error_${state.error.messageId}$html`,
-      );
+      const msg =
+        rcpFeLolNavigationTrans(`login_error_${state.error.messageId}$html`) ||
+        rcpFeLolNavigationTrans('login_error_unknown');
+
       addError({
         eventName: event,
         msg,
@@ -250,12 +256,12 @@ export const LeagueClientEvent = () => {
               removeError(eventName);
             }}
           >
-            Ok
+            {rcpFeLolL10nTrans('lib_ui_dialog_alert_ok')}
           </CustomButton>
         )}
         {mode === 'fatal-error' && (
           <CustomButton variant={'outlined'} onClick={closeClient}>
-            Close client
+            {rcpFeLolNavigationTransAppControls('close_dialog_exit_button')}
           </CustomButton>
         )}
       </Stack>

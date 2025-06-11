@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useStore } from '@render/zustand/store';
 
 export const useCustomTheme = () => {
-  const config = useStore().leagueClient.appConfig();
-  const isDarkMode = config?.THEME_MODE === 'DARK';
+  const themeMode = useStore().appConfig.THEME_MODE();
+  const isDarkMode = themeMode === 'DARK';
 
   return useMemo(
     () =>

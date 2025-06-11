@@ -76,8 +76,24 @@ export const SummonerInfo = () => {
           },
         }}
       >
-        <CustomIconButton onClick={onClick}>
+        <CustomIconButton
+          onClick={onClick}
+          sx={{ position: 'relative', p: 0.5 }}
+        >
           <CircularIcon src={profileIcon(currentSummoner.profileIconId)} />
+          <Typography
+            sx={{
+              position: 'absolute',
+              top: 2,
+              right: -10,
+              backgroundColor: '#04162170',
+              borderRadius: 2,
+              width: 30,
+            }}
+            fontSize={'0.6rem'}
+          >
+            {currentSummoner.summonerLevel}
+          </Typography>
         </CustomIconButton>
         <Stack
           direction={'column'}
@@ -86,7 +102,7 @@ export const SummonerInfo = () => {
           px={1}
         >
           <Typography textAlign={'center'}>
-            {currentSummoner.gameName} ({currentSummoner.summonerLevel})
+            {currentSummoner.gameName}
           </Typography>
           <Typography
             component={ButtonBase}

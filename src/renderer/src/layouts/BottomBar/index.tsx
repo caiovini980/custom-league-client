@@ -11,11 +11,11 @@ import { Updater } from '@render/layouts/Updater';
 
 export const BottomBar = () => {
   const { appConfig } = useElectronHandle();
-  const setAppConfig = storeActions.leagueClient.appConfig;
+  const setAppConfig = storeActions.appConfig;
 
   const loadConfig = () => {
     appConfig.getConfig().then((config) => {
-      setAppConfig(config);
+      setAppConfig.state(() => config);
     });
   };
 
@@ -37,7 +37,7 @@ export const BottomBar = () => {
 
   useEffect(() => {
     electronListen.onChangeAppConfig((config) => {
-      setAppConfig(config);
+      setAppConfig.state(() => config);
     });
     loadConfig();
   }, []);
@@ -58,7 +58,7 @@ export const BottomBar = () => {
         </IconButton>
       </Stack>
       <Drawer anchor={'right'} open={open.open} onClose={closeDrawer}>
-        <Box width={250}>{open.screen === 'config' && <AppConfig />}</Box>
+        <Box width={280}>{open.screen === 'config' && <AppConfig />}</Box>
       </Drawer>
     </Paper>
   );

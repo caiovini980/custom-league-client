@@ -13,7 +13,7 @@ export interface AudioPlayerRef {
 
 export const AudioPlayer = forwardRef<AudioPlayerRef, AudioSettings>(
   ({ path, autoPlay }, ref) => {
-    const volume: number = useStore().sound.volume();
+    const volume: number = useStore().appConfig.VOLUME();
     const audioRef = useRef<HTMLAudioElement>(null);
 
     useImperativeHandle(

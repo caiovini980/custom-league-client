@@ -19,8 +19,6 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
   private FILE_LIST_TO_DENY: string[] = [];
 
   private FILE_LIST_TO_DOWNLOAD = [
-    'plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d',
-    'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons',
     'plugins/rcp-fe-lol-shared-components/global/default/unranked.png',
     'plugins/rcp-fe-lol-shared-components/global/default/iron.png',
     'plugins/rcp-fe-lol-shared-components/global/default/bronze.png',

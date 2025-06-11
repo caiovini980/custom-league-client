@@ -12,6 +12,9 @@ export class AppConfigEnum<V = unknown> extends EnumAbstract<AppConfigEnum> {
   static THEME_MODE = new AppConfigEnum('Theme Mode', (v) => {
     return v;
   });
+  static VOLUME = new AppConfigEnum('Theme Mode', (v) => {
+    return Number(v);
+  });
 
   convertValue: Converter<V>;
 
