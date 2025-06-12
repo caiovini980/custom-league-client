@@ -28,7 +28,7 @@ export const AppMenu = () => {
 
   const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {
     if (audioRef.current) {
-      //audioRef.current.play();
+      audioRef.current.play();
     }
 
     navigate(`/${newValue}`);
