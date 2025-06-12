@@ -85,7 +85,7 @@ export const TeamPlayerCard = ({
       'GET',
       buildEventUrl(
         '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
-        player.gameName,
+        encodeURIComponent(player.gameName),
         player.tagLine,
       ),
       undefined,
@@ -117,7 +117,7 @@ export const TeamPlayerCard = ({
       p={1}
       height={80}
       width={270}
-      columnGap={1}
+      columnGap={0.2}
       alignItems={'center'}
       justifyContent={'flex-start'}
       sx={{

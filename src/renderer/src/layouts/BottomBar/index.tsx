@@ -54,7 +54,7 @@ export const BottomBar = () => {
       >
         <Updater />
         <IconButton size={'small'} onClick={() => openDrawer('config')}>
-          <FaCog size={10} />
+          <FaCog size={14} />
         </IconButton>
       </Stack>
       <Drawer anchor={'right'} open={open.open} onClose={closeDrawer}>

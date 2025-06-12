@@ -45,6 +45,16 @@ export const useCustomTheme = () => {
                 },
               },
             },
+            MuiTooltip: {
+              styleOverrides: {
+                tooltip: {
+                  background: isDarkMode ? '#212121' : '#fff',
+                },
+                arrow: {
+                  color: isDarkMode ? '#212121' : '#fff',
+                },
+              },
+            },
           },
         }),
       ),

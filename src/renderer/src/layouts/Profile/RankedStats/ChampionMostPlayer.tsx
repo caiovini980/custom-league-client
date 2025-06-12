@@ -37,7 +37,13 @@ export const ChampionMostPlayer = ({ puuid }: ChampionMostPlayerProps) => {
   }, [puuid]);
 
   return (
-    <Stack direction={'column'} width={280} height={'100%'} flexShrink={0}>
+    <Stack
+      direction={'column'}
+      width={280}
+      height={'100%'}
+      flexShrink={0}
+      overflow={'auto'}
+    >
       <LoadingScreen loading={!championMastery} height={'100%'} fullArea />
       {championMastery?.slice(0, 5).map((cm, i) => {
         return (
@@ -50,6 +56,7 @@ export const ChampionMostPlayer = ({ puuid }: ChampionMostPlayerProps) => {
             sx={{
               width: '100%',
               height: '100%',
+              minHeight: 80,
               backgroundSize: 'auto 250px',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: '0px -35px',

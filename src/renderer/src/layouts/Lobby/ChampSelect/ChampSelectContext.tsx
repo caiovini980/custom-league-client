@@ -13,7 +13,14 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 
-type Actions = 'planning' | 'ban' | 'show-bans' | 'pick' | 'finalization';
+type Actions =
+  | 'planning'
+  | 'ban'
+  | 'show-bans'
+  | 'pick'
+  | 'finalization'
+  | 'my-team-pick'
+  | 'enemy-team-pick';
 
 interface ChampSelectContextState {
   gameMode: string;
@@ -102,12 +109,13 @@ export const ChampSelectContext = ({
       return 'finalization';
     }
 
-    const action = getCurrentPlayerAction();
+    const action = session.actions.flat().find((a) => !a.completed);
     if (!session.actions.length || !action) {
       return 'finalization';
     }
 
-    const { type } = action;
+    const { type, isAllyAction, actorCellId } = action;
+
     if (type === 'ten_bans_reveal') {
       return 'show-bans';
     }
@@ -115,6 +123,8 @@ export const ChampSelectContext = ({
       return 'ban';
     }
     if (type === 'pick') {
+      if (!isAllyAction) return 'enemy-team-pick';
+      if (actorCellId !== session.localPlayerCellId) return 'my-team-pick';
       return 'pick';
     }
     return 'finalization';

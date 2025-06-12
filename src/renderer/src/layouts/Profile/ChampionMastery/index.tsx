@@ -46,7 +46,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   }, [puuid]);
 
   return (
-    <Grid container spacing={2} sx={{ overflow: 'auto' }}>
+    <Grid container spacing={2} sx={{ overflow: 'auto', position: 'relative' }}>
       <LoadingScreen loading={!championMastery} height={'100%'} fullArea />
       {championMastery?.map((cm, index) => (
         <LazyImage
