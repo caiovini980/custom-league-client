@@ -5,6 +5,8 @@ import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
 import { alpha } from '@mui/material/styles';
+import { IconValue } from './IconValue';
+import { useSpriteImage } from '@render/hooks/useSpriteImage';
 
 interface TeamHistoryProps {
   teamIndex: number;
@@ -14,6 +16,11 @@ interface TeamHistoryProps {
 export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
   const { genericImg, championIcon } = useLeagueImage();
   const { rcpFeLolMatchHistory } = useLeagueTranslate();
+  const { getSprite } = useSpriteImage({
+    src: 'plugins/rcp-fe-lol-match-history/global/default/right_icons_grub.png',
+    width: 80,
+    height: 80,
+  });
 
   const teamId = teamIndex * 100;
   const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
@@ -49,40 +56,7 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
     );
   })();
 
-  const getStatsImage = (index: number) => {
-    const width = 80;
-    const height = 80;
-    const spacing = 0;
-    const url =
-      'plugins/rcp-fe-lol-match-history/global/default/right_icons_grub.png';
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
-
-    // Cálculo do Y de onde começa a subimagem
-    const y = index * (height + spacing);
-    const img = new Image();
-    img.src = genericImg(url);
-
-    if (!ctx) {
-      return '';
-    }
-    ctx.drawImage(
-      img, // imagem principal
-      0,
-      y, // origem da subimagem na imagem principal
-      width,
-      height, // tamanho da subimagem
-      0,
-      0, // destino no canvas
-      width,
-      height, // tamanho final no canvas
-    );
-
-    return canvas.toDataURL();
-  };
+  const isWin = team.win === 'Win';
 
   return (
     <Stack direction={'column'} width={'100%'}>
@@ -93,7 +67,7 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
         sx={{
           background: (t) =>
             alpha(
-              team.win === 'Win'
+              isWin
                 ? t.palette.matchHistory.win
                 : t.palette.matchHistory.defeat,
               0.6,
@@ -103,17 +77,20 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
       >
         <Typography>
           {rcpFeLolMatchHistoryTrans(
+            isWin
+              ? 'MATCH_HISTORY_MATCH_RESULT_VICTORY'
+              : 'MATCH_HISTORY_MATCH_RESULT_DEFEAT',
+          )}
+        </Typography>
+        <Typography>
+          {rcpFeLolMatchHistoryTrans(
             `MATCH_HISTORY_MATCH_RESULT_TEAM_${teamIndex}_LABEL`,
           )}
         </Typography>
         <Divider orientation={'vertical'} flexItem />
         <Stack direction={'row'} columnGap={0.2} alignItems={'center'}>
-          {teamData.bans.map((b) => (
-            <SquareIcon
-              key={b.championId}
-              src={championIcon(b.championId)}
-              size={24}
-            />
+          {teamData.bans.map((b, i) => (
+            <SquareIcon key={i} src={championIcon(b.championId)} size={24} />
           ))}
         </Stack>
         <Divider orientation={'vertical'} flexItem />
@@ -124,12 +101,12 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
           value={`${teamData.kills} / ${teamData.deaths} / ${teamData.assists}`}
         />
         <Divider orientation={'vertical'} flexItem />
-        <IconValue src={getStatsImage(0)} value={teamData.towers} />
-        <IconValue src={getStatsImage(1)} value={teamData.inhibitor} />
-        <IconValue src={getStatsImage(2)} value={teamData.barons} />
-        <IconValue src={getStatsImage(3)} value={teamData.dragons} />
-        <IconValue src={getStatsImage(4)} value={teamData.herald} />
-        <IconValue src={getStatsImage(6)} value={teamData.horde} />
+        <IconValue src={getSprite(0)} value={teamData.towers} />
+        <IconValue src={getSprite(1)} value={teamData.inhibitor} />
+        <IconValue src={getSprite(2)} value={teamData.barons} />
+        <IconValue src={getSprite(3)} value={teamData.dragons} />
+        <IconValue src={getSprite(4)} value={teamData.herald} />
+        <IconValue src={getSprite(6)} value={teamData.horde} />
       </Stack>
       {teamParticipants.map((p) => {
         return (
@@ -141,21 +118,6 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
           />
         );
       })}
-    </Stack>
-  );
-};
-
-const IconValue = (props: { src: string; value: string | number }) => {
-  const iconSize = 22;
-  return (
-    <Stack
-      direction={'row'}
-      alignItems={'center'}
-      justifyContent={'center'}
-      columnGap={0.5}
-    >
-      <img src={props.src} alt={''} height={iconSize} width={iconSize} />
-      <Typography>{props.value}</Typography>
     </Stack>
   );
 };

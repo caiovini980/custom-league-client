@@ -18,14 +18,18 @@ interface ProfileViewProps {
 }
 
 export const ProfileView = ({ summonerId }: ProfileViewProps) => {
-  const { lolGameDataImg } = useLeagueImage();
+  const { lolGameDataImg, genericImg } = useLeagueImage();
   const { rcpFeLolMatchHistory, rcpFeLolCollections } = useLeagueTranslate();
 
   const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
   const rcpFeLolCollectionsTrans = rcpFeLolCollections('trans');
 
   const [summonerData, setSummonerData] = useState<LolSummonerV1Summoners_Id>();
-  const [backgroundUrl, setBackgroundUrl] = useState('');
+  const [backgroundUrl, setBackgroundUrl] = useState(
+    genericImg(
+      'plugins/rcp-fe-lol-static-assets/global/default/lcu-alpha-backdrop.jpg',
+    ),
+  );
   const [currentTab, setCurrentTab] = useState('overview');
 
   useLeagueClientEvent(
@@ -34,7 +38,9 @@ export const ProfileView = ({ summonerId }: ProfileViewProps) => {
       summonerId,
     ),
     (data) => {
-      setBackgroundUrl(lolGameDataImg(data.backdropImage));
+      if (data.backdropImage) {
+        setBackgroundUrl(lolGameDataImg(data.backdropImage));
+      }
     },
   );
 

@@ -84,7 +84,7 @@ export const ChromaSelector = ({
       component={Paper}
       sx={{
         background: `url(${genericImg('plugins/rcp-fe-lol-navigation/global/default/chroma_bg.png')})`,
-        backgroundSize: 'contain',
+        backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
       }}
     >

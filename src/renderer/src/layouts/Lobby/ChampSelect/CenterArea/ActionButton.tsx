@@ -92,6 +92,9 @@ export const ActionButton = () => {
       variant={'contained'}
       onClick={onClickActionButton}
       disabled={disabledActionButton()}
+      sx={{
+        fontSize: '1.5rem',
+      }}
     >
       {getButtonLabel()}
     </CustomButton>

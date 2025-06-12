@@ -146,6 +146,7 @@ interface ClientEndpoint {
   '/lol-inventory/v1/initial-configuration-complete': EndpointOnlyResponse<boolean>;
   // Lol Replay
   '/lol-replays/v1/metadata/{digits}': EndpointOnlyResponse<LolReplaysV1Metadata_Id>;
+  '/lol-replays/v2/metadata/{digits}/create': EndpointOnlyRequest<unknown>;
   '/lol-replays/v1/rofls/{digits}/download': EndpointOnlyRequest<LolReplaysV1Metadata_Id_Download>;
   '/lol-replays/v1/rofls/{digits}/watch': EndpointOnlyRequest<LolReplaysV1Metadata_Id_Watch>;
   // Lol Remedy

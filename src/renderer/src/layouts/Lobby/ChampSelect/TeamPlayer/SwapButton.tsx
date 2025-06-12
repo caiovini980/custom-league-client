@@ -102,7 +102,7 @@ export const SwapButton = ({
         </Typography>
         {pickSwapId !== -1 && !areSummonerActionsComplete && (
           <CustomButton
-            variant={'outlined'}
+            variant={'contained'}
             onClick={() => onClickSwap('pick-order', pickSwapId)}
           >
             {rcpFeLolChampSelectTrans(
@@ -113,7 +113,7 @@ export const SwapButton = ({
         )}
         {positionSwapId !== -1 && (
           <CustomButton
-            variant={'outlined'}
+            variant={'contained'}
             onClick={() => onClickSwap('position', positionSwapId)}
           >
             {rcpFeLolChampSelectTrans(
@@ -124,7 +124,7 @@ export const SwapButton = ({
         )}
         {championSwapId !== -1 && (
           <CustomButton
-            variant={'outlined'}
+            variant={'contained'}
             onClick={() => onClickSwap('champion', championSwapId)}
           >
             {capitalize(championName)}
@@ -217,6 +217,9 @@ export const SwapButton = ({
           title={swapsTooltip()}
           placement={'right'}
           disabled={openSwapTooltip}
+          sx={{
+            p: 0.5,
+          }}
         >
           <CircularIcon
             size={25}
