@@ -80,7 +80,7 @@ export const AppMenu = () => {
       onChange={handleChange}
       showLabels
     >
-      <AudioPlayer path="bonk.ogg" autoPlay={false} ref={audioRef} />
+      <AudioPlayer path="tab_change.ogg" autoPlay={false} ref={audioRef} />
 
       {menus
         .filter((m) => !m.hidden)
