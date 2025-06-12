@@ -68,7 +68,7 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
         disabled: matchReadyCheck?.playerResponse !== 'None',
       }}
     >
-      <AudioPlayer path="party_found.mp3" autoPlay={true} />
+      <AudioPlayer path="game_found.mp3" autoPlay={true} />
 
       <Stack
         width={'100%'}

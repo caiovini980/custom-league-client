@@ -4,11 +4,14 @@ import { storeActions, storeValues, useStore } from '@render/zustand/store';
 import { useEffect, useRef } from 'react';
 import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from 'react-icons/fa6';
 import { electronHandle } from '@render/utils/electronFunction.util';
+import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
+import { delay } from 'lodash';
 
 export const VolumeBar = () => {
   const volume: number = useStore().appConfig.VOLUME();
   const cachedVolume = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const audioRef = useRef<AudioPlayerRef>(null);
 
   const onChangeVolume = (_event: unknown, value: number) => {
     storeActions.appConfig.VOLUME(value / 100);
@@ -21,8 +24,12 @@ export const VolumeBar = () => {
 
       // setar posição do slider para 0
       // setar volume como 0
-      storeActions.appConfig.VOLUME(0);
+      audioRef.current?.play();
+      delay(() => {
+        storeActions.appConfig.VOLUME(0);
+      }, 50);
     } else {
+      audioRef.current?.play();
       storeActions.appConfig.VOLUME(cachedVolume.current);
     }
   };
@@ -56,6 +63,8 @@ export const VolumeBar = () => {
       <CustomIconButton onClick={onVolumeButtonClicked}>
         {changeIconBasedOnVolume()}
       </CustomIconButton>
+
+      <AudioPlayer path="mute_unmute.ogg" autoPlay={false} ref={audioRef} />
 
       <Slider
         aria-label="Volume"

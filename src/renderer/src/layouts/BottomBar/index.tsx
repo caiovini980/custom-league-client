@@ -5,13 +5,15 @@ import {
   useElectronHandle,
 } from '@render/utils/electronFunction.util';
 import { storeActions } from '@render/zustand/store';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { Updater } from '@render/layouts/Updater';
+import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
 
 export const BottomBar = () => {
   const { appConfig } = useElectronHandle();
   const setAppConfig = storeActions.appConfig;
+  const audioRef = useRef<AudioPlayerRef>(null);
 
   const loadConfig = () => {
     appConfig.getConfig().then((config) => {
@@ -25,6 +27,7 @@ export const BottomBar = () => {
   });
 
   const openDrawer = (screen: string) => {
+    audioRef.current?.play();
     setOpen({
       open: true,
       screen,
@@ -32,6 +35,7 @@ export const BottomBar = () => {
   };
 
   const closeDrawer = () => {
+    audioRef.current?.play();
     setOpen((prevState) => ({ ...prevState, open: false }));
   };
 
@@ -53,6 +57,9 @@ export const BottomBar = () => {
         p={0.5}
       >
         <Updater />
+
+        <AudioPlayer path="open_settings.ogg" autoPlay={false} ref={audioRef} />
+
         <IconButton size={'small'} onClick={() => openDrawer('config')}>
           <FaCog size={14} />
         </IconButton>

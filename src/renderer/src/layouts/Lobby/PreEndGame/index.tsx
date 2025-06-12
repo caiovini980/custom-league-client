@@ -51,6 +51,9 @@ export const PreEndGame = () => {
     ).then((res) => {
       if (res.ok) {
         setPlayersData(res.body);
+      } else {
+        // TODO: jump to EndGameScreen
+        makeRequest('POST', '/lol-lobby/v2/play-again', undefined);
       }
     });
   }, [honorData]);

@@ -7,7 +7,7 @@ export interface AudioSettings {
 }
 
 export interface AudioPlayerRef {
-  play: () => void;
+  play: (override?: boolean) => void;
   stop: () => void;
 }
 
@@ -25,8 +25,10 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioSettings>(
           audio.currentTime = 0;
         };
 
-        const play = () => {
-          stop();
+        const play = (override = true) => {
+          if (override) {
+            stop();
+          }
           audio.play();
         };
 
@@ -41,6 +43,6 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioSettings>(
       }
     }, [volume]);
 
-    return <audio src={path} autoPlay={autoPlay} ref={audioRef} />;
+    return <audio src={`sounds/${path}`} autoPlay={autoPlay} ref={audioRef} />;
   },
 );

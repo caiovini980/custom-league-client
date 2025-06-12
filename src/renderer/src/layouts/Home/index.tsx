@@ -3,15 +3,19 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { AppMenu } from '@render/layouts/Home/AppMenu';
 import { Chat } from '@render/layouts/Home/Chat';
 import { storeActions } from '@render/zustand/store';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useRef } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
 import { Invitations } from '@render/layouts/Home/Invitations';
 import { ChampSelectFocus } from '@render/layouts/Home/ChampSelectFocus';
+import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
 
 export const Home = ({ children }: PropsWithChildren) => {
+  const audioRef = useRef<AudioPlayerRef>(null);
+
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
     storeActions.currentSummoner.info(data);
+    audioRef.current?.play(false);
   });
 
   useLeagueClientEvent('/lol-lobby/v2/lobby', (data) => {
@@ -54,6 +58,12 @@ export const Home = ({ children }: PropsWithChildren) => {
         height={'100%'}
         width={'100%'}
       >
+        <AudioPlayer
+          path="background_music.ogg"
+          autoPlay={false}
+          ref={audioRef}
+        />
+
         <AppMenu />
         <Box display={'flex'} height={'100%'} width={'100%'} overflow={'auto'}>
           {children}
