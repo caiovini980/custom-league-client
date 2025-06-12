@@ -1,6 +1,6 @@
 import { BottomNavigation, BottomNavigationAction, Box } from '@mui/material';
 import { Null } from '@shared/typings/generic.typing';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useRef, useState } from 'react';
 import { FaGamepad, FaStore, FaTags, FaUser } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import config from '@render/utils/config.util';
@@ -9,6 +9,7 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
+import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
 
 export const AppMenu = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
@@ -19,11 +20,17 @@ export const AppMenu = () => {
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
 
+  const audioRef = useRef<AudioPlayerRef>(null);
+
   useLeagueClientEvent('/lol-yourshop/v1/status', (data) => {
     setYourShopStatus(data);
   });
 
   const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {
+    if (audioRef.current) {
+      //audioRef.current.play();
+    }
+
     navigate(`/${newValue}`);
   };
 
@@ -73,6 +80,8 @@ export const AppMenu = () => {
       onChange={handleChange}
       showLabels
     >
+      <AudioPlayer path="bonk.ogg" autoPlay={false} ref={audioRef} />
+
       {menus
         .filter((m) => !m.hidden)
         .map((m) => (

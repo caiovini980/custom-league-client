@@ -2,7 +2,6 @@ import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { useState } from 'react';
 import { useStore } from '@render/zustand/store';
-import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { CustomButton } from '@render/components/input';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
@@ -13,11 +12,7 @@ export const LoadingLeagueClient = () => {
   const { snackError, snackSuccess } = useSnackNotification();
   const { client, appConfig } = useElectronHandle();
   const [waitLeague, setWaitLeague] = useState(false);
-  const appConfigData = useStore().leagueClient.appConfig();
-
-  const getConfig = (key: keyof GetAppConfigResponse) => {
-    return appConfigData?.[key];
-  };
+  const riotClientPath = useStore().appConfig.RIOT_CLIENT_PATH();
 
   const onClickStartLeagueClient = () => {
     client.startLeagueClient().finally(() => {
@@ -41,7 +36,7 @@ export const LoadingLeagueClient = () => {
       });
   };
 
-  if (!getConfig('RIOT_CLIENT_PATH')) {
+  if (!riotClientPath) {
     return (
       <CentralizedStack>
         <Typography>

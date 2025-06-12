@@ -61,7 +61,7 @@ export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
   ) {
     const ent = new AppConfigEntity();
     ent.id = AppConfigEnum.valueByName(name);
-    ent.value = value;
+    ent.value = value !== null ? String(value) : null;
 
     await this.repository.save(ent);
   }

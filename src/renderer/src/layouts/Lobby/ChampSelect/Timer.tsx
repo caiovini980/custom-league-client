@@ -31,6 +31,16 @@ export const Timer = () => {
       case 'pick': {
         return rcpFeLolChampSelectTrans('timer_phase_ban_pick_lock_message');
       }
+      case 'enemy-team-pick': {
+        return rcpFeLolChampSelectTrans(
+          'timer_phase_ban_pick_enemy_team_choosing_message',
+        );
+      }
+      case 'my-team-pick': {
+        return rcpFeLolChampSelectTrans(
+          'timer_phase_ban_pick_allied_team_choosing_message',
+        );
+      }
       case 'ban': {
         return rcpFeLolChampSelectTrans('timer_phase_ban_pick_ban_message');
       }

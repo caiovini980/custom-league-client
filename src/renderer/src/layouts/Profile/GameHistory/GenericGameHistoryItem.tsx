@@ -14,6 +14,9 @@ import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { IconValue } from '@render/layouts/Profile/GameHistory/IconValue';
+import { useSpriteImage } from '@render/hooks/useSpriteImage';
 
 interface GenericGameHistoryItemProps {
   participantId: number;
@@ -28,11 +31,24 @@ export const GenericGameHistoryItem = ({
   children,
 }: PropsWithChildren<GenericGameHistoryItemProps>) => {
   const theme = useTheme();
-  const { championIcon, spellIcon, itemIcon } = useLeagueImage();
+  const { championIcon, spellIcon, itemIcon, genericImg } = useLeagueImage();
+  const { rcpFeLolMatchHistory } = useLeagueTranslate();
+  const { getSprite: getMinionSprite } = useSpriteImage({
+    src: 'plugins/rcp-fe-lol-match-history/global/default/icon_minions.png',
+    height: 50,
+    width: 50,
+  });
+  const { getSprite: getGoldSprite } = useSpriteImage({
+    src: 'plugins/rcp-fe-lol-match-history/global/default/icon_gold.png',
+    height: 52,
+    width: 54,
+  });
   const maps = useStore().gameData.maps();
   const queues = useStore().gameData.queues();
 
   const profileRef = useRef<ProfileModalRef>(null);
+
+  const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
 
   const summaryGameData = (() => {
     const participant = game.participants.find(
@@ -149,7 +165,13 @@ export const GenericGameHistoryItem = ({
           <SpellIcon src={summaryGameData.spell2Img} />
         </Stack>
         <Stack direction={'column'} justifyContent={'space-evenly'}>
-          <Typography>{summaryGameData.win ? 'Victory' : 'Defeat'}</Typography>
+          <Typography>
+            {rcpFeLolMatchHistoryTrans(
+              summaryGameData.win
+                ? 'MATCH_HISTORY_MATCH_RESULT_VICTORY'
+                : 'MATCH_HISTORY_MATCH_RESULT_DEFEAT',
+            )}
+          </Typography>
           <Typography fontSize={'0.65rem !important'}>
             {summaryGameData.queueName}
           </Typography>
@@ -163,20 +185,32 @@ export const GenericGameHistoryItem = ({
       >
         <Stack direction={'row'}>
           {summaryGameData.items.map((i, index) => (
-            <ItemIcon key={index} src={i.src} />
+            <ItemIcon key={index} itemId={i.itemId} src={i.src} />
           ))}
         </Stack>
         <Stack direction={'row'} justifyContent={'space-between'} width={265}>
-          <Typography>{summaryGameData.kda}</Typography>
-          <Typography>
-            {formatCurrency(summaryGameData.minionsKilled, 0)} CS
-          </Typography>
-          <Typography>{formatCurrency(summaryGameData.gold, 0)} G</Typography>
+          <IconValue
+            src={genericImg(
+              'plugins/rcp-fe-lol-match-history/global/default/kills.png',
+            )}
+            value={summaryGameData.kda}
+            size={14}
+          />
+          <IconValue
+            src={getMinionSprite(0)}
+            value={formatCurrency(summaryGameData.minionsKilled, 0)}
+            size={14}
+          />
+          <IconValue
+            src={getGoldSprite(0)}
+            value={formatCurrency(summaryGameData.gold, 0)}
+            size={14}
+          />
         </Stack>
       </Stack>
       <Stack
         direction={'column'}
-        width={140}
+        width={160}
         justifyContent={'space-between'}
         flexShrink={0}
         display={!isOtherPlayer ? 'flex' : 'none'}

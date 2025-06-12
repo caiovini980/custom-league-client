@@ -12,7 +12,7 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { LolReplaysV1Metadata_Id } from '@shared/typings/lol/response/lolReplaysV1Metadata_Id';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FaChevronDown,
   FaChevronUp,
@@ -22,6 +22,7 @@ import {
 import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
 import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { TeamHistory } from '@render/layouts/Profile/GameHistory/TeamHistory';
+import { storeValues } from '@render/zustand/store';
 
 interface GameHistoryItemProps {
   puuid: string;
@@ -52,7 +53,7 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
       return {
         title,
         children: <FaDownload size={iconSize} />,
-        onClick: () =>
+        onClick: () => {
           makeRequest(
             'POST',
             buildEventUrl(
@@ -62,10 +63,15 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
             {
               componentType: '',
             },
-          ),
+          ).then((res) => {
+            if (res.ok) {
+              loadReplayData();
+            }
+          });
+        },
       };
     }
-    if (replayState.state === 'downloading') {
+    if (['downloading', 'found'].includes(replayState.state)) {
       return {
         children: <FaDownload size={iconSize} />,
         title,
@@ -116,6 +122,28 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
     },
   );
 
+  const loadReplayData = async () => {
+    const res = await makeRequest(
+      'GET',
+      buildEventUrl('/lol-replays/v1/metadata/{digits}', game.gameId),
+      undefined,
+    );
+    if (res.ok) return;
+    await makeRequest(
+      'POST',
+      buildEventUrl('/lol-replays/v2/metadata/{digits}/create', game.gameId),
+      {},
+    );
+  };
+
+  const showReplayBtn = () => {
+    return storeValues.currentSummoner.info()?.puuid === puuid;
+  };
+
+  useEffect(() => {
+    loadReplayData().then();
+  }, [game.gameId]);
+
   if (!gameData) return null;
 
   return (
@@ -141,8 +169,21 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
             transition: (t) => t.transitions.create('height'),
           }}
         />
-        <Stack direction={'column'} justifyContent={'center'}>
-          <CustomIconButtonTooltip {...replayBtn()} />
+        <Stack
+          direction={'column'}
+          justifyContent={'center'}
+          display={showReplayBtn() ? 'flex' : 'none'}
+        >
+          <CustomIconButtonTooltip
+            placement={'right'}
+            disableInteractive
+            sx={{
+              '& .MuiCircularProgress-root': {
+                color: 'white',
+              },
+            }}
+            {...replayBtn()}
+          />
         </Stack>
         <Stack direction={'column'} justifyContent={'center'}>
           <CustomIconButton onClick={() => setShowMoreDetail(!showMoreDetail)}>

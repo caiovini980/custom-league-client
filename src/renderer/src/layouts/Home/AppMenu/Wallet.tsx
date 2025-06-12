@@ -10,8 +10,15 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 export const Wallet = () => {
   const [wallet, setWallet] = useState<LolInventoryV1WalletAll>();
 
-  useLeagueClientEvent('/lol-inventory/v1/wallet/ALL', (data) => {
-    setWallet(data);
+  const { loadEventData } = useLeagueClientEvent(
+    '/lol-inventory/v1/wallet/ALL',
+    (data) => {
+      setWallet(data);
+    },
+  );
+
+  useLeagueClientEvent('/lol-inventory/v1/wallet/{string}', () => {
+    loadEventData();
   });
 
   if (!wallet) return null;
@@ -48,8 +55,9 @@ const Icon = (props: { tooltipKey: string; src: string; value: number }) => {
   return (
     <Tooltip
       title={rcpFeLolNavigationTrans(props.tooltipKey)}
-      placement={'bottom'}
+      placement={'left'}
       disableInteractive
+      arrow
     >
       <Stack
         direction={'row'}

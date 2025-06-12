@@ -3,6 +3,7 @@ import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { mapValuesKey } from 'zustand-x';
 import { leagueClientStore } from './stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 
 // Global store
 export const rootStore = {
@@ -10,6 +11,7 @@ export const rootStore = {
   currentSummoner: currentSummonerStore,
   gameData: gameDataStore,
   lobby: lobbyStore,
+  appConfig: appConfigStore,
 };
 
 // Global hook selectors

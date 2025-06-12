@@ -31,6 +31,7 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
 
   return (
     <Stack
+      position={'relative'}
       direction={'column'}
       alignItems={'center'}
       rowGap={1}

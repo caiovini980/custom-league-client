@@ -12,6 +12,7 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
 
 export interface PerkEdit {
   id: number;
@@ -28,6 +29,7 @@ export const RuneEdit = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { genericImg } = useLeagueImage();
   const { rcpFeLolCollections } = useLeagueTranslate();
+  const { snackError } = useSnackNotification();
 
   const [rune, setRune] = useState<LolPerksV1Pages>();
   const [perksEdit, setPerkEdit] = useState<PerkEdit>();
@@ -60,7 +62,11 @@ export const RuneEdit = () => {
           ...newValue.statSlotPerksId,
         ],
       },
-    );
+    ).then((res) => {
+      if (!res.ok) {
+        snackError(rcpFeLolCollectionsTransPerks('perks_page_save_failed'));
+      }
+    });
   };
 
   useEffect(() => {

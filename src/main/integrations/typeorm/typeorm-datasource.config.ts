@@ -1,5 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { migration } from './migrations';
+import path from 'node:path';
+import { app } from 'electron';
 
 export const dataSourceOptions = (databaseName?: string): DataSourceOptions => {
   const defaultDbName = 'main.db';
@@ -9,9 +11,14 @@ export const dataSourceOptions = (databaseName?: string): DataSourceOptions => {
     return defaultDbName;
   };
 
+  const getPath = () => {
+    if (process.env.NODE_ENV === 'development') return '';
+    return app.getPath('userData');
+  };
+
   return {
     type: 'better-sqlite3',
-    database: `.db/${databaseName || dbName()}`,
+    database: path.join(getPath(), '.db', `${databaseName || dbName()}`),
     migrationsTableName: 'typeorm_migrations',
     migrations: migration,
     logging: process.env.LOGGER_ORM_QUERY === 'true',

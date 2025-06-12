@@ -5,8 +5,9 @@ import {
 } from '@render/utils/electronFunction.util';
 import { ProgressInfo } from 'electron-updater';
 import { ButtonBase, LinearProgress, Stack, Typography } from '@mui/material';
-import { CustomButton } from '@render/components/input';
+import { CustomButton, CustomIconButton } from '@render/components/input';
 import CustomDialog from '@render/components/CustomDialog';
+import { FaTimes } from 'react-icons/fa';
 
 type UpdateStatus = 'checking' | 'downloading' | 'updated' | 'available';
 
@@ -26,11 +27,6 @@ export const Updater = () => {
   useElectronListen('onDownloadingUpdate', (data) => {
     setUpdateStatus('downloading');
     setProgressInfo(data);
-    console.log(data);
-  });
-
-  useElectronListen('onCheckingForUpdate', () => {
-    //setUpdateStatus('checking')
   });
 
   useElectronListen('onUpdateComplete', () => {
@@ -99,9 +95,13 @@ export const Updater = () => {
       <CustomDialog
         title={'Updater'}
         open={openModal}
-        handleClose={() => setOpenModal(false)}
-        labelBtnCancel={'Close'}
-        hiddenBtnConfirm
+        dialogContentProps={{
+          sx: {
+            p: 0,
+            position: 'relative',
+          },
+        }}
+        actionsComponent={<div />}
       >
         {updateStatus === 'downloading' && updateComponent(true)}
         {updateStatus === 'available' && (
@@ -112,6 +112,17 @@ export const Updater = () => {
             </CustomButton>
           </Stack>
         )}
+        <CustomIconButton
+          onClick={() => setOpenModal(false)}
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            zIndex: 3,
+          }}
+        >
+          <FaTimes size={20} />
+        </CustomIconButton>
       </CustomDialog>
     </>
   );

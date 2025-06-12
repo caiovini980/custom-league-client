@@ -5,12 +5,13 @@ import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-co
 import { CustomCheckBox } from '@render/components/input';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { VolumeBar } from './VolumeBar';
 
 export const AppConfig = () => {
   const { snackError } = useSnackNotification();
   const { localTranslate } = useLocalTranslate();
   const { appConfig, client } = useElectronHandle();
-  const config = useStore().leagueClient.appConfig();
+  const config = useStore().appConfig;
   const isClientOpen = useStore().leagueClient.isClientOpen();
 
   const onClickChangeRiotPath = () => {
@@ -39,10 +40,6 @@ export const AppConfig = () => {
     });
   };
 
-  const onClickReloadGameData = () => {
-    client.reloadGameData();
-  };
-
   const onClickCloseClient = () => {
     client.makeRequest({
       method: 'POST',
@@ -52,7 +49,7 @@ export const AppConfig = () => {
   };
 
   const getConfig = (key: keyof GetAppConfigResponse) => {
-    return config?.[key] ?? '-';
+    return config[key]() ?? '-';
   };
 
   const btn = [
@@ -71,10 +68,6 @@ export const AppConfig = () => {
       primaryText: localTranslate('toggle_show_client'),
       onClick: onClickToggleClient,
       toggle: isClientOpen,
-    },
-    {
-      primaryText: localTranslate('reload_game_data'),
-      onClick: onClickReloadGameData,
     },
     {
       primaryText: localTranslate('close_client'),
@@ -97,6 +90,9 @@ export const AppConfig = () => {
             </ListItemButton>
           </ListItem>
         ))}
+      <ListItem>
+        <VolumeBar />
+      </ListItem>
     </List>
   );
 };

@@ -103,13 +103,6 @@ export const PositionIcon = ({ member, isOwner }: PositionIconProps) => {
               title={titleTooltip(i === 0 ? 'first' : 'second')}
               arrow
               open={i === tooltipOpenIndex}
-              slotProps={{
-                tooltip: {
-                  sx: {
-                    background: (t) => t.palette.grey['800'],
-                  },
-                },
-              }}
             >
               <IconButton
                 disabled={!isOwner || !member.ready}

@@ -17,6 +17,12 @@ import path from 'node:path';
 import { AppConfigService } from '@main/modules/app-config/app-config.service';
 import * as https from 'node:https';
 
+export interface HandleEndpointResponse<T = unknown> {
+  ok: boolean;
+  status: number;
+  body: T;
+}
+
 @Service()
 export class LeagueClientService
   extends ServiceAbstract
@@ -24,6 +30,7 @@ export class LeagueClientService
 {
   private credentials!: Credentials;
   private isConnected = false;
+  private promises: Map<string, Promise<HandleEndpointResponse>> = new Map();
 
   constructor(
     private eventEmitter: EventEmitter2,
@@ -113,36 +120,48 @@ export class LeagueClientService
     method: HttpRequestOptions['method'],
     url: string,
     body: unknown,
-  ) {
-    try {
-      const response = await createHttp1Request(
-        {
-          method: method,
-          url: url,
-          body: body,
-        },
-        this.credentials,
-      );
+  ): Promise<HandleEndpointResponse<T>> {
+    const key = `${method}::${url}::${JSON.stringify(body)}`;
 
-      let bodyRes = response.text();
-
-      try {
-        bodyRes = response.json();
-      } catch (e) {}
-
-      return {
-        ok: response.ok,
-        status: response.status,
-        body: bodyRes as T,
-      };
-    } catch (e) {
-      this.logger.error(`local request: ${e}`);
-      return {
-        ok: false,
-        status: -1,
-        body: undefined as T,
-      };
+    if (this.promises.has(key)) {
+      return this.promises.get(key) as Promise<HandleEndpointResponse<T>>;
     }
+    const response = createHttp1Request(
+      {
+        method: method,
+        url: url,
+        body: body,
+      },
+      this.credentials,
+    )
+      .then((response) => {
+        let bodyRes = response.text();
+
+        try {
+          bodyRes = response.json();
+        } catch (e) {}
+
+        return {
+          ok: response.ok,
+          status: response.status,
+          body: bodyRes as T,
+        };
+      })
+      .catch((e) => {
+        this.logger.error(`local request: ${e}`);
+        return {
+          ok: false,
+          status: -1,
+          body: undefined as T,
+        };
+      })
+      .finally(() => {
+        this.promises.delete(key);
+      });
+
+    this.promises.set(key, response);
+
+    return response;
   }
 
   private sendMsgClientConnected(info: ClientStatusConnected['info']) {

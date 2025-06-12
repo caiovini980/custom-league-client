@@ -1,5 +1,3 @@
-import { Null } from '@shared/typings/generic.typing';
-import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { createStore } from 'zustand-x';
 
 export interface LeagueClientState {
@@ -8,7 +6,6 @@ export interface LeagueClientState {
   isConnected: boolean;
   isAvailable: boolean;
   isClientOpen: boolean;
-  appConfig: Null<GetAppConfigResponse>;
 }
 
 const initialState: LeagueClientState = {
@@ -17,7 +14,6 @@ const initialState: LeagueClientState = {
   isConnected: false,
   isAvailable: false,
   isClientOpen: true,
-  appConfig: null,
 };
 
 export const leagueClientStore = createStore('leagueClient')<LeagueClientState>(
@@ -25,12 +21,8 @@ export const leagueClientStore = createStore('leagueClient')<LeagueClientState>(
   {
     devtools: { enabled: true },
   },
-).extendActions((set, get) => ({
+).extendActions((set) => ({
   resetState: () => {
-    const s: LeagueClientState = {
-      ...initialState,
-      appConfig: get.appConfig(),
-    };
-    set.state(() => s);
+    set.state(() => initialState);
   },
 }));
