@@ -4,20 +4,19 @@ import {
   electronListen,
   useElectronHandle,
 } from '@render/utils/electronFunction.util';
-import { storeActions } from '@render/zustand/store';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { Updater } from '@render/layouts/Updater';
-import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { useAudioManager } from '@render/hooks/useAudioManager';
 
 export const BottomBar = () => {
+  const { play } = useAudioManager();
   const { appConfig } = useElectronHandle();
-  const setAppConfig = storeActions.appConfig;
-  const audioRef = useRef<AudioPlayerRef>(null);
 
   const loadConfig = () => {
     appConfig.getConfig().then((config) => {
-      setAppConfig.state(() => config);
+      appConfigStore.set(config);
     });
   };
 
@@ -27,7 +26,7 @@ export const BottomBar = () => {
   });
 
   const openDrawer = (screen: string) => {
-    audioRef.current?.play();
+    play('open_settings');
     setOpen({
       open: true,
       screen,
@@ -35,13 +34,13 @@ export const BottomBar = () => {
   };
 
   const closeDrawer = () => {
-    audioRef.current?.play();
+    play('open_settings');
     setOpen((prevState) => ({ ...prevState, open: false }));
   };
 
   useEffect(() => {
     electronListen.onChangeAppConfig((config) => {
-      setAppConfig.state(() => config);
+      appConfigStore.set(config);
     });
     loadConfig();
   }, []);
@@ -57,9 +56,6 @@ export const BottomBar = () => {
         p={0.5}
       >
         <Updater />
-
-        <AudioPlayer path="open_settings.ogg" autoPlay={false} ref={audioRef} />
-
         <IconButton size={'small'} onClick={() => openDrawer('config')}>
           <FaCog size={14} />
         </IconButton>

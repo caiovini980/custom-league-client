@@ -3,8 +3,9 @@ import { PropsWithChildren } from 'react';
 import { List, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useStore } from '@render/zustand/store';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 interface LolPartyData {
   summoners: number[];
@@ -24,9 +25,9 @@ export const ChatItemMenu = ({
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const lobby = useStore().lobby.lobby();
-  const gameFlow = useStore().lobby.gameFlow();
-  const currentSummoner = useStore().currentSummoner.info();
+  const lobby = lobbyStore.lobby.use();
+  const gameFlow = lobbyStore.gameFlow.use();
+  const currentSummoner = currentSummonerStore.info.use();
 
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
@@ -94,6 +95,16 @@ export const ChatItemMenu = ({
             invitationType: 'lobby',
           },
         ]);
+      },
+    },
+    {
+      label: rcpFeLolSocialTrans('context_menu_unfriend'),
+      onClick: () => {
+        makeRequest(
+          'DELETE',
+          buildEventUrl('/lol-chat/v1/friends/{id}', friend.id),
+          undefined,
+        );
       },
     },
   ];

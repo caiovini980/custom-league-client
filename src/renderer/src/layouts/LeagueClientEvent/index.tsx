@@ -10,6 +10,7 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { sortBy } from 'lodash';
 import { useState } from 'react';
 import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
+import config from '@render/utils/config.util';
 
 interface ErrorModal {
   eventName: string;
@@ -52,7 +53,7 @@ export const LeagueClientEvent = () => {
 
   useLeagueClientEvent('all', (data, event) => {
     const ignore = [
-      'riotclient/ux-state/request',
+      //'riotclient/ux-state/request',
       'lol-clash',
       'client-config',
       'patcher',
@@ -67,7 +68,7 @@ export const LeagueClientEvent = () => {
       'riot-messaging-service',
       'lol-challenges',
     ];
-    if (ignore.some((i) => event.includes(i))) return;
+    if (ignore.some((i) => event.includes(i)) || !config.isDev) return;
     console.log(event, data);
   });
 

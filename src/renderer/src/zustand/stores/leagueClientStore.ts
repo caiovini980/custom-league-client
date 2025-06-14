@@ -1,4 +1,4 @@
-import { createStore } from 'zustand-x';
+import { store } from '@davstack/store';
 
 export interface LeagueClientState {
   version: string;
@@ -16,13 +16,11 @@ const initialState: LeagueClientState = {
   isClientOpen: true,
 };
 
-export const leagueClientStore = createStore('leagueClient')<LeagueClientState>(
-  initialState,
-  {
-    devtools: { enabled: true },
-  },
-).extendActions((set) => ({
+export const leagueClientStore = store(initialState, {
+  name: 'leagueClient',
+  devtools: { enabled: true },
+}).actions((store) => ({
   resetState: () => {
-    set.state(() => initialState);
+    store.set(initialState);
   },
 }));

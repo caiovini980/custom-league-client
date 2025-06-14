@@ -1,51 +1,37 @@
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
   useElectronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
-import { storeActions, useStore } from '@render/zustand/store';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { useNavigate } from 'react-router-dom';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
+  const navigate = useNavigate();
   const { localTranslate } = useLocalTranslate();
   const { client } = useElectronHandle();
-  const {
-    isConnected: setIsConnected,
-    version: setVersion,
-    locale: setLocale,
-    isAvailable: setIsAvailable,
-  } = storeActions.leagueClient;
-  const gameDataLoaded = useStore().gameData.loaded();
-  const { setGameData, loaded: setGameDataLoaded } = storeActions.gameData;
-  const isConnected = useStore().leagueClient.isConnected();
-  const isClientOpen = useStore().leagueClient.isClientOpen();
+
+  const gameDataLoaded = gameDataStore.loaded.use();
+  const isConnected = leagueClientStore.isConnected.use();
+  const isClientOpen = leagueClientStore.isClientOpen.use();
 
   const [loadingGameData, setLoadingGameData] = useState({
     percent: 0,
     file: '',
   });
 
-  useLeagueClientEvent(
-    '/riotclient/pre-shutdown/begin',
-    () => {
-      storeActions.leagueClient.isAvailable(false);
-      storeActions.lobby.resetState();
-      storeActions.currentSummoner.resetState();
-    },
-    {
-      makeInitialRequest: false,
-    },
-  );
-
   const setClientStatus = (status: ClientStatusResponse) => {
-    setIsConnected(status.connected);
-    setVersion(status.info.version);
-    setLocale(status.info.locale);
+    leagueClientStore.isConnected.set(status.connected);
+    leagueClientStore.version.set(status.info.version);
+    leagueClientStore.locale.set(status.info.locale);
   };
 
   useElectronListen('clientStatus', (data) => {
@@ -58,7 +44,10 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (!isConnected) {
-      setIsAvailable(false);
+      leagueClientStore.isAvailable.set(false);
+      lobbyStore.resetState();
+      currentSummonerStore.resetState();
+      navigate('/');
     }
   }, [isConnected]);
 
@@ -71,14 +60,14 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
 
   useElectronListen('onLoadGameData', (data) => {
     if (data.status === 'downloading') {
-      setGameDataLoaded(false);
+      gameDataStore.loaded.set(false);
       setLoadingGameData({
         file: data.info.currentFileDownloading,
         percent: data.info.currentPercent,
       });
     }
     if (data.status === 'complete') {
-      setGameData({
+      gameDataStore.set({
         loaded: true,
         ...data.info,
       });

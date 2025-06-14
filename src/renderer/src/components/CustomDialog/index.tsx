@@ -19,6 +19,8 @@ import {
 import { LoadingScreen } from '../LoadingScreen';
 import CustomButton from '../input/CustomButton';
 import { CustomButtonProps } from '../input/CustomButton';
+import { FaTimes } from 'react-icons/fa';
+import { CustomIconButton } from '@render/components/input';
 
 type Color =
   | 'initial'
@@ -223,5 +225,30 @@ const Transition = forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+interface CustomDialogCloseFloatingButtonProps {
+  handleClose: () => void;
+  margin?: number;
+}
+
+export const CustomDialogCloseFloatingButton = ({
+  handleClose,
+  margin = 8,
+}: CustomDialogCloseFloatingButtonProps) => {
+  return (
+    <CustomIconButton
+      onClick={() => handleClose()}
+      sx={{
+        position: 'absolute',
+        top: margin,
+        right: margin,
+        zIndex: 2,
+        p: 1,
+      }}
+    >
+      <FaTimes size={20} />
+    </CustomIconButton>
+  );
+};
 
 export default CustomDialog;

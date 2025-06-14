@@ -10,8 +10,8 @@ import { CustomIconButton } from '@render/components/input';
 import { ButtonBase, Stack, Typography } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useStore } from '@render/zustand/store';
 import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface RecommendedPerksProps {
   perkToChangeId?: number;
@@ -36,7 +36,7 @@ export const RecommendedPerks = ({
   const { loadChampionBackgroundImg, lolGameDataImg, spellIcon } =
     useLeagueImage();
 
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
 
   const [recommendedPerk, setRecommendedPerk] = useState<
     LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id[]

@@ -2,47 +2,52 @@ import { Box, Stack } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { AppMenu } from '@render/layouts/Home/AppMenu';
 import { Chat } from '@render/layouts/Home/Chat';
-import { storeActions } from '@render/zustand/store';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren } from 'react';
 import { SummonerInfo } from './SummonerInfo';
 import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
 import { Invitations } from '@render/layouts/Home/Invitations';
 import { ChampSelectFocus } from '@render/layouts/Home/ChampSelectFocus';
-import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
+import { FriendInvite } from '@render/layouts/Home/FriendInvite';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { useAudio } from '@render/hooks/useAudioManager';
 
 export const Home = ({ children }: PropsWithChildren) => {
-  const audioRef = useRef<AudioPlayerRef>(null);
+  useAudio('background_music', true);
 
   useLeagueClientEvent('/lol-summoner/v1/current-summoner', (data) => {
-    storeActions.currentSummoner.info(data);
-    audioRef.current?.play(false);
+    currentSummonerStore.info.set(data);
   });
 
   useLeagueClientEvent('/lol-lobby/v2/lobby', (data) => {
-    storeActions.lobby.lobby(data);
+    lobbyStore.lobby.set(data);
   });
 
   useLeagueClientEvent('/lol-gameflow/v1/availability', (data) => {
-    storeActions.leagueClient.isAvailable(data.isAvailable);
+    leagueClientStore.isAvailable.set(data.isAvailable);
   });
 
   useLeagueClientEvent('/lol-gameflow/v1/session', (data) => {
-    storeActions.lobby.gameFlow(data);
+    lobbyStore.gameFlow.set(data);
   });
 
   useLeagueClientEvent('/lol-gameflow/v1/gameflow-phase', (data) => {
     if (['None', 'GameStart', 'InProgress'].includes(data)) {
-      storeActions.lobby.resetState();
+      lobbyStore.resetState();
+    }
+    if (data !== 'ChampSelect') {
+      lobbyStore.champSelect.set(null);
     }
     if (['ChampSelect', 'Lobby'].includes(data)) {
       setTimeout(() => {
-        storeActions.lobby.matchMaking(null);
+        lobbyStore.matchMaking.set(null);
       }, 1000);
     }
   });
 
   useLeagueClientEvent('/lol-champ-select/v1/session', (data) => {
-    storeActions.lobby.champSelect(data);
+    lobbyStore.champSelect.set(data);
   });
 
   return (
@@ -58,12 +63,6 @@ export const Home = ({ children }: PropsWithChildren) => {
         height={'100%'}
         width={'100%'}
       >
-        <AudioPlayer
-          path="background_music.ogg"
-          autoPlay={false}
-          ref={audioRef}
-        />
-
         <AppMenu />
         <Box display={'flex'} height={'100%'} width={'100%'} overflow={'auto'}>
           {children}
@@ -79,9 +78,10 @@ export const Home = ({ children }: PropsWithChildren) => {
       >
         <SummonerInfo />
         <ReadyCheck />
+        <FriendInvite />
         <Chat />
+        <ChampSelectFocus />
       </Stack>
-      <ChampSelectFocus />
     </Stack>
   );
 };

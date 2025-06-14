@@ -1,5 +1,5 @@
-import { useStore } from '@render/zustand/store';
 import { Undefined } from '@shared/typings/generic.typing';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 type Id = string | number;
 type Tier =
@@ -15,9 +15,9 @@ type Tier =
   | 'challenger';
 
 export const useLeagueImage = () => {
-  const champions = useStore().gameData.champions();
-  const spells = useStore().gameData.spells();
-  const items = useStore().gameData.items();
+  const champions = gameDataStore.champions.use();
+  const spells = gameDataStore.spells.use();
+  const items = gameDataStore.items.use();
 
   const link = (path: string, isLocal = false) => {
     if (!path) return '';

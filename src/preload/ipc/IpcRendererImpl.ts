@@ -40,6 +40,7 @@ export class IpcRendererImpl {
       onChangeAppConfig: null,
       onLeagueClientEvent: null,
       onLoadGameData: null,
+      processStatus: null
     };
 
     const ipcRendererInvoke: Record<string, unknown> = {};

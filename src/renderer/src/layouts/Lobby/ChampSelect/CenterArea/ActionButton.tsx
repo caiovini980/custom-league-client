@@ -93,6 +93,7 @@ export const ActionButton = () => {
       onClick={onClickActionButton}
       disabled={disabledActionButton()}
       sx={{
+        flexShrink: 0,
         fontSize: '1.5rem',
       }}
     >

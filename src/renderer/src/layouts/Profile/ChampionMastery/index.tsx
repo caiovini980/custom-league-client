@@ -4,12 +4,12 @@ import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useStore } from '@render/zustand/store';
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { formatDateTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
 import { useEffect, useState } from 'react';
 import { LazyImage } from '@render/components/LazyImage';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ChampionMasteryProps {
   puuid: string;
@@ -19,7 +19,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { loadChampionBackgroundImg } = useLeagueImage();
   const { rcpFeLolSharedComponents, rcpFeLolParties } = useLeagueTranslate();
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
 
   const [championMastery, setChampionMastery] =
     useState<LolChampionMasteryV1_Id_ChampionMastery[]>();

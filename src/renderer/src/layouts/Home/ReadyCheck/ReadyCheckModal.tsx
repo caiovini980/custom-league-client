@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { electronHandle } from '@render/utils/electronFunction.util';
-import { AudioPlayer } from '@render/components/AudioPlayer';
+import { useAudio } from '@render/hooks/useAudioManager';
 
 interface ReadyCheckModalProps {
   autoAccept: boolean;
@@ -15,6 +15,8 @@ interface ReadyCheckModalProps {
 export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolL10n } = useLeagueTranslate();
+  const gameFound = useAudio('game_found');
+
   const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
 
   const [matchReadyCheck, setMatchReadyCheck] =
@@ -22,6 +24,7 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
 
   useEffect(() => {
     if (matchReadyCheck?.state === 'InProgress') {
+      gameFound.play();
       electronHandle.client.priorityApp();
     }
   }, [matchReadyCheck?.state]);
@@ -68,8 +71,6 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
         disabled: matchReadyCheck?.playerResponse !== 'None',
       }}
     >
-      <AudioPlayer path="game_found.mp3" autoPlay={true} />
-
       <Stack
         width={'100%'}
         direction={'column'}

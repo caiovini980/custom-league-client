@@ -1,5 +1,8 @@
+const env = import.meta.env.VITE_NODE_ENV ?? 'production'
+
 const config = {
-  env: import.meta.env.NODE_ENV,
+  env,
+  isDev: env === 'development',
   topBarHeight: 50,
 } as const;
 

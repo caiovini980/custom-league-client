@@ -1,4 +1,4 @@
-import { Box, Collapse, ListItem, Stack } from '@mui/material';
+import { Box, Collapse, Stack } from '@mui/material';
 import {
   CustomIconButton,
   CustomIconButtonTooltip,
@@ -22,7 +22,7 @@ import {
 import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
 import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { TeamHistory } from '@render/layouts/Profile/GameHistory/TeamHistory';
-import { storeValues } from '@render/zustand/store';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 interface GameHistoryItemProps {
   puuid: string;
@@ -129,15 +129,21 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
       undefined,
     );
     if (res.ok) return;
-    await makeRequest(
+    makeRequest(
       'POST',
       buildEventUrl('/lol-replays/v2/metadata/{digits}/create', game.gameId),
       {},
-    );
+    ).then((res) => {
+      if (res.ok) {
+        setTimeout(() => {
+          loadReplayData();
+        }, 2000);
+      }
+    });
   };
 
   const showReplayBtn = () => {
-    return storeValues.currentSummoner.info()?.puuid === puuid;
+    return currentSummonerStore.info.get()?.puuid === puuid;
   };
 
   useEffect(() => {
@@ -147,11 +153,12 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
   if (!gameData) return null;
 
   return (
-    <ListItem
+    <Stack
+      direction={'column'}
+      component={'li'}
       sx={{
         p: 0,
-        display: 'flex',
-        flexDirection: 'column',
+        width: '100%',
       }}
     >
       <GenericGameHistoryItem
@@ -207,6 +214,6 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
           <TeamHistory game={gameData} teamIndex={2} />
         </Stack>
       </Collapse>
-    </ListItem>
+    </Stack>
   );
 };

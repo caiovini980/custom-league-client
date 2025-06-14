@@ -21,7 +21,7 @@ export const IconValue = ({
       columnGap={0.5}
     >
       <img src={src} alt={''} height={size} width={size} />
-      <Typography>{value}</Typography>
+      <Typography whiteSpace={'nowrap'}>{value}</Typography>
     </Stack>
   );
 };

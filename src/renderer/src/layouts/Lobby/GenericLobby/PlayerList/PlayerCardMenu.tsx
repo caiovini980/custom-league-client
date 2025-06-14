@@ -10,6 +10,8 @@ import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { chatStore } from '@render/zustand/stores/chatStore';
 
 interface PlayerCardMenuProps {
   member: LolLobbyV2Lobby['members'][number];
@@ -22,6 +24,8 @@ export const PlayerCardMenu = ({
 }: PlayerCardMenuProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
+
+  const chat: LolChatV1Friends[] = chatStore.friends.use();
 
   const profileModalRef = useRef<ProfileModalRef>(null);
 
@@ -77,9 +81,19 @@ export const PlayerCardMenu = ({
     ).then();
   };
 
+  const onClickSendFriendRequest = () => {
+    makeRequest('POST', '/lol-chat/v2/friend-requests', {
+      puuid: member.puuid,
+    }).then();
+  };
+
   const onClickProfile = () => {
     setAnchorEl(undefined);
     profileModalRef.current?.open(member.summonerId);
+  };
+
+  const showFriendRequest = () => {
+    return !chat.some((c) => c.puuid === member.puuid);
   };
 
   return (
@@ -93,15 +107,30 @@ export const PlayerCardMenu = ({
         onClose={() => setAnchorEl(undefined)}
       >
         <MenuList dense disablePadding>
+          {showFriendRequest() && (
+            <MenuItem onClick={onClickSendFriendRequest}>
+              {rcpFeLolPartiesTrans('context_menu_friend_request')}
+            </MenuItem>
+          )}
           <MenuItem onClick={onClickProfile}>
             {rcpFeLolPartiesTrans('context_menu_view_profile')}
           </MenuItem>
           {isCurrentLeader && (
             <>
-              <MenuItem onClick={onClickGrantInvite}>
+              <MenuItem
+                onClick={onClickGrantInvite}
+                sx={{
+                  display: member.allowedInviteOthers ? 'none' : undefined,
+                }}
+              >
                 {rcpFeLolPartiesTrans('context_menu_grant_invite_privilege')}
               </MenuItem>
-              <MenuItem onClick={onClickRevokeInvite}>
+              <MenuItem
+                onClick={onClickRevokeInvite}
+                sx={{
+                  display: !member.allowedInviteOthers ? 'none' : undefined,
+                }}
+              >
                 {rcpFeLolPartiesTrans('context_menu_revoke_invite_privilege')}
               </MenuItem>
               <MenuItem onClick={onClickPromoteToLeader}>

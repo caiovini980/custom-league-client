@@ -1,8 +1,9 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { TeamPlayerCard } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/PlayerCard';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { SquareIcon } from '@render/components/SquareIcon';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 interface TeamPlayerProps {
   isEnemyTeam?: boolean;
@@ -10,10 +11,22 @@ interface TeamPlayerProps {
 
 export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
   const { championIcon } = useLeagueImage();
+  const { rcpFeLolChampSelect } = useLeagueTranslate();
   const { bans: bansData, session } = useChampSelectContext();
+
+  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
 
   const bans = isEnemyTeam ? bansData.theirTeam : bansData.myTeam;
   const team = isEnemyTeam ? session.theirTeam : session.myTeam;
+
+  const getFirstPickLabel = () => {
+    const action = session.actions.flat().find((a) => a.type === 'pick');
+    if (!action) return '';
+    if ((isEnemyTeam && !action.isAllyAction) || action.isAllyAction) {
+      return rcpFeLolChampSelectTrans('first_pick');
+    }
+    return '';
+  };
 
   return (
     <Stack direction={'column'} rowGap={2} height={'100%'}>
@@ -22,6 +35,13 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
           return <SquareIcon key={i} src={championIcon(b)} size={35} />;
         })}
       </Stack>
+      <Typography
+        textAlign={isEnemyTeam ? 'right' : 'left'}
+        height={10}
+        color={'highlight'}
+      >
+        {getFirstPickLabel()}
+      </Typography>
       {team.map((m, index) => {
         return (
           <TeamPlayerCard
@@ -29,7 +49,6 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
             player={m}
             slotId={isEnemyTeam ? index + team.length : index}
             isEnemyTeam={isEnemyTeam}
-            side={m.team === 1 ? 'blue' : 'red'}
             amountPlayer={team.length}
           />
         );

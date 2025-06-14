@@ -9,9 +9,61 @@ import {
 import { DependencyList, useCallback, useEffect } from 'react';
 
 interface Options {
+  showDeleted?: boolean;
   makeInitialRequest: boolean;
   deps: DependencyList;
 }
+
+type Cb<K extends keyof EventMessageMap> = (
+  data: EventMessageMap[K],
+  event: K,
+) => void;
+
+const regexMap = {
+  '{id}': '.+',
+  '{digits}': '[0-9]+',
+  '{string}': '[a-zA-Z]+',
+  '{uuid}':
+    '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
+};
+
+const readMessage = <K extends keyof EventMessageMap>(
+  event: K,
+  eventData: EventMessage,
+  cb: Cb<K>,
+  showDeleted: boolean,
+) => {
+  if (eventData.eventType === 'Delete' && !showDeleted) {
+    return;
+  }
+  const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
+    return prev.replace(curr, regexMap[curr]);
+  }, event);
+
+  if (
+    new RegExp(`^${eventParsed}$`).test(eventData.uri) ||
+    eventData.uri === event ||
+    event === 'all'
+  ) {
+    // @ts-ignore
+    cb(eventData.data, eventData.uri);
+  }
+};
+
+export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
+  event: K,
+  cb: Cb<K>,
+  showDeleted: boolean,
+) => {
+  const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
+    // @ts-ignore
+    readMessage(event, message[2], cb, showDeleted);
+  });
+
+  return {
+    unsubscribe,
+  };
+};
 
 export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   event: K,
@@ -22,37 +74,12 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
 
   const currentOptions = Object.assign(
     {
+      showDeleted: false,
       makeInitialRequest: true,
       deps: [],
     } as Options,
     options,
-  );
-
-  const regexMap = {
-    '{id}': '.+',
-    '{digits}': '[0-9]+',
-    '{string}': '[a-zA-Z]+',
-    '{uuid}':
-      '[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}',
-  };
-
-  const readMessage = useCallback(
-    (eventData: EventMessage) => {
-      if (eventData.eventType === 'Delete') return;
-      const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
-        return prev.replace(curr, regexMap[curr]);
-      }, event);
-      if (
-        new RegExp(`^${eventParsed}$`).test(eventData.uri) ||
-        eventData.uri === event ||
-        event === 'all'
-      ) {
-        // @ts-ignore
-        cb(eventData.data, eventData.uri);
-      }
-    },
-    [event, ...currentOptions.deps],
-  );
+  ) as Required<Options>;
 
   const loadEventData = useCallback(() => {
     const isRegexKeys = Object.keys(regexMap).some((rk) => event.includes(rk));
@@ -65,21 +92,27 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         })
         .then((res) => {
           if (res.ok) {
-            readMessage({
-              uri: event,
-              eventType: 'Update',
-              data: res.body,
-            });
+            readMessage(
+              event,
+              {
+                uri: event,
+                eventType: 'Update',
+                data: res.body,
+              },
+              cb,
+              currentOptions.showDeleted,
+            );
           }
         });
     }
-  }, [readMessage, currentOptions?.makeInitialRequest]);
+  }, [currentOptions.makeInitialRequest]);
 
   useEffect(() => {
-    const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
-      // @ts-ignore
-      readMessage(message[2]);
-    });
+    const { unsubscribe } = onLeagueClientEvent(
+      event,
+      cb,
+      currentOptions.showDeleted,
+    );
     loadEventData();
 
     return () => {

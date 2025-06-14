@@ -44,7 +44,7 @@ export class ClientService
 
   async startLeagueClient() {
     const appConfig = await this.appConfigService.getAppConfig();
-    spawn(
+    const child = spawn(
       `${appConfig.RIOT_CLIENT_PATH}\\RiotClientServices.exe`,
       [
         '--launch-product=league_of_legends',
@@ -57,6 +57,17 @@ export class ClientService
         stdio: 'ignore',
       },
     );
+    ['error', 'spawn', 'exit', 'close', 'message', 'disconnect'].forEach((ev) => {
+      child.on(ev, (args: unknown[]) => {
+        console.log(ev, args)
+        if (ev === 'exit') {
+          this.sendMsgToRender('processStatus', 'exited')
+        }
+        if (ev === 'spawn') {
+          this.sendMsgToRender('processStatus', 'initialized')
+        }
+      })
+    })
   }
 
   getClientStatus(): ClientStatusResponse {

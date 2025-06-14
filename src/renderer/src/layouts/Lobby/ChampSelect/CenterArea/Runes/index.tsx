@@ -1,5 +1,5 @@
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { CustomIconButton, CustomSelect } from '@render/components/input';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
@@ -10,14 +10,14 @@ import { RuneEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/Run
 import { FaShuffle } from 'react-icons/fa6';
 import { RecommendedPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RecommendedPerks';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useStore } from '@render/zustand/store';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 export const Runes = () => {
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const { currentPlayer } = useChampSelectContext();
-  const lobby = useStore().lobby.lobby();
+  const lobby = lobbyStore.lobby.use();
 
   const [runesPage, setRunesPage] = useState<LolPerksV1Pages[]>([]);
   const [openModal, setOpenModal] = useState(false);
@@ -36,6 +36,12 @@ export const Runes = () => {
   const onChangePage = (pageId: number) => {
     makeRequest('PUT', '/lol-perks/v1/currentpage', pageId).then();
   };
+
+  useEffect(() => {
+    if (currentPageId === 0 && runesPage.length) {
+      makeRequest('PUT', '/lol-perks/v1/currentpage', runesPage[0].id).then();
+    }
+  }, [currentPageId]);
 
   return (
     <Stack direction={'row'} columnGap={1}>

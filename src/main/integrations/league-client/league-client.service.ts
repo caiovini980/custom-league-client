@@ -60,31 +60,38 @@ export class LeagueClientService
         port: Number(appPort),
         password,
       };
+      return true
     } catch (e) {
       this.logger.error('Error on read lockfile');
       this.logger.error(e);
     }
+    return false
   }
 
   async startListenServer() {
-    await this.readLockfileAndGetCredentials();
-    try {
-      const res = await this.rawHandleEndpoint(
-        'GET',
-        '/riot-messaging-service/v1/state',
-        undefined,
-      );
-      if (res.ok && !this.isConnected) {
-        await this.startConnection();
-      }
-    } catch (e) {
-      // @ts-ignore
-      if ('code' in e) {
-        if (e.code === 'ECONNREFUSED') {
-          this.sendMsgClientDisconnected();
+    const hasCredentials =await this.readLockfileAndGetCredentials();
+    if (!hasCredentials) {
+      this.sendMsgClientDisconnected();
+    } else {
+
+      try {
+        const res = await this.rawHandleEndpoint(
+          'GET',
+          '/riot-messaging-service/v1/state',
+          undefined,
+        );
+        if (res.ok && !this.isConnected) {
+          await this.startConnection();
         }
-      } else {
-        this.logger.error(`Error Server: ${e}`);
+      } catch (e) {
+        // @ts-ignore
+        if ('code' in e) {
+          if (e.code === 'ECONNREFUSED') {
+            this.sendMsgClientDisconnected();
+          }
+        } else {
+          this.logger.error(`Error Server: ${e}`);
+        }
       }
     }
     setTimeout(() => {

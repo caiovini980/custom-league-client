@@ -1,14 +1,14 @@
-import { Divider, Stack, StackProps, Typography } from '@mui/material';
+import { Stack, StackProps, Typography } from '@mui/material';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { CustomButton, CustomCheckBox } from '@render/components/input';
-import { storeActions, useStore } from '@render/zustand/store';
 import { useLobby } from '@render/hooks/useLobby';
 import { ReadyCheckModal } from '@render/layouts/Home/ReadyCheck/ReadyCheckModal';
 import { LowPriorityModal } from '@render/layouts/Home/ReadyCheck/LowPriorityModal';
 import { useState } from 'react';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 export const ReadyCheck = () => {
   const { makeRequest } = useLeagueClientRequest();
@@ -20,13 +20,13 @@ export const ReadyCheck = () => {
 
   const [autoAccept, setAutoAccept] = useState(false);
 
-  const matchMaking = useStore().lobby.matchMaking();
+  const matchMaking = lobbyStore.matchMaking.use();
   const lobby = getLobby();
 
   useLeagueClientEvent(
     '/lol-matchmaking/v1/search',
     (data) => {
-      storeActions.lobby.matchMaking(data);
+      lobbyStore.matchMaking.set(data);
     },
     {
       deps: [phase],
@@ -39,12 +39,12 @@ export const ReadyCheck = () => {
       '/lol-lobby/v2/lobby/matchmaking/search',
       undefined,
     ).then(() => {
-      storeActions.lobby.matchMaking(null);
+      lobbyStore.matchMaking.set(null);
     });
   };
 
   if (['None', 'InProgress', 'ChampSelect', 'GameStart'].includes(phase)) {
-    return <Divider />;
+    return null;
   }
 
   if (matchMaking && matchMaking.searchState !== 'Error') {

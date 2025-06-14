@@ -8,15 +8,15 @@ import { Fragment, useEffect, useState } from 'react';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useStore } from '@render/zustand/store';
 import { useLobby } from '@render/hooks/useLobby';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 export const QueueList = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
   const { getQueueNameByQueueId, getLobby } = useLobby();
 
-  const gameFlow = useStore().lobby.gameFlow();
+  const gameFlow = lobbyStore.gameFlow.use();
 
   const [queueList, setQueueList] = useState<LolGameQueuesV1Queues[]>([]);
 

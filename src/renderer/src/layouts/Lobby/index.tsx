@@ -4,7 +4,6 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
 import { GenericLobby } from '@render/layouts/Lobby/GenericLobby';
-import { useStore } from '@render/zustand/store';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { useState } from 'react';
 import { InGame } from '@render/layouts/Lobby/InGame';
@@ -14,13 +13,14 @@ import { QueueList } from '@render/layouts/Lobby/QueueList';
 import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
 
-  const isAvailable = useStore().leagueClient.isAvailable();
-
-  const gameFlow = useStore().lobby.gameFlow();
+  const isAvailable = leagueClientStore.isAvailable.use();
+  const gameFlow = lobbyStore.gameFlow.use();
 
   const [patchingData, setPatchingData] =
     useState<PatcherV1ProductsLeagueOfLegendStateComponent['progress']>(null);

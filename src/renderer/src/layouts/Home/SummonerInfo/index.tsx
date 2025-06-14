@@ -1,6 +1,5 @@
 import { Box, ButtonBase, Stack, Typography } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useStore } from '@render/zustand/store';
 import { CircularIcon } from '@render/components/CircularIcon';
 import config from '@render/utils/config.util';
 import { alpha } from '@mui/material/styles';
@@ -12,13 +11,14 @@ import { getChatAvailabilityColor } from '@render/utils/chat.util';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { CustomIconButton } from '@render/components/input';
 import { EditChatStatus } from '@render/layouts/Home/SummonerInfo/EditChatStatus';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 export const SummonerInfo = () => {
   const navigate = useNavigate();
   const { profileIcon } = useLeagueImage();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const currentSummoner = useStore().currentSummoner.info();
+  const currentSummoner = currentSummonerStore.info.use();
   const [chatData, setChatData] = useState<LolChatV1Friends>();
   const [openModal, setOpenModal] = useState(false);
 

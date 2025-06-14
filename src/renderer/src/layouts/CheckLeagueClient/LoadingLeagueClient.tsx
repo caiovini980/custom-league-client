@@ -1,18 +1,30 @@
 import { Button, CircularProgress, Stack, Typography } from '@mui/material';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
+import {
+  useElectronHandle,
+  useElectronListen,
+} from '@render/utils/electronFunction.util';
 import { useState } from 'react';
-import { useStore } from '@render/zustand/store';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { CustomButton } from '@render/components/input';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 
 export const LoadingLeagueClient = () => {
   const { localTranslate } = useLocalTranslate();
   const { snackError, snackSuccess } = useSnackNotification();
   const { client, appConfig } = useElectronHandle();
+
+  const riotClientPath = appConfigStore.RIOT_CLIENT_PATH.use();
+
   const [waitLeague, setWaitLeague] = useState(false);
-  const riotClientPath = useStore().appConfig.RIOT_CLIENT_PATH();
+  const [processStatus, setProcessStatus] = useState<'exited' | 'initialized'>(
+    'exited',
+  );
+
+  useElectronListen('processStatus', (status) => {
+    setProcessStatus(status);
+  });
 
   const onClickStartLeagueClient = () => {
     client.startLeagueClient().finally(() => {
@@ -66,17 +78,18 @@ export const LoadingLeagueClient = () => {
     >
       <Typography>{localTranslate('waiting_for_league_client')}</Typography>
       <CircularProgress />
-
-      <Button
-        size={'small'}
-        onClick={onClickStartLeagueClient}
-        disabled={waitLeague}
-        startIcon={waitLeague ? <CircularProgress /> : null}
-      >
-        {waitLeague
-          ? localTranslate('waiting_for_league_client')
-          : localTranslate('start_league_client_button')}
-      </Button>
+      {processStatus === 'exited' && (
+        <Button
+          size={'small'}
+          onClick={onClickStartLeagueClient}
+          disabled={waitLeague}
+          startIcon={waitLeague ? <CircularProgress /> : null}
+        >
+          {waitLeague
+            ? localTranslate('waiting_for_league_client')
+            : localTranslate('start_league_client_button')}
+        </Button>
+      )}
     </Stack>
   );
 };

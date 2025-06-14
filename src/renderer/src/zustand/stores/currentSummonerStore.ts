@@ -1,7 +1,7 @@
 import { Null } from '@shared/typings/generic.typing';
 import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSummonerV1SummonerProfile';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
-import { createStore } from 'zustand-x';
+import { store } from '@davstack/store';
 
 export interface CurrentSummonerState {
   info: Null<LolSummonerV1Summoners_Id>;
@@ -13,12 +13,11 @@ const initialState: CurrentSummonerState = {
   profile: null,
 };
 
-export const currentSummonerStore = createStore(
-  'currentSummoner',
-)<CurrentSummonerState>(initialState, {
+export const currentSummonerStore = store(initialState, {
+  name: 'currentSummoner',
   devtools: { enabled: true },
-}).extendActions((set) => ({
+}).actions((store) => ({
   resetState: () => {
-    set.state(() => initialState);
+    store.set(initialState);
   },
 }));

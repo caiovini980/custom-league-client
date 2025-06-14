@@ -1,7 +1,7 @@
-import { useStore } from '@render/zustand/store';
 import { KebabToCamelCase } from '@shared/typings/generic.typing';
 import { kebabToCamelCase } from '@shared/utils/string.util';
 import { translateJsonMap } from '@shared/utils/translate.util';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 type Translate = typeof translateJsonMap;
 type TranslatePath = keyof Translate;
@@ -13,7 +13,7 @@ type TransReturn<F> = {
 };
 
 export const useLeagueTranslate = () => {
-  const translateData = useStore().gameData.translate();
+  const translateData = gameDataStore.translate.use();
 
   const translate = (path: TranslatePath, source: string) => {
     const data = translateData[path][source];

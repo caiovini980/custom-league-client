@@ -1,9 +1,9 @@
 import { createTheme, responsiveFontSizes } from '@mui/material';
 import { useMemo } from 'react';
-import { useStore } from '@render/zustand/store';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 
 export const useCustomTheme = () => {
-  const themeMode = useStore().appConfig.THEME_MODE();
+  const themeMode = appConfigStore.THEME_MODE.use();
   const isDarkMode = themeMode === 'DARK';
 
   return useMemo(
@@ -21,6 +21,7 @@ export const useCustomTheme = () => {
             error: {
               main: '#e05252',
             },
+            highlight: '#e9a61e',
             matchHistory: {
               win: '#2a8179',
               defeat: '#7d2727',

@@ -63,6 +63,9 @@ import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatch
 import { LolChallengesV1SummaryPlayerDataPlayer_Id } from '@shared/typings/lol/response/lolChallengesV1SummaryPlayerDataPlayer_Id';
 import { LolInventoryV1WalletAll } from '@shared/typings/lol/response/lolInventoryV1WalletAll';
 import { LolSummonerV1AliasLookup } from '@shared/typings/lol/response/lolSummonerV1AliasLookup';
+import { LolChatV2FriendRequests as LolChatV2FriendRequestsRes } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { LolChatV2FriendRequests as LolChatV2FriendRequestsReq } from '@shared/typings/lol/request/lolChatV2FriendRequests';
+import { LolChatV1BlockedPlayers } from '@shared/typings/lol/request/lolChatV1BlockedPlayers';
 
 interface EndpointData<Req, Res> {
   request: Req;
@@ -84,12 +87,19 @@ interface ClientEndpoint {
   // Lol Challenges
   '/lol-challenges/v1/summary-player-data/player/{uuid}': EndpointOnlyResponse<LolChallengesV1SummaryPlayerDataPlayer_Id>;
   // Lol Chat
+  '/lol-chat/v1/blocked-players': EndpointOnlyRequest<LolChatV1BlockedPlayers>;
+  '/lol-chat/v1/blocked-players/{uuid}': EndpointEmpty;
   '/lol-chat/v1/me': EndpointData<LolChatV1Me, LolChatV1Friends>;
   '/lol-chat/v1/friends': EndpointOnlyResponse<LolChatV1Friends[]>;
   '/lol-chat/v1/friends/{id}': EndpointOnlyResponse<LolChatV1Friends>;
   '/lol-chat/v1/friend-groups': EndpointOnlyResponse<LolChatV1FriendGroups[]>;
   '/lol-chat/v1/friend-groups/{digits}': EndpointOnlyResponse<LolChatV1FriendGroups>;
   '/lol-chat/v1/friend-counts': EndpointOnlyResponse<LolChatV1FriendCounts>;
+  '/lol-chat/v2/friend-requests': EndpointData<
+    LolChatV2FriendRequestsReq,
+    LolChatV2FriendRequestsRes[]
+  >;
+  '/lol-chat/v2/friend-requests/{uuid}': EndpointEmpty;
   // Lol Champion Mastery
   '/lol-champion-mastery/v1/{uuid}/champion-mastery': EndpointOnlyResponse<
     LolChampionMasteryV1_Id_ChampionMastery[]

@@ -1,12 +1,12 @@
 import { Stack, Typography } from '@mui/material';
 import CustomDialog from '@render/components/CustomDialog';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useStore } from '@render/zustand/store';
 import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { useEffect, useState } from 'react';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 interface ErrorModalProps {
   errors: LolMatchmakingV1Search['errors'];
@@ -15,7 +15,7 @@ interface ErrorModalProps {
 export const ErrorModal = ({ errors }: ErrorModalProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const currentSummoner = useStore().currentSummoner.info();
+  const currentSummoner = currentSummonerStore.info.use();
 
   const [openModal, setOpenModal] = useState(false);
   const [summonersName, setSummonersName] = useState<Record<string, string>>(
@@ -63,7 +63,7 @@ export const ErrorModal = ({ errors }: ErrorModalProps) => {
 
     return {
       title: rcpFeLolPartiesTrans(`parties_${errorType}_timer`),
-      header: rcpFeLolPartiesTrans(`parties_queue_${errorType}_header`),
+      header: rcpFeLolPartiesTrans(`parties_queue_error_${errorType}_header`),
       body: isCurrentSummoner ? mySelfError : otherError,
     };
   };

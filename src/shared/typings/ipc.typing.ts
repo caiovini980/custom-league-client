@@ -52,6 +52,7 @@ export interface IpcMainToRenderer extends Record<string, RVoid> {
   onDownloadingUpdate: (data: ProgressInfo) => void;
   onUpdateComplete: () => void;
   onCheckingForUpdate: () => void;
+  processStatus: (status: 'exited' | 'initialized') => void
   clientStatus: (status: ClientStatusResponse) => void;
   onChangeAppConfig: (configs: GetAppConfigResponse) => void;
   onLeagueClientEvent: (data: unknown) => void;

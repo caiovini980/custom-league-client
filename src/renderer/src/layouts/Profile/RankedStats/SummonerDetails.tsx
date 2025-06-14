@@ -8,6 +8,12 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useState } from 'react';
 import { LolChallengesV1SummaryPlayerDataPlayer_Id } from '@shared/typings/lol/response/lolChallengesV1SummaryPlayerDataPlayer_Id';
+import { CustomButton } from '@render/components/input';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { chatStore } from '@render/zustand/stores/chatStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 
 interface SummonerDetailsProps {
   summoner: LolSummonerV1Summoners_Id;
@@ -15,12 +21,37 @@ interface SummonerDetailsProps {
 
 export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
   const { profileIcon } = useLeagueImage();
+  const { makeRequest } = useLeagueClientRequest();
+  const { rcpFeLolSocial, rcpFeLolPostgame } = useLeagueTranslate();
+  const { snackSuccess, snackError } = useSnackNotification();
+
+  const chat = chatStore.friends.use();
+  const currentSummoner = currentSummonerStore.info.use();
 
   const iconSize = 180;
   const levelSize = 55;
+  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
 
   const [challengeStats, setChallengeStats] =
     useState<LolChallengesV1SummaryPlayerDataPlayer_Id>();
+
+  const isShowFriendInvite = () => {
+    if (currentSummoner?.summonerId === summoner.summonerId) return false;
+    return !chat.some((c) => c.summonerId === summoner.summonerId);
+  };
+
+  const onClickAddFriend = () => {
+    makeRequest('POST', '/lol-chat/v2/friend-requests', {
+      puuid: summoner.puuid,
+    }).then((res) => {
+      if (res.ok) {
+        snackSuccess(rcpFeLolSocialTrans('friend_request_sent_details'));
+      } else {
+        snackError(rcpFeLolPostgameTrans('postgame_friend_request_error'));
+      }
+    });
+  };
 
   useLeagueClientEvent(
     buildEventUrl(
@@ -72,6 +103,11 @@ export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
       <Stack direction={'column'}>
         <Typography variant={'h3'}>{summoner.gameName}</Typography>
         <Typography variant={'h6'}>{challengeStats?.title.name}</Typography>
+        {isShowFriendInvite() && (
+          <CustomButton variant={'outlined'} onClick={onClickAddFriend}>
+            {rcpFeLolSocialTrans('tooltip_new_friend')}
+          </CustomButton>
+        )}
       </Stack>
     </Stack>
   );

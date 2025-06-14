@@ -19,8 +19,7 @@
   "asarUnpack": ["resources/**", "out/main/chunks/*.node"],
   "win": {
     "target": "nsis",
-    "verifyUpdateCodeSignature": false,
-    "publish": ["github"]
+    "verifyUpdateCodeSignature": false
   },
   "linux": {
     "category": "Utility",

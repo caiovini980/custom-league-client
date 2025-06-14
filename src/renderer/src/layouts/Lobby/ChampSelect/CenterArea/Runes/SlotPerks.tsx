@@ -1,11 +1,11 @@
 import { Stack, Typography } from '@mui/material';
 import { CustomIconButtonTooltip } from '@render/components/input';
-import { useStore } from '@render/zustand/store';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { Perk } from '@shared/typings/lol/json/perk';
 import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { PerkEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface SlotPerksProps {
   type: 'primary' | 'secondary' | 'stat';
@@ -19,8 +19,8 @@ export const SlotPerks = ({
   handleEditPerk,
 }: SlotPerksProps) => {
   const { lolGameDataImg } = useLeagueImage();
-  const perks = useStore().gameData.perks();
-  const perkStyles = useStore().gameData.perkStyles();
+  const perks = gameDataStore.perks.use();
+  const perkStyles = gameDataStore.perkStyles.use();
 
   const iconSize = 30;
 

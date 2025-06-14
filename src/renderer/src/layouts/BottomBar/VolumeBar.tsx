@@ -1,36 +1,40 @@
 import { Slider, Stack } from '@mui/material';
 import { CustomIconButton } from '@render/components/input';
-import { storeActions, storeValues, useStore } from '@render/zustand/store';
 import { useEffect, useRef } from 'react';
 import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from 'react-icons/fa6';
 import { electronHandle } from '@render/utils/electronFunction.util';
-import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
 import { delay } from 'lodash';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { useAudioManager } from '@render/hooks/useAudioManager';
 
 export const VolumeBar = () => {
-  const volume: number = useStore().appConfig.VOLUME();
+  const volume: number = appConfigStore.VOLUME.use();
   const cachedVolume = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout>();
-  const audioRef = useRef<AudioPlayerRef>(null);
+  const { play } = useAudioManager();
+
+  const changeVolume = (value: number) => {
+    appConfigStore.VOLUME.set(value);
+  };
 
   const onChangeVolume = (_event: unknown, value: number) => {
-    storeActions.appConfig.VOLUME(value / 100);
+    changeVolume(value / 100);
   };
 
   const onVolumeButtonClicked = () => {
     if (volume > 0) {
       // cache no volume atual
-      cachedVolume.current = storeValues.appConfig.VOLUME();
+      cachedVolume.current = appConfigStore.VOLUME.get();
 
       // setar posição do slider para 0
       // setar volume como 0
-      audioRef.current?.play();
+      play('mute_unmute');
       delay(() => {
-        storeActions.appConfig.VOLUME(0);
+        changeVolume(0);
       }, 50);
     } else {
-      audioRef.current?.play();
-      storeActions.appConfig.VOLUME(cachedVolume.current);
+      play('mute_unmute');
+      changeVolume(cachedVolume.current);
     }
   };
 
@@ -63,9 +67,6 @@ export const VolumeBar = () => {
       <CustomIconButton onClick={onVolumeButtonClicked}>
         {changeIconBasedOnVolume()}
       </CustomIconButton>
-
-      <AudioPlayer path="mute_unmute.ogg" autoPlay={false} ref={audioRef} />
-
       <Slider
         aria-label="Volume"
         value={volume * 100}

@@ -10,21 +10,18 @@ import {
 import { useRef, useState } from 'react';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import { CircularIcon } from '@render/components/CircularIcon';
-import { useStore } from '@render/zustand/store';
 import { SwapButton } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapButton';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
 import { CustomIconButton } from '@render/components/input';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface TeamPlayerCardProps {
   slotId: number;
   isEnemyTeam?: boolean;
   player: LolChampSelectV1SessionTeam;
-  side: 'blue' | 'red';
   amountPlayer: number;
 }
 
@@ -34,14 +31,11 @@ export const TeamPlayerCard = ({
   isEnemyTeam,
   amountPlayer,
 }: TeamPlayerCardProps) => {
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
   const { championIcon, lolGameDataImg, loadChampionBackgroundImg } =
     useLeagueImage();
-  const { rcpFeLolChampSelect, rcpFeLolPostgame } = useLeagueTranslate();
-  const { makeRequest } = useLeagueClientRequest();
-  const { snackError } = useSnackNotification();
+  const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
 
   const profileRef = useRef<ProfileModalRef>(null);
@@ -67,7 +61,7 @@ export const TeamPlayerCard = ({
   };
 
   const getChampionName = () => {
-    return champions.find((c) => c.id === player.championId)?.name ?? '';
+    return champions.find((c) => c.id === summonerData?.championId)?.name ?? '';
   };
 
   const skinUrl = loadChampionBackgroundImg(
@@ -77,36 +71,7 @@ export const TeamPlayerCard = ({
   );
 
   const onClickIconChampion = async () => {
-    const error = () => {
-      snackError(rcpFeLolPostgameTrans('postgame_view_profile_error'));
-    };
-
-    const lookupProfile = await makeRequest(
-      'GET',
-      buildEventUrl(
-        '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
-        encodeURIComponent(player.gameName),
-        player.tagLine,
-      ),
-      undefined,
-    );
-    if (!lookupProfile.ok) {
-      error();
-      return;
-    }
-    const sum = await makeRequest(
-      'GET',
-      buildEventUrl(
-        '/lol-summoner/v2/summoners/puuid/{uuid}',
-        lookupProfile.body.puuid,
-      ),
-      undefined,
-    );
-    if (!sum.ok) {
-      error();
-      return;
-    }
-    profileRef.current?.open(sum.body.summonerId);
+    profileRef.current?.openWithGameNameAndTag(player.gameName, player.tagLine);
   };
 
   if (!summonerData) return null;
@@ -164,7 +129,7 @@ export const TeamPlayerCard = ({
         disabled={isEnemyTeam}
         onClick={onClickIconChampion}
       >
-        <CircularIcon size={50} src={championIcon(player.championId)} />
+        <CircularIcon size={50} src={championIcon(summonerData.championId)} />
       </CustomIconButton>
       {summonerData.shouldShowBanIntentIcon && (
         <SquareIcon
