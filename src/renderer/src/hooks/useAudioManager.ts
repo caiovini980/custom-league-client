@@ -60,6 +60,7 @@ export const useAudioManager = () => {
   const playOnce = (soundName: SoundNameKeys) => {
     const id = String(random(0, 10000));
     const sound = audioFactory(soundName);
+    sound.volume = volume;
     sound.play();
     soundMap.set(id, sound);
     sound.onpause = () => {
