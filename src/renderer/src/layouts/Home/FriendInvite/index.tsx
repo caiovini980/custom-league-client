@@ -47,9 +47,9 @@ export const FriendInvite = () => {
         columnGap={2}
         sx={{
           p: 1,
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          borderBottom: '1px solid var(--mui-palette-divider)',
           '& > p': {
-            color: (t) => t.palette.highlight,
+            color: 'var(--mui-palette-highlight)',
           },
         }}
       >

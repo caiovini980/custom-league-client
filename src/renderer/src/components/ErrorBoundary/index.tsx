@@ -2,6 +2,7 @@ import { PropsWithChildren, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import ErrorScreen from './ErrorScreen';
 import { useNavigate } from 'react-router-dom';
+import { electronHandle } from '@render/utils/electronFunction.util';
 
 export interface CustomErrorBoundaryProps {
   btnLabel?: string;
@@ -16,6 +17,7 @@ const CustomErrorBoundary = ({
 
   const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
     setHasError(true);
+    electronHandle.client.changeShowClient(true);
     return (
       <ErrorScreen
         message={error.message}

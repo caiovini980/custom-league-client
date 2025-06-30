@@ -1,4 +1,9 @@
-import { LinearProgress, Stack, Typography } from '@mui/material';
+import {
+  LinearProgress,
+  Stack,
+  Typography,
+  useColorScheme,
+} from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
@@ -13,12 +18,15 @@ import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const navigate = useNavigate();
   const { localTranslate } = useLocalTranslate();
-  const { client } = useElectronHandle();
+  const { client, appConfig } = useElectronHandle();
+  const { setMode } = useColorScheme();
 
+  const themeMode = appConfigStore.THEME_MODE.use();
   const gameDataLoaded = gameDataStore.loaded.use();
   const isConnected = leagueClientStore.isConnected.use();
   const isClientOpen = leagueClientStore.isClientOpen.use();
@@ -38,25 +46,9 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     setClientStatus(data);
   });
 
-  useEffect(() => {
-    client.getClientStatus().then(setClientStatus);
-  }, []);
-
-  useEffect(() => {
-    if (!isConnected) {
-      leagueClientStore.isAvailable.set(false);
-      lobbyStore.resetState();
-      currentSummonerStore.resetState();
-      navigate('/');
-    }
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (!gameDataLoaded && isConnected) {
-      client.reloadGameData();
-      client.changeShowClient(isClientOpen);
-    }
-  }, [gameDataLoaded, isConnected]);
+  useElectronListen('onChangeAppConfig', (config) => {
+    appConfigStore.set(config);
+  });
 
   useElectronListen('onLoadGameData', (data) => {
     if (data.status === 'downloading') {
@@ -77,6 +69,33 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
       });
     }
   });
+
+  useEffect(() => {
+    client.getClientStatus().then(setClientStatus);
+    appConfig.getConfig().then((config) => {
+      appConfigStore.set(config);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isConnected) {
+      leagueClientStore.isAvailable.set(false);
+      lobbyStore.resetState();
+      currentSummonerStore.resetState();
+      navigate('/');
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (!gameDataLoaded && isConnected) {
+      client.reloadGameData();
+      client.changeShowClient(isClientOpen);
+    }
+  }, [gameDataLoaded, isConnected]);
+
+  useEffect(() => {
+    setMode(themeMode === 'DARK' ? 'dark' : 'light');
+  }, [themeMode]);
 
   if (!isConnected) {
     return <LoadingLeagueClient />;

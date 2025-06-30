@@ -53,7 +53,7 @@ export const LeagueClientEvent = () => {
 
   useLeagueClientEvent('all', (data, event) => {
     const ignore = [
-      //'riotclient/ux-state/request',
+      'riotclient/ux-state/request',
       'lol-clash',
       'client-config',
       'patcher',
@@ -92,7 +92,7 @@ export const LeagueClientEvent = () => {
     } else {
       addError({
         eventName: event,
-        msg: `Vanguard Error: ${state.vanguardStatus}`,
+        msg: `${rcpFeLolNavigationTrans('vanguard_error_title', state.vanguardStatus)}<br><br>${rcpFeLolNavigationTrans('vanguard_error_description')}`,
         mode: 'fatal-error',
         priority: 0,
       });
@@ -118,7 +118,7 @@ export const LeagueClientEvent = () => {
   useLeagueClientEvent('/lol-login/v1/session', (state, event) => {
     if (!state.connected) {
       const msg =
-        rcpFeLolNavigationTrans(`login_error_${state.error.messageId}$html`) ||
+        rcpFeLolNavigationTrans(`login_error_${state.error?.messageId}$html`) ||
         rcpFeLolNavigationTrans('login_error_unknown');
 
       addError({

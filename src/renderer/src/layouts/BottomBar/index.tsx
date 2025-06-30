@@ -1,68 +1,49 @@
-import { Box, Drawer, IconButton, Paper, Stack } from '@mui/material';
-import { AppConfig } from '@render/layouts/BottomBar/AppConfig';
-import {
-  electronListen,
-  useElectronHandle,
-} from '@render/utils/electronFunction.util';
-import { useEffect, useState } from 'react';
-import { FaCog } from 'react-icons/fa';
+import { Paper, Stack } from '@mui/material';
 import { Updater } from '@render/layouts/Updater';
-import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { useAudioManager } from '@render/hooks/useAudioManager';
+import { AppConfigModal } from '@render/layouts/BottomBar/AppConfigModal';
+import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
+import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
+import { CloseClient } from '@render/layouts/BottomBar/CloseClient';
+import { ThemeModeShortcut } from '@render/layouts/BottomBar/ThemeModeShortcut';
+import { Conversations } from '@render/layouts/BottomBar/Conversations';
 
 export const BottomBar = () => {
-  const { play } = useAudioManager();
-  const { appConfig } = useElectronHandle();
-
-  const loadConfig = () => {
-    appConfig.getConfig().then((config) => {
-      appConfigStore.set(config);
-    });
-  };
-
-  const [open, setOpen] = useState({
-    open: false,
-    screen: 'config',
-  });
-
-  const openDrawer = (screen: string) => {
-    play('open_settings');
-    setOpen({
-      open: true,
-      screen,
-    });
-  };
-
-  const closeDrawer = () => {
-    play('open_settings');
-    setOpen((prevState) => ({ ...prevState, open: false }));
-  };
-
-  useEffect(() => {
-    electronListen.onChangeAppConfig((config) => {
-      appConfigStore.set(config);
-    });
-    loadConfig();
-  }, []);
+  const iconSize = 16;
 
   return (
     <Paper>
       <Stack
         direction={'row'}
-        columnGap={2}
-        justifyContent={'flex-end'}
-        height={30}
+        columnGap={3}
+        justifyContent={'space-between'}
+        height={40}
         width={'100%'}
-        p={0.5}
+        px={0.5}
       >
-        <Updater />
-        <IconButton size={'small'} onClick={() => openDrawer('config')}>
-          <FaCog size={14} />
-        </IconButton>
+        <Conversations />
+        <Stack
+          direction={'row'}
+          alignItems={'center'}
+          columnGap={1}
+          p={0.5}
+          sx={{
+            '& .MuiIconButton-root': {
+              p: 1,
+            },
+            '& svg': {
+              width: iconSize,
+              height: iconSize,
+            },
+          }}
+        >
+          <Updater />
+          <ThemeModeShortcut />
+          <CloseClient />
+          <ShowClient />
+          <VolumeBarShortcut />
+          <AppConfigModal />
+        </Stack>
       </Stack>
-      <Drawer anchor={'right'} open={open.open} onClose={closeDrawer}>
-        <Box width={280}>{open.screen === 'config' && <AppConfig />}</Box>
-      </Drawer>
     </Paper>
   );
 };

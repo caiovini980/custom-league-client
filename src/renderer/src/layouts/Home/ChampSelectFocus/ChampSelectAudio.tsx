@@ -1,20 +1,55 @@
-import { useAudioManager } from '@render/hooks/useAudioManager';
+import { useAudio, useAudioManager } from '@render/hooks/useAudioManager';
 import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { useChampSelect } from '@render/hooks/useChampSelect';
-import { useEffect } from 'react';
+import { ChampSelectionActions } from '@render/hooks/useChampSelect';
+import { useEffect, useRef } from 'react';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 
 interface ChampSelectAudioProps {
   session: LolChampSelectV1Session;
+  time: number;
+  action: ChampSelectionActions;
+  summonerData: LolChampSelectV1Summoners_Id | undefined;
+  summonersData: Record<number, LolChampSelectV1Summoners_Id>;
 }
 
-export const ChampSelectAudio = ({ session }: ChampSelectAudioProps) => {
+export const ChampSelectAudio = ({
+  action,
+  summonerData,
+  summonersData,
+  time,
+}: ChampSelectAudioProps) => {
   const { playOnce } = useAudioManager();
-  const { summonerData, getAction } = useChampSelect(session);
+
+  const musicChampSelect = useAudio('music-cs-blindpick-default');
+  const musicAramChampSelect = useAudio('music-cs-allrandom-howlingabyss');
+  const musicDraftFinalization = useAudio('music-cs-draft-finalization-01');
 
   const lobby = lobbyStore.lobby.use();
 
-  const action = getAction();
+  const summonersChampionPicked = useRef<Record<number, boolean>>({});
+
+  useEffect(() => {
+    Object.keys(summonersData)
+      .filter((cellId) => !summonersChampionPicked.current[cellId])
+      .forEach((cellId) => {
+        const summoner = summonersData[cellId] as LolChampSelectV1Summoners_Id;
+        if (summoner.championId !== 0 && summoner.areSummonerActionsComplete) {
+          playOnce('sfx-cs-draft-right-pick-single');
+          summonersChampionPicked.current[cellId] = true;
+        }
+      });
+
+    const isFinished = Object.values(summonersData).every(
+      (summoner) => summoner.areSummonerActionsComplete,
+    );
+
+    if (isFinished) {
+      musicChampSelect.stop();
+      musicAramChampSelect.stop();
+      musicDraftFinalization.play(false);
+    }
+  }, [summonersData]);
 
   useEffect(() => {
     if (summonerData?.isActingNow) {
@@ -37,11 +72,26 @@ export const ChampSelectAudio = ({ session }: ChampSelectAudioProps) => {
 
   useEffect(() => {
     if (lobby?.gameConfig.gameMode === 'ARAM') {
-      playOnce('music-cs-allrandom-howlingabyss');
+      musicAramChampSelect.play(false);
     } else {
-      playOnce('music-cs-blindpick-default');
+      musicChampSelect.play(false);
     }
+
+    return () => {
+      musicChampSelect.stop();
+      musicAramChampSelect.stop();
+    };
   }, [lobby?.gameConfig.gameMode]);
+
+  useEffect(() => {
+    if (time <= 10) {
+      playOnce(
+        summonerData?.isActingNow
+          ? 'sfx-cs-timer-tick'
+          : 'sfx-cs-timer-tick-small',
+      );
+    }
+  }, [summonerData?.isActingNow, time]);
 
   return <></>;
 };

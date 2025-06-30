@@ -23,24 +23,16 @@ export const ReadyCheck = () => {
   const matchMaking = lobbyStore.matchMaking.use();
   const lobby = getLobby();
 
-  useLeagueClientEvent(
-    '/lol-matchmaking/v1/search',
-    (data) => {
-      lobbyStore.matchMaking.set(data);
-    },
-    {
-      deps: [phase],
-    },
-  );
+  useLeagueClientEvent('/lol-matchmaking/v1/search', (data) => {
+    lobbyStore.matchMaking.set(data);
+  });
 
   const onQuitMatchmaking = () => {
     makeRequest(
       'DELETE',
       '/lol-lobby/v2/lobby/matchmaking/search',
       undefined,
-    ).then(() => {
-      lobbyStore.matchMaking.set(null);
-    });
+    ).then();
   };
 
   if (['None', 'InProgress', 'ChampSelect', 'GameStart'].includes(phase)) {
@@ -92,7 +84,7 @@ const StackBox = (props: StackProps) => {
     <Stack
       direction={'column'}
       p={1}
-      borderBottom={(t) => `1px solid ${t.palette.divider}`}
+      borderBottom={'1px solid var(--mui-palette-divider)'}
       {...props}
     />
   );

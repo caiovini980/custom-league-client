@@ -4,7 +4,7 @@ import {
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography, Divider } from '@mui/material';
 import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { SlotPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/SlotPerks';
@@ -94,6 +94,7 @@ export const RuneEdit = () => {
       direction={'column'}
       p={3}
       height={'100%'}
+      width={'100%'}
       rowGap={5}
       style={{
         background: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${bgUrl})`,
@@ -139,7 +140,28 @@ export const RuneEdit = () => {
           <FaTrash size={16} />
         </CustomIconButton>
       </Stack>
-      <Stack direction={'row'} justifyContent={'space-evenly'}>
+      <Stack
+        overflow={'auto'}
+        direction={{ xs: 'column', lg: 'row' }}
+        justifyContent={{ xs: 'flex-start', lg: 'center' }}
+        alignItems={{ xs: 'center', lg: 'start' }}
+        gap={4}
+        height={'100%'}
+        divider={
+          <>
+            <Divider
+              sx={{ display: { xs: 'none', lg: 'block' } }}
+              flexItem
+              orientation={'vertical'}
+            />
+            <Divider
+              sx={{ display: { xs: 'block', lg: 'none' } }}
+              flexItem
+              orientation={'horizontal'}
+            />
+          </>
+        }
+      >
         <SlotPerks
           type={'primary'}
           handleEditPerk={handleEditPerk}

@@ -5,11 +5,8 @@ import {
 import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
+  GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
-import {
-  SummonerGetCurrentSummonerResponse,
-  SummonerGetSummonerByIdResponse,
-} from '@shared/typings/ipc-function/handle/summoner.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { LoadGameData } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import {
@@ -32,6 +29,7 @@ export interface IpcFunction {
   client: {
     priorityApp: () => void;
     changeShowClient: (value: boolean) => void;
+    getPatchNotes: () => GetPatchNotesResponse;
     reloadGameData: () => void;
     startLeagueClient: () => void;
     getClientStatus: () => ClientStatusResponse;
@@ -39,20 +37,13 @@ export interface IpcFunction {
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
   };
-  lobby: {
-    createAram: () => void;
-  };
-  summoner: {
-    getCurrentSummoner: () => SummonerGetCurrentSummonerResponse;
-    getSummonerById: (summonerId: number) => SummonerGetSummonerByIdResponse;
-  };
 }
 
 export interface IpcMainToRenderer extends Record<string, RVoid> {
   onDownloadingUpdate: (data: ProgressInfo) => void;
   onUpdateComplete: () => void;
   onCheckingForUpdate: () => void;
-  processStatus: (status: 'exited' | 'initialized') => void
+  processStatus: (status: 'exited' | 'initialized') => void;
   clientStatus: (status: ClientStatusResponse) => void;
   onChangeAppConfig: (configs: GetAppConfigResponse) => void;
   onLeagueClientEvent: (data: unknown) => void;

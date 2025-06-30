@@ -189,11 +189,15 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
                 color: 'white',
               },
             }}
+            color={'inherit'}
             {...replayBtn()}
           />
         </Stack>
         <Stack direction={'column'} justifyContent={'center'}>
-          <CustomIconButton onClick={() => setShowMoreDetail(!showMoreDetail)}>
+          <CustomIconButton
+            onClick={() => setShowMoreDetail(!showMoreDetail)}
+            color={'inherit'}
+          >
             {showMoreDetail ? (
               <FaChevronUp size={15} />
             ) : (

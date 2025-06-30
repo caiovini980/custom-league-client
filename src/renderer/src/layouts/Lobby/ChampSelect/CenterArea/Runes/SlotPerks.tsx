@@ -152,7 +152,7 @@ export const SlotPerks = ({
   };
 
   return (
-    <Stack direction={'column'} rowGap={3}>
+    <Stack direction={'column'} rowGap={3} width={300}>
       {type !== 'stat' && (
         <Stack direction={'row'} justifyContent={'space-between'}>
           {getPerkStyles().map((perk) => {
@@ -163,9 +163,9 @@ export const SlotPerks = ({
                 placement={'top'}
                 onClick={() => onClickPerkStyle(perk.id)}
                 sx={{
-                  background: (t) =>
+                  background:
                     getCurrentPerkId() === perk.id
-                      ? t.palette.action.selected
+                      ? 'var(--mui-palette-action-selected)'
                       : undefined,
                 }}
               >
@@ -208,8 +208,9 @@ export const SlotPerks = ({
                 placement={'bottom'}
                 disableInteractive
                 sx={{
-                  background: (t) =>
-                    perkSelected ? t.palette.action.selected : undefined,
+                  background: perkSelected
+                    ? 'var(--mui-palette-action-selected)'
+                    : undefined,
                 }}
               >
                 <CircularIcon

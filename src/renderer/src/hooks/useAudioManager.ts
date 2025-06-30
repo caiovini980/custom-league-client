@@ -10,24 +10,30 @@ const soundName = [
   'mute_unmute',
   'music-cs-allrandom-howlingabyss',
   'music-cs-blindpick-default',
+  'music-champ-select',
   'sfx-cs-draft-10ban-intro',
   'sfx-cs-draft-ban-button-click',
   'sfx-cs-draft-notif-yourban',
   'sfx-cs-draft-notif-yourpick',
   'sfx-cs-draft-pick-intro',
+  'sfx-cs-draft-right-pick-single',
+  'music-cs-draft-finalization-01',
   'sfx-cs-lockin-button-click',
   'sfx-cs-notif-traderequest-accepted',
   'sfx-cs-notif-traderequest-declined',
   'sfx-cs-notif-traderequest-rcvd',
   'sfx-cs-timer-tick',
   'sfx-cs-timer-tick-small',
+  'sfx-vignette-celebration-intro',
+  'sfx-honor-votingceremony-intro',
 ] as const;
 
 type SoundNameKeys = (typeof soundName)[number];
 
 const audioFactory = (name: string) => {
   const audio = new Audio(`sounds/${name}.ogg`);
-  audio.onerror = () => {
+  audio.onerror = (...e) => {
+    console.error(e);
     throw Error(`error on play sound: ${name}`);
   };
   return audio;
@@ -90,27 +96,27 @@ export const useAudioManager = () => {
 };
 
 export const useAudio = (name: SoundNameKeys, autoPlay = false) => {
-  const { current: audio } = useRef(audioFactory(name));
+  const audio = useRef(audioFactory(name));
   const volume = appConfigStore.VOLUME.use();
 
   useEffect(() => {
-    if (autoPlay) audio.play();
+    if (autoPlay) audio.current.play();
   }, [autoPlay]);
 
   useEffect(() => {
-    audio.volume = volume;
+    audio.current.volume = volume;
   }, [volume]);
 
   const stop = () => {
-    audio.pause();
-    audio.currentTime = 0;
+    audio.current.pause();
+    audio.current.currentTime = 0;
   };
 
   const play = (replayOnPlayAgain = true) => {
     if (replayOnPlayAgain) {
       stop();
     }
-    audio.play();
+    audio.current.play();
   };
 
   return { play, stop };

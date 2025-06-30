@@ -22,3 +22,11 @@ export interface ClientMakeRequestResponse<T = unknown> {
   status: number;
   body: T;
 }
+
+export interface GetPatchNotesResponse {
+  urlExternal: string;
+  urlEmbed: string;
+  img: string;
+  title: string;
+  description: string;
+}

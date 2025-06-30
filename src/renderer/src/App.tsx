@@ -8,9 +8,10 @@ import { Profile } from '@render/layouts/Profile';
 import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
 import { JSX } from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import ErrorBoundary from '@render/components/ErrorBoundary';
 import { YourShop } from '@render/layouts/YourShop';
+import { Info } from '@render/layouts/Info';
 
 export const App = (): JSX.Element => {
   return (
@@ -28,7 +29,7 @@ export const App = (): JSX.Element => {
                 <LeagueClientEvent />
                 <Home>
                   <Routes>
-                    <Route path={'/'} element={<Navigate to={'lobby'} />} />
+                    <Route path={'/'} Component={Info} />
                     <Route path={'/lobby'} Component={Lobby} />
                     <Route path={'/profile'} Component={Profile} />
                     <Route path={'/yourshop'} Component={YourShop} />

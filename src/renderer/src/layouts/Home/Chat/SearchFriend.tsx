@@ -40,7 +40,7 @@ export const SearchFriend = ({ onSearchChange }: SearchFriendProps) => {
             left: 0,
             height: '100%',
             width: '100%',
-            background: (t) => t.palette.background.default,
+            background: 'var(--mui-palette-background-default)',
           }}
         >
           <CustomTextField

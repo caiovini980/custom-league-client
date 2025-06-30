@@ -46,6 +46,16 @@ export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {
 
         break;
       }
+      case 'VOLUME': {
+        if (data.value > 1) {
+          data.value = 1;
+        }
+        if (data.value < 0) {
+          data.value = 0;
+        }
+        await this.saveConfig(data.name, data.value);
+        break;
+      }
 
       default: {
         await this.saveConfig(data.name, data.value);

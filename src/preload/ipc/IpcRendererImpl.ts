@@ -23,13 +23,7 @@ export class IpcRendererImpl {
         makeRequest: null,
         reloadGameData: null,
         changeShowClient: null,
-      },
-      lobby: {
-        createAram: null,
-      },
-      summoner: {
-        getCurrentSummoner: null,
-        getSummonerById: null,
+        getPatchNotes: null,
       },
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
@@ -40,7 +34,7 @@ export class IpcRendererImpl {
       onChangeAppConfig: null,
       onLeagueClientEvent: null,
       onLoadGameData: null,
-      processStatus: null
+      processStatus: null,
     };
 
     const ipcRendererInvoke: Record<string, unknown> = {};

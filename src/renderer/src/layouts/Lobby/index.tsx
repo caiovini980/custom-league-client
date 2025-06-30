@@ -1,4 +1,4 @@
-import { Divider, LinearProgress, Stack, Typography } from '@mui/material';
+import { LinearProgress, Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { InGame } from '@render/layouts/Lobby/InGame';
 import { Reconnect } from '@render/layouts/Lobby/Reconnect';
 import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
-import { QueueList } from '@render/layouts/Lobby/QueueList';
 import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
@@ -54,6 +53,7 @@ export const Lobby = () => {
         direction={'column'}
         rowGap={1}
         height={'100%'}
+        width={'100%'}
         justifyContent={'center'}
         alignItems={'center'}
       >
@@ -115,17 +115,5 @@ export const Lobby = () => {
     return <EndOfGame />;
   }
 
-  return (
-    <Stack
-      direction={'row'}
-      height={'100%'}
-      width={'100%'}
-      overflow={'auto'}
-      position={'relative'}
-    >
-      <QueueList />
-      <Divider orientation={'vertical'} />
-      <GenericLobby />
-    </Stack>
-  );
+  return <GenericLobby />;
 };

@@ -8,6 +8,7 @@ import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionTeam,
 } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 
 export type ChampSelectionActions =
   | 'planning'
@@ -19,16 +20,22 @@ export type ChampSelectionActions =
   | 'enemy-team-pick';
 
 export const useChampSelect = (session: LolChampSelectV1Session) => {
+  const { makeRequest } = useLeagueClientRequest();
+
   const [summonersData, setSummonersData] = useState<
     Record<number, LolChampSelectV1Summoners_Id>
   >({});
 
-  const summonerData = summonersData[session.localPlayerCellId];
+  const getSummonerData = (
+    cellId: number,
+  ): undefined | LolChampSelectV1Summoners_Id => summonersData[cellId];
+
+  const summonerData = () => getSummonerData(getSlotId());
 
   const getSlotId = () => {
-    const player = getSummonerSession();
-    if (session.isLegacyChampSelect) return -1;
-    return player.team === 1 ? player.cellId : player.cellId - 5;
+    return session.myTeam.findIndex(
+      (t) => t.cellId === session.localPlayerCellId,
+    );
   };
 
   const getCurrentActionIndex = () => {
@@ -50,7 +57,7 @@ export const useChampSelect = (session: LolChampSelectV1Session) => {
   };
 
   const getAction = (): ChampSelectionActions => {
-    if (summonerData?.areSummonerActionsComplete) {
+    if (summonerData()?.areSummonerActionsComplete) {
       return 'finalization';
     }
     if (session.timer.phase === 'PLANNING') {
@@ -132,7 +139,7 @@ export const useChampSelect = (session: LolChampSelectV1Session) => {
     });
 
     return {
-      banIntentChampionId: summonerData?.banIntentChampionId ?? 0,
+      banIntentChampionId: summonerData()?.banIntentChampionId ?? 0,
       myTeam,
       theirTeam,
     };
@@ -145,21 +152,30 @@ export const useChampSelect = (session: LolChampSelectV1Session) => {
       .map((a) => a.championId);
   };
 
-  const getSummonerData = (cellId: number) => summonersData[cellId];
-
   useEffect(() => {
     const amountPlayer = session.theirTeam.length + session.myTeam.length;
 
     const summonerDataList = new Array(amountPlayer).fill(0).map((_, i) => {
-      const cellId = i + 1;
+      const slotId = i;
+      const url = buildEventUrl(
+        '/lol-champ-select/v1/summoners/{digits}',
+        slotId,
+      );
+      makeRequest('GET', url, undefined).then((res) => {
+        if (res.ok) {
+          setSummonersData((prev) => ({
+            ...prev,
+            [slotId]: res.body,
+          }));
+        }
+      });
       return onLeagueClientEvent(
-        buildEventUrl('/lol-champ-select/v1/summoners/{digits}', cellId),
+        url,
         (data) => {
-          setSummonersData((prev) =>
-            Object.assign(prev, {
-              [cellId]: data,
-            }),
-          );
+          setSummonersData((prev) => ({
+            ...prev,
+            [slotId]: data,
+          }));
         },
         false,
       );
@@ -170,7 +186,7 @@ export const useChampSelect = (session: LolChampSelectV1Session) => {
         sd.unsubscribe();
       });
     };
-  }, []);
+  }, [session.theirTeam.length + session.myTeam.length]);
 
   return {
     getAction,
@@ -184,6 +200,6 @@ export const useChampSelect = (session: LolChampSelectV1Session) => {
     getSummonerSession,
     getSummonerData,
     summonersData,
-    summonerData,
+    summonerData: summonerData(),
   };
 };

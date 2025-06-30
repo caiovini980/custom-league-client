@@ -35,7 +35,7 @@ export const AppMenu = () => {
       icon: FaHome,
       path: '',
       title: rcpFeLolL10nTrans('navbar_home'),
-      hidden: true,
+      hidden: false,
     },
     {
       icon: FaGamepad,
@@ -70,7 +70,7 @@ export const AppMenu = () => {
         flexShrink: 0,
         overflow: 'hidden',
         zIndex: (t) => t.zIndex.fab,
-        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+        borderBottom: '1px solid var(--mui-palette-divider)',
       }}
       value={location.pathname.substring(1)}
       onChange={handleChange}

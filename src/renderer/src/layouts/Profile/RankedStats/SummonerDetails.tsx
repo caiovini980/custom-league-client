@@ -100,11 +100,11 @@ export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
           }}
         />
       </Box>
-      <Stack direction={'column'}>
+      <Stack direction={'column'} alignItems={'flex-start'}>
         <Typography variant={'h3'}>{summoner.gameName}</Typography>
         <Typography variant={'h6'}>{challengeStats?.title.name}</Typography>
         {isShowFriendInvite() && (
-          <CustomButton variant={'outlined'} onClick={onClickAddFriend}>
+          <CustomButton variant={'contained'} onClick={onClickAddFriend}>
             {rcpFeLolSocialTrans('tooltip_new_friend')}
           </CustomButton>
         )}

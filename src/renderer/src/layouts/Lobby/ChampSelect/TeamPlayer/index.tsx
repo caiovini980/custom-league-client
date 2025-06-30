@@ -20,6 +20,7 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
   const team = isEnemyTeam ? session.theirTeam : session.myTeam;
 
   const getFirstPickLabel = () => {
+    if (session.benchEnabled) return '';
     const action = session.actions.flat().find((a) => a.type === 'pick');
     if (!action) return '';
     if ((isEnemyTeam && !action.isAllyAction) || action.isAllyAction) {

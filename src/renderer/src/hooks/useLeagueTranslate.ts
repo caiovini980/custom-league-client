@@ -16,7 +16,7 @@ export const useLeagueTranslate = () => {
   const translateData = gameDataStore.translate.use();
 
   const translate = (path: TranslatePath, source: string) => {
-    const data = translateData[path][source];
+    const data = translateData[path]?.[source] ?? {};
     return (key: string, ...args: unknown[]) => {
       if (!data[key]) {
         console.warn(
@@ -32,6 +32,9 @@ export const useLeagueTranslate = () => {
 
   const translateMapper = <K extends TranslatePath>(path: K) => {
     const sources = translateJsonMap[path];
+    if (!sources) {
+      return (_key: (typeof translateJsonMap)[K][number]) => () => '';
+    }
     const f = sources.reduce(
       (prev, curr) => {
         return Object.assign(prev, {

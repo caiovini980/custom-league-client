@@ -12,12 +12,15 @@ import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
 import { useChampSelect } from '@render/hooks/useChampSelect';
 import { ChampSelectAudio } from '@render/layouts/Home/ChampSelectFocus/ChampSelectAudio';
+import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
 
 export const ChampSelectFocus = withChampSelectSession(({ session }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { rcpFeLolChampSelect, rcpFeLolSocial } = useLeagueTranslate();
-  const { summonerData, getCurrentActionIndex } = useChampSelect(session);
+  const { summonerData, summonersData, getCurrentActionIndex, getAction } =
+    useChampSelect(session);
+  const { time, title } = useChampSelectTimer(session, getAction());
 
   const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
@@ -57,12 +60,15 @@ export const ChampSelectFocus = withChampSelectSession(({ session }) => {
         rowGap={1}
         sx={{
           display: location.pathname.slice(1) === 'lobby' ? 'none' : 'flex',
-          borderTop: (t) => `1px solid ${t.palette.divider}`,
+          borderTop: '1px solid var(--mui-palette-divider)',
           p: 1,
         }}
       >
         <Typography fontSize={'0.8rem'}>
           {rcpFeLolSocialTrans('availability_championSelect')}
+        </Typography>
+        <Typography fontSize={'0.8rem'}>
+          {title} {time}
         </Typography>
         <Typography fontSize={'0.8rem'}>
           {rcpFeLolChampSelectTrans('picking_champion')}
@@ -77,7 +83,13 @@ export const ChampSelectFocus = withChampSelectSession(({ session }) => {
           return <Player key={a.actorCellId} action={a} session={session} />;
         })}
       </Stack>
-      <ChampSelectAudio session={session} />
+      <ChampSelectAudio
+        session={session}
+        time={time}
+        action={getAction()}
+        summonerData={summonerData}
+        summonersData={summonersData}
+      />
     </>
   );
 });

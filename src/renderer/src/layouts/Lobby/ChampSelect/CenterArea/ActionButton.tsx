@@ -27,14 +27,6 @@ export const ActionButton = () => {
     }
   }, [isPlayerAction]);
 
-  const onClickReRoll = () => {
-    makeRequest(
-      'POST',
-      '/lol-champ-select/v1/session/my-selection/reroll',
-      undefined,
-    ).then();
-  };
-
   const onClickActionButton = () => {
     let actionId = pickPlayerActionId;
     let championId = currentPlayer.championPickIntent;
@@ -73,17 +65,7 @@ export const ActionButton = () => {
     return false;
   };
 
-  if (session.allowRerolling) {
-    return (
-      <CustomButton
-        variant={'contained'}
-        onClick={onClickReRoll}
-        disabled={session.rerollsRemaining === 0}
-      >
-        {rcpFeLolChampSelectTrans('random_icon_label')}
-      </CustomButton>
-    );
-  }
+  if (session.allowRerolling) return null;
 
   if (!isPlayerAction) return null;
 

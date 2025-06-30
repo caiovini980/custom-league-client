@@ -4,8 +4,10 @@ import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { CustomIconButton, CustomSelect } from '@render/components/input';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { Stack, Typography } from '@mui/material';
-import { FaEdit, FaTimes } from 'react-icons/fa';
-import CustomDialog from '@render/components/CustomDialog';
+import { FaEdit } from 'react-icons/fa';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
 import { RuneEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
 import { FaShuffle } from 'react-icons/fa6';
 import { RecommendedPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RecommendedPerks';
@@ -44,7 +46,7 @@ export const Runes = () => {
   }, [currentPageId]);
 
   return (
-    <Stack direction={'row'} columnGap={1}>
+    <Stack className={'theme-dark'} direction={'row'} columnGap={1}>
       <CustomIconButton
         size={'small'}
         onClick={() => setOpenRecommendedPerkModal(true)}
@@ -61,7 +63,7 @@ export const Runes = () => {
         label={''}
         fullWidth
         sx={{
-          width: 220,
+          width: 320,
         }}
         size={'small'}
         value={currentPageId}
@@ -89,6 +91,7 @@ export const Runes = () => {
         fullWidth
         maxWidth={'md'}
         hiddenBtnConfirm
+        className={'theme-dark'}
         dialogContentProps={{
           sx: {
             p: 0,
@@ -98,16 +101,9 @@ export const Runes = () => {
         }}
         actionsComponent={<div />}
       >
-        <CustomIconButton
-          onClick={() => setOpenModal(false)}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-          }}
-        >
-          <FaTimes size={20} />
-        </CustomIconButton>
+        <CustomDialogCloseFloatingButton
+          handleClose={() => setOpenModal(false)}
+        />
         <RuneEdit />
       </CustomDialog>
       <RecommendedPerks

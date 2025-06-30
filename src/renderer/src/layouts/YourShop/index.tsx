@@ -96,6 +96,7 @@ export const YourShop = () => {
                   position: 'absolute',
                   width: '100%',
                   height: '100%',
+                  color: 'var(--mui-palette-common-white)',
                 },
               }}
             >
@@ -116,7 +117,6 @@ export const YourShop = () => {
               >
                 <Typography>{offer.skinName}</Typography>
                 <Typography
-                  color={'textDisabled'}
                   fontSize={'0.8rem'}
                   sx={{ textDecoration: 'line-through' }}
                 >

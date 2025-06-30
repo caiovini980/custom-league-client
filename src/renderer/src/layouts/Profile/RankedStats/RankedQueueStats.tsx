@@ -9,11 +9,12 @@ interface RankedQueueStatsProps {
 
 export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
   const { tierImg } = useLeagueImage();
-  const { rcpFeLolSharedComponents } = useLeagueTranslate();
+  const { rcpFeLolSharedComponents, rcpFeLolProfiles } = useLeagueTranslate();
 
   const transLeagueTierNames = rcpFeLolSharedComponents(
     'trans-league-tier-names',
   );
+  const rcpFeLolProfilesTrans = rcpFeLolProfiles('trans');
 
   const getTierName = (tierKey: string) => {
     return transLeagueTierNames(
@@ -32,6 +33,16 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
     );
     const tierDivision = transLeagueTierNames('lol_league_lp', leaguePoints);
     return `${tierT} ${division} - ${tierDivision}`;
+  };
+
+  const getWinLabel = (wins: number) => {
+    if (wins > 1) {
+      return rcpFeLolProfilesTrans('ranked_tooltip_wins_label[few]', wins);
+    }
+    if (wins === 1) {
+      return rcpFeLolProfilesTrans('ranked_tooltip_wins_label[one]', wins);
+    }
+    return rcpFeLolProfilesTrans('ranked_tooltip_wins_label[zero]');
   };
 
   return (
@@ -58,6 +69,7 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
             sx={{
               color: 'inherit',
               background: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.12)',
             }}
           >
             <Typography>{getTierName(q.queueType)}</Typography>
@@ -68,9 +80,7 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
               height={80}
             />
             <Typography>{getRankedDivision(q)}</Typography>
-            <Typography>
-              {q.wins} Wins / {q.losses} Losses
-            </Typography>
+            <Typography>{getWinLabel(q.wins)}</Typography>
           </Stack>
         </Grid>
       ))}

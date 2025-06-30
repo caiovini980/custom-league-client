@@ -20,7 +20,7 @@ import { Fragment, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { ChatItem } from '@render/layouts/Home/Chat/ChatItem';
 import { chatStore } from '@render/zustand/stores/chatStore';
-import { AddFriend } from '@render/layouts/Home/Chat/AddFriend';
+import { AddFriendIcon } from '@render/layouts/Home/Chat/AddFriend/AddFriendIcon';
 import { SearchFriend } from '@render/layouts/Home/Chat/SearchFriend';
 
 export const Chat = () => {
@@ -117,7 +117,7 @@ export const Chat = () => {
           {rcpFeLolSocialTrans('friend_header')}
         </Typography>
         <Box flexGrow={1} />
-        <AddFriend />
+        <AddFriendIcon />
         <SearchFriend onSearchChange={setSearch} />
       </Stack>
       <Divider />

@@ -143,7 +143,9 @@ export const TeamPlayerCard = ({
         alignItems={isEnemyTeam ? 'flex-end' : 'flex-start'}
         sx={{
           width: '100%',
-          color: summonerData.isSelf ? '#fff669' : undefined,
+          color: summonerData.isSelf
+            ? 'var(--mui-palette-highlight)'
+            : undefined,
           '& p': {
             letterSpacing: '1.5px',
           },

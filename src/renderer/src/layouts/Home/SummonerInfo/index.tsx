@@ -62,7 +62,7 @@ export const SummonerInfo = () => {
         flexShrink={0}
         px={1}
         sx={{
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          borderBottom: '1px solid var(--mui-palette-divider)',
           position: 'relative',
           zIndex: 1,
           '&:after': {
@@ -89,6 +89,7 @@ export const SummonerInfo = () => {
               backgroundColor: '#04162170',
               borderRadius: 2,
               width: 30,
+              color: 'var(--mui-palette-common-white)',
             }}
             fontSize={'0.6rem'}
           >

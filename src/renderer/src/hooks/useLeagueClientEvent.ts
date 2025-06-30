@@ -37,7 +37,7 @@ const readMessage = <K extends keyof EventMessageMap>(
     return;
   }
   const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
-    return prev.replace(curr, regexMap[curr]);
+    return prev.replaceAll(curr, regexMap[curr]);
   }, event);
 
   if (
@@ -105,7 +105,12 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
           }
         });
     }
-  }, [currentOptions.makeInitialRequest]);
+  }, [
+    event,
+    currentOptions.makeInitialRequest,
+    currentOptions.showDeleted,
+    ...currentOptions.deps,
+  ]);
 
   useEffect(() => {
     const { unsubscribe } = onLeagueClientEvent(

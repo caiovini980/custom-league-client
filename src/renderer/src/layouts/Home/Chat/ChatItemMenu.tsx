@@ -43,6 +43,7 @@ export const ChatItemMenu = ({
         lobby.members.some((m) => m.puuid === friend.puuid),
       );
     }
+    conditionsToDisable.push(friend.productName !== 'league_of_legends');
 
     return conditionsToDisable.some(Boolean);
   };
@@ -52,7 +53,7 @@ export const ChatItemMenu = ({
     if (!currentSummoner) return true;
     if (gameFlow?.phase === 'Matchmaking') return true;
     const data = JSON.parse(friend.lol.pty) as LolPartyData;
-    return data.summoners.includes(currentSummoner.summonerId);
+    return data.partyId === lobby?.partyId;
   };
 
   const getPartyId = () => {
@@ -71,8 +72,18 @@ export const ChatItemMenu = ({
           'POST',
           buildEventUrl('/lol-lobby/v2/party/{uuid}/join', getPartyId()),
           undefined,
-        ).then((res) => {
-          console.log(res);
+        ).then();
+      },
+    },
+    {
+      label: rcpFeLolSocialTrans('context_menu_send_message'),
+      onClick: () => {
+        makeRequest('POST', '/lol-chat/v1/conversations', {
+          id: friend.id,
+          type: 'chat',
+        });
+        makeRequest('PUT', '/lol-chat/v1/conversations/active', {
+          id: friend.id,
         });
       },
     },

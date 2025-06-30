@@ -1,4 +1,4 @@
-import { ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
+import { Box, ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
 import CustomIconButton, { CustomIconButtonProps } from '../CustomIconButton';
 import { ReactNode, useState } from 'react';
 
@@ -34,7 +34,7 @@ const CustomIconButtonTooltip = ({
   if (openTooltipOnClick) {
     return (
       <ClickAwayListener onClickAway={handleCloseTooltip}>
-        <span>
+        <Box component={'span'} display={'flex'}>
           <Tooltip
             open={openTooltip}
             onClose={handleCloseTooltip}
@@ -45,16 +45,16 @@ const CustomIconButtonTooltip = ({
           >
             <CustomIconButton {...iconProps} onClick={toggleTooltip} />
           </Tooltip>
-        </span>
+        </Box>
       </ClickAwayListener>
     );
   }
 
   return (
     <Tooltip {...tooltipProps}>
-      <span>
+      <Box component={'span'} display={'flex'}>
         <CustomIconButton {...iconProps} />
-      </span>
+      </Box>
     </Tooltip>
   );
 };

@@ -1,4 +1,4 @@
-import { Divider, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { RankedQueueStats } from '@render/layouts/Profile/RankedStats/RankedQueueStats';
@@ -31,6 +31,7 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
 
   return (
     <Stack
+      className={'theme-dark'}
       position={'relative'}
       direction={'column'}
       alignItems={'center'}
@@ -51,10 +52,12 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
         width={'100%'}
         alignItems={'center'}
         justifyContent={'flex-start'}
+        sx={{
+          borderBottom: '1px solid var(--mui-palette-divider)',
+        }}
       >
         <SummonerDetails summoner={summonerData} />
       </Stack>
-      <Divider orientation={'horizontal'} flexItem />
       <Stack
         direction={'row'}
         width={'100%'}

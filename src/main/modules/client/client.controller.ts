@@ -33,6 +33,11 @@ export class ClientController {
     return this.clientService.changeShowClient(payload);
   }
 
+  @IpcHandle('getPatchNotes')
+  async getPatchNotes() {
+    return this.clientService.getPatchNotes();
+  }
+
   @IpcHandle('priorityApp')
   async priorityApp() {
     return this.clientService.priorityApp();

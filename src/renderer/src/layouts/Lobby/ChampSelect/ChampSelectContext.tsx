@@ -111,6 +111,7 @@ export const ChampSelectContext = ({
       }}
     >
       <Box
+        className={'theme-dark'}
         height={'100%'}
         width={'100%'}
         display={'flex'}
@@ -119,6 +120,7 @@ export const ChampSelectContext = ({
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
+          color: 'var(--mui-palette-common-white)',
         }}
       >
         {children}
