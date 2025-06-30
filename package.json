@@ -1,6 +1,6 @@
 {
   "name": "decent-league-client",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A decent League Client",
   "main": "./out/main/index.js",
   "author": "example.com",
