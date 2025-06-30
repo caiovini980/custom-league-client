@@ -7,10 +7,13 @@ import { AppConfigService } from '@main/modules/app-config/app-config.service';
 import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
+  GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { OnApplicationBootstrap } from '@nestjs/common';
 import { IpcException } from '@main/exceptions/ipc.exception';
+import * as cheerio from 'cheerio';
+import axios from 'axios';
 
 @Service()
 export class ClientService
@@ -44,7 +47,7 @@ export class ClientService
 
   async startLeagueClient() {
     const appConfig = await this.appConfigService.getAppConfig();
-    spawn(
+    const child = spawn(
       `${appConfig.RIOT_CLIENT_PATH}\\RiotClientServices.exe`,
       [
         '--launch-product=league_of_legends',
@@ -55,6 +58,19 @@ export class ClientService
       {
         detached: true,
         stdio: 'ignore',
+      },
+    );
+    ['error', 'spawn', 'exit', 'close', 'message', 'disconnect'].forEach(
+      (ev) => {
+        child.on(ev, (args: unknown[]) => {
+          console.log(ev, args);
+          if (ev === 'exit') {
+            this.sendMsgToRender('processStatus', 'exited');
+          }
+          if (ev === 'spawn') {
+            this.sendMsgToRender('processStatus', 'initialized');
+          }
+        });
       },
     );
   }
@@ -108,6 +124,42 @@ export class ClientService
           data: undefined,
         });
       }, 200);
+    }
+  }
+
+  async getPatchNotes(): Promise<GetPatchNotesResponse> {
+    const info = this.getClientStatusInfo();
+    const url = `https://embed.rgpub.io/league-client-blades/${info.locale.toLowerCase().replace('_', '-')}/latest-patch-notes`;
+
+    try {
+      const { data: html } = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+        },
+      });
+      const $ = cheerio.load(html);
+
+      const getMeta = (property) =>
+        $(`meta[property='${property}']`).attr('content') ||
+        $(`meta[name='${property}']`).attr('content');
+
+      return {
+        title: getMeta('og:title') || $('title').text(),
+        description: getMeta('og:description') || '',
+        img: getMeta('og:image')?.replace(/\?.*/, '') || '',
+        urlExternal: getMeta('og:url') || '',
+        urlEmbed: url,
+      };
+    } catch (error) {
+      // @ts-ignore
+      console.error('Erro ao buscar metadados:', error.message);
+      return {
+        urlEmbed: '',
+        urlExternal: '',
+        img: '',
+        title: '',
+        description: '',
+      };
     }
   }
 }

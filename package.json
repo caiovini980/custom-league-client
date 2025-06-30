@@ -1,6 +1,6 @@
 {
   "name": "decent-league-client",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A decent League Client",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -38,6 +38,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "axios": "^1.8.4",
     "better-sqlite3": "^11.9.1",
+    "cheerio": "^1.1.0",
     "class-transformer": "^0.5.1",
     "class-transformer-validator": "^0.9.1",
     "class-validator": "^0.14.1",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@davstack/store": "^1.4.6",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -94,9 +96,7 @@
     "vite": "^6.2.3",
     "vite-plugin-checker": "^0.9.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "zod": "^3.24.2",
-    "zustand": "^4.4.7",
-    "zustand-x": "^3.0.4"
+    "zod": "^3.24.2"
   },
   "engines": {
     "node": ">=22.14.0"

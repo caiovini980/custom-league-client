@@ -1,15 +1,15 @@
-import { Grid, ListItemText, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useStore } from '@render/zustand/store';
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { formatDateTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
 import { useEffect, useState } from 'react';
 import { LazyImage } from '@render/components/LazyImage';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ChampionMasteryProps {
   puuid: string;
@@ -19,7 +19,7 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { loadChampionBackgroundImg } = useLeagueImage();
   const { rcpFeLolSharedComponents, rcpFeLolParties } = useLeagueTranslate();
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
 
   const [championMastery, setChampionMastery] =
     useState<LolChampionMasteryV1_Id_ChampionMastery[]>();
@@ -46,13 +46,17 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   }, [puuid]);
 
   return (
-    <Grid container spacing={2} sx={{ overflow: 'auto', position: 'relative' }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ overflow: 'auto', position: 'relative', p: 1 }}
+    >
       <LoadingScreen loading={!championMastery} height={'100%'} fullArea />
       {championMastery?.map((cm, index) => (
         <LazyImage
           key={cm.championId}
           component={Grid}
-          size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+          size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
           src={loadChampionBackgroundImg('tilePath', cm.championId)}
           background={(url) =>
             `linear-gradient(0deg, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0) 100%), url(${url})`
@@ -65,14 +69,12 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
           }}
         >
           <Stack direction={'column'} height={300} justifyContent={'flex-end'}>
-            <ListItemText
-              primary={`#${index + 1} ${getChampionName(cm.championId)} (${cm.highestGrade || 'N/A'})`}
-              secondary={transChampionMastery(
-                'cm_mastery_level',
-                cm.championLevel,
-              )}
-              sx={{ flex: 0 }}
-            />
+            <Typography>
+              {`#${index + 1} ${getChampionName(cm.championId)} (${cm.highestGrade || 'N/A'})`}
+            </Typography>
+            <Typography>
+              {transChampionMastery('cm_mastery_level', cm.championLevel)}
+            </Typography>
             <Typography variant={'caption'}>
               {rcpFeLolPartiesTrans(
                 'parties_point_eligibility_tooltip_masteries',

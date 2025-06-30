@@ -1,8 +1,8 @@
-import { useStore } from '@render/zustand/store';
 import { Stack, Typography } from '@mui/material';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 import CustomDialog from '@render/components/CustomDialog';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 interface LowPriorityModalProps {
   onQuitMatchmaking: () => void;
@@ -14,7 +14,7 @@ export const LowPriorityModal = ({
   currentSummonerId,
 }: LowPriorityModalProps) => {
   const { rcpFeLolParties } = useLeagueTranslate();
-  const matchMaking = useStore().lobby.matchMaking();
+  const matchMaking = lobbyStore.matchMaking.use();
 
   const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
 

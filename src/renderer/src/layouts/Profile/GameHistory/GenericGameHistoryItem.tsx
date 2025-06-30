@@ -2,7 +2,6 @@ import { ListItemAvatar, Stack, Typography, useTheme } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { ItemIcon } from '@render/layouts/Profile/GameHistory/ItemIcon';
 import { SpellIcon } from '@render/layouts/Profile/GameHistory/SpellIcon';
-import { useStore } from '@render/zustand/store';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { formatDateTime, secondsToDisplayTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
@@ -17,6 +16,7 @@ import {
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { IconValue } from '@render/layouts/Profile/GameHistory/IconValue';
 import { useSpriteImage } from '@render/hooks/useSpriteImage';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface GenericGameHistoryItemProps {
   participantId: number;
@@ -43,8 +43,8 @@ export const GenericGameHistoryItem = ({
     height: 52,
     width: 54,
   });
-  const maps = useStore().gameData.maps();
-  const queues = useStore().gameData.queues();
+  const maps = gameDataStore.maps.use();
+  const queues = gameDataStore.queues.use();
 
   const profileRef = useRef<ProfileModalRef>(null);
 

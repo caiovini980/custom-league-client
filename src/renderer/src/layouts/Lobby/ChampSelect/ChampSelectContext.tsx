@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionAction,
@@ -8,19 +8,9 @@ import { Undefined } from '@shared/typings/generic.typing';
 import { Box } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
-import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
-
-type Actions =
-  | 'planning'
-  | 'ban'
-  | 'show-bans'
-  | 'pick'
-  | 'finalization'
-  | 'my-team-pick'
-  | 'enemy-team-pick';
+  ChampSelectionActions,
+  useChampSelect,
+} from '@render/hooks/useChampSelect';
 
 interface ChampSelectContextState {
   gameMode: string;
@@ -32,7 +22,7 @@ interface ChampSelectContextState {
   currentCellId: number;
   currentPlayer: LolChampSelectV1SessionTeam;
   areSummonerActionsComplete: boolean;
-  currentAction: Actions;
+  currentAction: ChampSelectionActions;
   currentPlayerAction: Undefined<LolChampSelectV1SessionAction>;
   disabledChampionList: number[];
   bans: {
@@ -59,139 +49,21 @@ export const ChampSelectContext = ({
   children,
 }: PropsWithChildren<ChampSelectContextProps>) => {
   const { loadChampionBackgroundImg, genericImg } = useLeagueImage();
-
-  const [summonerData, setSummonerData] =
-    useState<LolChampSelectV1Summoners_Id>();
-
-  useLeagueClientEvent(
-    buildEventUrl('/lol-champ-select/v1/summoners/{digits}', getSlotId()),
-    (data) => {
-      setSummonerData(data);
-    },
-    {
-      deps: [session.localPlayerCellId],
-    },
-  );
-
-  function getSlotId() {
-    const player = getSummonerFromTeam();
-    if (session.isLegacyChampSelect) return -1;
-    return player.team === 1 ? player.cellId : player.cellId - 5;
-  }
-
-  const getCurrentActionIndex = () => {
-    return session.actions.findIndex((al) => al.some((a) => !a.completed));
-  };
-
-  function getSummonerFromTeam() {
-    const s = session.myTeam.find(
-      (t) => t.cellId === session.localPlayerCellId,
-    );
-    if (!s) {
-      return {
-        selectedSkinId: 0,
-        championId: 0,
-        championPickIntent: 0,
-      } as LolChampSelectV1SessionTeam;
-    }
-    return s;
-  }
-
-  const getAction = (): Actions => {
-    if (summonerData?.areSummonerActionsComplete) {
-      return 'finalization';
-    }
-    if (session.timer.phase === 'PLANNING') {
-      return 'planning';
-    }
-
-    if (session.timer.phase === 'FINALIZATION') {
-      return 'finalization';
-    }
-
-    const action = session.actions.flat().find((a) => !a.completed);
-    if (!session.actions.length || !action) {
-      return 'finalization';
-    }
-
-    const { type, isAllyAction, actorCellId } = action;
-
-    if (type === 'ten_bans_reveal') {
-      return 'show-bans';
-    }
-    if (type === 'ban') {
-      return 'ban';
-    }
-    if (type === 'pick') {
-      if (!isAllyAction) return 'enemy-team-pick';
-      if (actorCellId !== session.localPlayerCellId) return 'my-team-pick';
-      return 'pick';
-    }
-    return 'finalization';
-  };
-
-  const getCurrentPlayerAction = () => {
-    return session.actions
-      .flat()
-      .find((a) => a.actorCellId === session.localPlayerCellId && !a.completed);
-  };
-
-  const getBanPlayerActionId = () => {
-    return (
-      session.actions
-        .flat()
-        .find(
-          (a) =>
-            a.actorCellId === session.localPlayerCellId &&
-            a.type === 'ban' &&
-            !a.completed,
-        )?.id ?? -1
-    );
-  };
-
-  const getPickPlayerActionId = () => {
-    return (
-      session.actions
-        .flat()
-        .find(
-          (a) =>
-            a.actorCellId === session.localPlayerCellId &&
-            a.type === 'pick' &&
-            !a.completed,
-        )?.id ?? -1
-    );
-  };
-
-  const getBans = (): ChampSelectContextState['bans'] => {
-    const actionBans = session.actions.flat().filter((a) => a.type === 'ban');
-    const myTeam: number[] = [];
-    const theirTeam: number[] = [];
-
-    actionBans.forEach((a) => {
-      if (a.isAllyAction) {
-        myTeam.push(a.championId);
-      } else {
-        theirTeam.push(a.championId);
-      }
-    });
-
-    return {
-      banIntentChampionId: summonerData?.banIntentChampionId ?? 0,
-      myTeam,
-      theirTeam,
-    };
-  };
-
-  const getDisabledChampions = () => {
-    return session.actions
-      .flat()
-      .filter((a) => a.type === 'ban' && a.championId > 0 && a.completed)
-      .map((a) => a.championId);
-  };
+  const {
+    summonerData,
+    getCurrentPlayerAction,
+    getCurrentActionIndex,
+    getDisabledChampions,
+    getBans,
+    getPickPlayerActionId,
+    getBanPlayerActionId,
+    getAction,
+    getSummonerSession,
+  } = useChampSelect(session);
 
   const skinUrl = () => {
     const { selectedSkinId, championId, championPickIntent } =
-      getSummonerFromTeam();
+      getSummonerSession();
     const { banIntentChampionId } = getBans();
     const action = getAction();
 
@@ -225,7 +97,7 @@ export const ChampSelectContext = ({
         session,
         currentActionIndex: getCurrentActionIndex(),
         currentCellId: session.localPlayerCellId,
-        currentPlayer: getSummonerFromTeam(),
+        currentPlayer: getSummonerSession(),
         currentAction: getAction(),
         currentPlayerAction: getCurrentPlayerAction(),
         bans: getBans(),
@@ -239,6 +111,7 @@ export const ChampSelectContext = ({
       }}
     >
       <Box
+        className={'theme-dark'}
         height={'100%'}
         width={'100%'}
         display={'flex'}
@@ -247,6 +120,7 @@ export const ChampSelectContext = ({
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
+          color: 'var(--mui-palette-common-white)',
         }}
       >
         {children}

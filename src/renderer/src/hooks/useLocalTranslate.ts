@@ -1,9 +1,9 @@
-import { useStore } from '@render/zustand/store';
 import defaultLocale from '../locales/default';
 import ptBrLocale from '../locales/pt_BR';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 export const useLocalTranslate = () => {
-  const locale = useStore().leagueClient.locale();
+  const locale = leagueClientStore.locale.use();
 
   return {
     localTranslate: (key: keyof typeof defaultLocale) => {

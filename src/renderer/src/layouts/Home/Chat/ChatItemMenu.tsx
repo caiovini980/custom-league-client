@@ -3,8 +3,9 @@ import { PropsWithChildren } from 'react';
 import { List, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useStore } from '@render/zustand/store';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 interface LolPartyData {
   summoners: number[];
@@ -24,9 +25,9 @@ export const ChatItemMenu = ({
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const lobby = useStore().lobby.lobby();
-  const gameFlow = useStore().lobby.gameFlow();
-  const currentSummoner = useStore().currentSummoner.info();
+  const lobby = lobbyStore.lobby.use();
+  const gameFlow = lobbyStore.gameFlow.use();
+  const currentSummoner = currentSummonerStore.info.use();
 
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
@@ -42,6 +43,7 @@ export const ChatItemMenu = ({
         lobby.members.some((m) => m.puuid === friend.puuid),
       );
     }
+    conditionsToDisable.push(friend.productName !== 'league_of_legends');
 
     return conditionsToDisable.some(Boolean);
   };
@@ -51,7 +53,7 @@ export const ChatItemMenu = ({
     if (!currentSummoner) return true;
     if (gameFlow?.phase === 'Matchmaking') return true;
     const data = JSON.parse(friend.lol.pty) as LolPartyData;
-    return data.summoners.includes(currentSummoner.summonerId);
+    return data.partyId === lobby?.partyId;
   };
 
   const getPartyId = () => {
@@ -70,8 +72,18 @@ export const ChatItemMenu = ({
           'POST',
           buildEventUrl('/lol-lobby/v2/party/{uuid}/join', getPartyId()),
           undefined,
-        ).then((res) => {
-          console.log(res);
+        ).then();
+      },
+    },
+    {
+      label: rcpFeLolSocialTrans('context_menu_send_message'),
+      onClick: () => {
+        makeRequest('POST', '/lol-chat/v1/conversations', {
+          id: friend.id,
+          type: 'chat',
+        });
+        makeRequest('PUT', '/lol-chat/v1/conversations/active', {
+          id: friend.id,
         });
       },
     },
@@ -94,6 +106,16 @@ export const ChatItemMenu = ({
             invitationType: 'lobby',
           },
         ]);
+      },
+    },
+    {
+      label: rcpFeLolSocialTrans('context_menu_unfriend'),
+      onClick: () => {
+        makeRequest(
+          'DELETE',
+          buildEventUrl('/lol-chat/v1/friends/{id}', friend.id),
+          undefined,
+        );
       },
     },
   ];

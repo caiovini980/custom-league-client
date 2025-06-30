@@ -1,8 +1,8 @@
 import { ProfileView } from '@render/layouts/Profile/ProfileView';
-import { useStore } from '@render/zustand/store';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 export const Profile = () => {
-  const currentSummoner = useStore().currentSummoner.info();
+  const currentSummoner = currentSummonerStore.info.use();
 
   if (!currentSummoner) return;
 

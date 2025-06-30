@@ -1,12 +1,12 @@
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useStore } from '@render/zustand/store';
 import { useEffect, useState } from 'react';
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { LazyImage } from '@render/components/LazyImage';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ChampionMostPlayerProps {
   puuid: string;
@@ -15,7 +15,7 @@ interface ChampionMostPlayerProps {
 export const ChampionMostPlayer = ({ puuid }: ChampionMostPlayerProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { loadChampionBackgroundImg } = useLeagueImage();
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
 
   const [championMastery, setChampionMastery] =
     useState<LolChampionMasteryV1_Id_ChampionMastery[]>();

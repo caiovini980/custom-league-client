@@ -1,9 +1,12 @@
 import {
   Box,
   Collapse,
+  Divider,
   List,
   ListItemButton,
   ListItemText,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
@@ -12,11 +15,13 @@ import {
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { sortBy } from 'lodash';
 import { Fragment, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { ChatItem } from '@render/layouts/Home/Chat/ChatItem';
+import { chatStore } from '@render/zustand/stores/chatStore';
+import { AddFriendIcon } from '@render/layouts/Home/Chat/AddFriend/AddFriendIcon';
+import { SearchFriend } from '@render/layouts/Home/Chat/SearchFriend';
 
 export const Chat = () => {
   const { rcpFeLolSocial } = useLeagueTranslate();
@@ -25,8 +30,9 @@ export const Chat = () => {
 
   const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
 
-  const [chat, setChat] = useState<LolChatV1Friends[]>([]);
+  const chat = chatStore.friends.use();
   const [chatGroups, setChatGroups] = useState<LolChatV1FriendGroups[]>([]);
+  const [search, setSearch] = useState('');
   const [groupCollapse, setGroupCollapse] = useState<Record<number, boolean>>(
     {},
   );
@@ -34,7 +40,7 @@ export const Chat = () => {
   const { loadEventData: loadEventDataFriends } = useLeagueClientEvent(
     '/lol-chat/v1/friends',
     (data) => {
-      setChat(data);
+      chatStore.friends.set(data);
     },
   );
 
@@ -63,7 +69,7 @@ export const Chat = () => {
   });
 
   useLeagueClientEvent('/lol-chat/v1/friends/{id}', (data) => {
-    setChat((chat) =>
+    chatStore.friends.set((chat) =>
       chat.map((c) => {
         if (c.id === data.id) return data;
         return c;
@@ -72,7 +78,14 @@ export const Chat = () => {
   });
 
   const filterChatByGroup = (groupId: number) => {
-    const currentChat = chat.filter((c) => c.displayGroupId === groupId);
+    const currentChat = chat
+      .filter((c) => c.displayGroupId === groupId)
+      .filter((c) => {
+        if (search) {
+          return c.gameName.toLowerCase().includes(search.toLowerCase());
+        }
+        return true;
+      });
 
     return sortBy(currentChat, (each) => {
       return each.availability;
@@ -92,8 +105,23 @@ export const Chat = () => {
   };
 
   return (
-    <Box display={'flex'} overflow={'auto'}>
-      <List sx={{ width: '100%' }}>
+    <Stack direction={'column'} overflow={'auto'} height={'100%'}>
+      <Stack
+        direction={'row'}
+        columnGap={0.2}
+        p={0.5}
+        alignItems={'center'}
+        position={'relative'}
+      >
+        <Typography fontSize={'0.7rem'}>
+          {rcpFeLolSocialTrans('friend_header')}
+        </Typography>
+        <Box flexGrow={1} />
+        <AddFriendIcon />
+        <SearchFriend onSearchChange={setSearch} />
+      </Stack>
+      <Divider />
+      <List sx={{ width: '100%' }} disablePadding>
         {chatGroups.map((cg) => (
           <Fragment key={cg.id}>
             <ListItemButton onClick={() => onClickGroup(cg.id)}>
@@ -119,6 +147,6 @@ export const Chat = () => {
         ))}
       </List>
       <ProfileModal ref={profileModal} />
-    </Box>
+    </Stack>
   );
 };

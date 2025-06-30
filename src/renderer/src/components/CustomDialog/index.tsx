@@ -19,6 +19,8 @@ import {
 import { LoadingScreen } from '../LoadingScreen';
 import CustomButton from '../input/CustomButton';
 import { CustomButtonProps } from '../input/CustomButton';
+import { FaTimes } from 'react-icons/fa';
+import { CustomIconButton } from '@render/components/input';
 
 type Color =
   | 'initial'
@@ -79,11 +81,10 @@ const CustomDialog = ({
   children,
   ...props
 }: PropsWithChildren<CustomDialogProps>) => {
-  const { spacing, palette } = useTheme();
+  const { spacing } = useTheme();
   const interval = useRef<NodeJS.Timeout>();
   const [currentDelay, setCurrentDelay] = useState<number>();
   const [enableBtnConfirm, setEnableConfirm] = useState(false);
-  const isDarkTheme = palette.mode === 'dark';
   const onClose: DialogProps['onClose'] = (_, reason) => {
     if (
       (reason !== 'backdropClick' && reason !== 'escapeKeyDown') ||
@@ -169,7 +170,6 @@ const CustomDialog = ({
         {children || (
           <DialogContentText
             style={{
-              color: isDarkTheme ? color : 'black',
               whiteSpace: 'pre-wrap',
             }}
           >
@@ -223,5 +223,40 @@ const Transition = forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+interface CustomDialogCloseFloatingButtonProps {
+  handleClose: () => void;
+  margin?: number;
+  colorScheme?: 'auto' | 'dark' | 'light';
+}
+
+export const CustomDialogCloseFloatingButton = ({
+  handleClose,
+  margin = 8,
+  colorScheme = 'auto',
+}: CustomDialogCloseFloatingButtonProps) => {
+  const getColor = () => {
+    if (colorScheme === 'auto') return undefined;
+    return colorScheme === 'dark'
+      ? 'var(--mui-palette-common-black)'
+      : 'var(--mui-palette-common-white)';
+  };
+
+  return (
+    <CustomIconButton
+      onClick={() => handleClose()}
+      sx={{
+        position: 'absolute',
+        top: margin,
+        right: margin,
+        zIndex: 2,
+        p: 1,
+        color: getColor(),
+      }}
+    >
+      <FaTimes size={20} />
+    </CustomIconButton>
+  );
+};
 
 export default CustomDialog;

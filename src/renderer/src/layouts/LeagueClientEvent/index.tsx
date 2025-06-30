@@ -10,6 +10,7 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { sortBy } from 'lodash';
 import { useState } from 'react';
 import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
+import config from '@render/utils/config.util';
 
 interface ErrorModal {
   eventName: string;
@@ -67,7 +68,7 @@ export const LeagueClientEvent = () => {
       'riot-messaging-service',
       'lol-challenges',
     ];
-    if (ignore.some((i) => event.includes(i))) return;
+    if (ignore.some((i) => event.includes(i)) || !config.isDev) return;
     console.log(event, data);
   });
 
@@ -91,7 +92,7 @@ export const LeagueClientEvent = () => {
     } else {
       addError({
         eventName: event,
-        msg: `Vanguard Error: ${state.vanguardStatus}`,
+        msg: `${rcpFeLolNavigationTrans('vanguard_error_title', state.vanguardStatus)}<br><br>${rcpFeLolNavigationTrans('vanguard_error_description')}`,
         mode: 'fatal-error',
         priority: 0,
       });
@@ -117,7 +118,7 @@ export const LeagueClientEvent = () => {
   useLeagueClientEvent('/lol-login/v1/session', (state, event) => {
     if (!state.connected) {
       const msg =
-        rcpFeLolNavigationTrans(`login_error_${state.error.messageId}$html`) ||
+        rcpFeLolNavigationTrans(`login_error_${state.error?.messageId}$html`) ||
         rcpFeLolNavigationTrans('login_error_unknown');
 
       addError({

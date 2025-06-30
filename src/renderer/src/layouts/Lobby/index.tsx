@@ -1,26 +1,25 @@
-import { Divider, LinearProgress, Stack, Typography } from '@mui/material';
+import { LinearProgress, Stack, Typography } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
 import { GenericLobby } from '@render/layouts/Lobby/GenericLobby';
-import { useStore } from '@render/zustand/store';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { useState } from 'react';
 import { InGame } from '@render/layouts/Lobby/InGame';
 import { Reconnect } from '@render/layouts/Lobby/Reconnect';
 import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
-import { QueueList } from '@render/layouts/Lobby/QueueList';
 import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
 
-  const isAvailable = useStore().leagueClient.isAvailable();
-
-  const gameFlow = useStore().lobby.gameFlow();
+  const isAvailable = leagueClientStore.isAvailable.use();
+  const gameFlow = lobbyStore.gameFlow.use();
 
   const [patchingData, setPatchingData] =
     useState<PatcherV1ProductsLeagueOfLegendStateComponent['progress']>(null);
@@ -54,6 +53,7 @@ export const Lobby = () => {
         direction={'column'}
         rowGap={1}
         height={'100%'}
+        width={'100%'}
         justifyContent={'center'}
         alignItems={'center'}
       >
@@ -115,17 +115,5 @@ export const Lobby = () => {
     return <EndOfGame />;
   }
 
-  return (
-    <Stack
-      direction={'row'}
-      height={'100%'}
-      width={'100%'}
-      overflow={'auto'}
-      position={'relative'}
-    >
-      <QueueList />
-      <Divider orientation={'vertical'} />
-      <GenericLobby />
-    </Stack>
-  );
+  return <GenericLobby />;
 };

@@ -9,13 +9,11 @@ interface Props {
 
 export const useStyles = makeSx((theme: Theme, props: Props) => {
   const { isBackDrop, full } = props;
-  const isDark = theme.palette.mode === 'dark';
 
   const backdropStyle = {
     position: 'absolute',
-    background: isBackDrop
-      ? alpha(isDark ? theme.palette.grey[800] : theme.palette.grey[100], 0.7)
-      : undefined,
+    background: isBackDrop ? alpha(theme.palette.common.black, 0.5) : undefined,
+    color: 'var(--mui-palette-common-white)',
     top: 0,
     left: 0,
     height: '100% !important',

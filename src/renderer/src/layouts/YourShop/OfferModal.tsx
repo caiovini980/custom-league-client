@@ -1,10 +1,10 @@
 import { LolYourShopV1Offers } from '@shared/typings/lol/response/lolYourShopV1Offers';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Stack, Typography } from '@mui/material';
-import CustomDialog from '@render/components/CustomDialog';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { CustomIconButton } from '@render/components/input';
-import { FaTimes } from 'react-icons/fa';
 import { alpha } from '@mui/material/styles';
 
 export interface OfferModalRef {
@@ -45,16 +45,10 @@ export const OfferModal = forwardRef<OfferModalRef>((_, ref) => {
       }}
       actionsComponent={<div />}
     >
-      <CustomIconButton
-        onClick={() => setOpen(false)}
-        sx={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-        }}
-      >
-        <FaTimes />
-      </CustomIconButton>
+      <CustomDialogCloseFloatingButton
+        colorScheme={'light'}
+        handleClose={() => setOpen(false)}
+      />
       <Stack
         direction={'column'}
         alignItems={'center'}
@@ -65,10 +59,12 @@ export const OfferModal = forwardRef<OfferModalRef>((_, ref) => {
           p: 2,
           pt: 3,
           background: (t) =>
-            `linear-gradient(0deg, ${alpha(t.palette.background.default, 0.9)} 80%, rgba(0,0,0,0) 100%)`,
+            `linear-gradient(0deg, ${alpha(t.palette.common.black, 0.75)} 80%, rgba(0,0,0,0) 100%)`,
         }}
       >
-        <Typography variant={'h4'}>{offer.skinName}</Typography>
+        <Typography variant={'h4'} color={'var(--mui-palette-common-white)'}>
+          {offer.skinName}
+        </Typography>
       </Stack>
     </CustomDialog>
   );

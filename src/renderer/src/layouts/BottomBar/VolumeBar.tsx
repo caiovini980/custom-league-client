@@ -1,75 +1,80 @@
-import { Slider, Stack } from '@mui/material';
+import { Slider, Stack, debounce } from '@mui/material';
 import { CustomIconButton } from '@render/components/input';
-import { storeActions, storeValues, useStore } from '@render/zustand/store';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from 'react-icons/fa6';
 import { electronHandle } from '@render/utils/electronFunction.util';
-import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
 import { delay } from 'lodash';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { useAudioManager } from '@render/hooks/useAudioManager';
 
 export const VolumeBar = () => {
-  const volume: number = useStore().appConfig.VOLUME();
+  const volume = appConfigStore.VOLUME.use();
   const cachedVolume = useRef<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout>();
-  const audioRef = useRef<AudioPlayerRef>(null);
+  const { play } = useAudioManager();
 
-  const onChangeVolume = (_event: unknown, value: number) => {
-    storeActions.appConfig.VOLUME(value / 100);
+  const iconSize = 18;
+
+  const [volumeSlider, setVolumeSlider] = useState(volume * 100);
+
+  const changeVolume = (value: number) => {
+    appConfigStore.VOLUME.set(value);
   };
+
+  const onChangeVolume = useCallback(
+    debounce((value: number) => {
+      changeVolume(value / 100);
+      electronHandle.appConfig.setConfig({
+        name: 'VOLUME',
+        value: value / 100,
+      });
+    }, 100),
+    [],
+  );
 
   const onVolumeButtonClicked = () => {
     if (volume > 0) {
       // cache no volume atual
-      cachedVolume.current = storeValues.appConfig.VOLUME();
+      cachedVolume.current = appConfigStore.VOLUME.get();
 
       // setar posição do slider para 0
       // setar volume como 0
-      audioRef.current?.play();
+      play('mute_unmute');
       delay(() => {
-        storeActions.appConfig.VOLUME(0);
+        changeVolume(0);
       }, 50);
     } else {
-      audioRef.current?.play();
-      storeActions.appConfig.VOLUME(cachedVolume.current);
+      play('mute_unmute');
+      changeVolume(cachedVolume.current);
     }
   };
 
   const changeIconBasedOnVolume = () => {
     if (volume > 0.5) {
-      return <FaVolumeHigh size={25} />;
+      return <FaVolumeHigh size={iconSize} />;
     }
 
     if (volume > 0) {
-      return <FaVolumeLow size={25} />;
+      return <FaVolumeLow size={iconSize} />;
     }
 
-    return <FaVolumeXmark size={25} />;
+    return <FaVolumeXmark size={iconSize} />;
   };
 
   useEffect(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      electronHandle.appConfig.setConfig({
-        name: 'VOLUME',
-        value: volume,
-      });
-    }, 500);
-  }, [volume]);
+    onChangeVolume(volumeSlider);
+  }, [volumeSlider]);
 
   return (
     <Stack direction="row" columnGap={1} width="100%" alignItems="center">
       <CustomIconButton onClick={onVolumeButtonClicked}>
         {changeIconBasedOnVolume()}
       </CustomIconButton>
-
-      <AudioPlayer path="mute_unmute.ogg" autoPlay={false} ref={audioRef} />
-
       <Slider
+        size={'small'}
         aria-label="Volume"
-        value={volume * 100}
-        onChange={onChangeVolume}
+        value={volumeSlider}
+        onChange={(_, value) => setVolumeSlider(value)}
+        valueLabelDisplay={'auto'}
         sx={{ width: '70%' }}
       />
     </Stack>

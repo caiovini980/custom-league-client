@@ -5,15 +5,15 @@ import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchC
 import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
 import { CenterArea } from '@render/layouts/Lobby/ChampSelect/CenterArea';
 import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useStore } from '@render/zustand/store';
 import { Legacy } from '@render/layouts/Lobby/ChampSelect/Legacy';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 interface ChampSelectProps {
   gameMode: string;
 }
 
 export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
-  const session = useStore().lobby.champSelect();
+  const session = lobbyStore.champSelect.use();
 
   if (!session) {
     return <LoadingScreen fullArea />;

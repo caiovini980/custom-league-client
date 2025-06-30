@@ -1,9 +1,9 @@
-import { useStore } from '@render/zustand/store';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 
 export interface AudioSettings {
   path: string;
-  autoPlay: boolean;
+  autoPlay?: boolean;
 }
 
 export interface AudioPlayerRef {
@@ -12,8 +12,8 @@ export interface AudioPlayerRef {
 }
 
 export const AudioPlayer = forwardRef<AudioPlayerRef, AudioSettings>(
-  ({ path, autoPlay }, ref) => {
-    const volume: number = useStore().appConfig.VOLUME();
+  ({ path, autoPlay = false }, ref) => {
+    const volume = appConfigStore.VOLUME.use();
     const audioRef = useRef<HTMLAudioElement>(null);
 
     useImperativeHandle(

@@ -115,17 +115,23 @@ export const SwapNotification = ({
   };
 
   return (
-    <Stack direction={'column'} rowGap={2} position={'relative'} p={1} pb={2}>
+    <Stack
+      direction={'column'}
+      rowGap={2}
+      position={'relative'}
+      p={1}
+      pb={2}
+      sx={{
+        '& span': {
+          color: (t) => t.palette.highlight,
+        },
+      }}
+    >
       <Typography textAlign={'center'}>
         {rcpFeLolChampSelectTrans(`swap_request_title_${type}`)}
       </Typography>
-      <Typography sx={{ '& > span': { color: 'yellow' } }}>
-        {getTitle()}
-      </Typography>
-      <Typography
-        sx={{ '& > span': { color: 'yellow' } }}
-        dangerouslySetInnerHTML={{ __html: getAction() }}
-      />
+      <Typography>{getTitle()}</Typography>
+      <Typography dangerouslySetInnerHTML={{ __html: getAction() }} />
       <Stack direction={'row'} justifyContent={'space-evenly'}>
         {getButtons()}
       </Stack>

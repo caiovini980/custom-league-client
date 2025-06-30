@@ -61,6 +61,9 @@ export const HonorCard = ({
         '&:hover': {
           backgroundBlendMode: 'lighten',
         },
+        '& p': {
+          color: 'var(--mui-palette-common-white)',
+        },
       }}
       variant={'outlined'}
       disabled={disabled()}

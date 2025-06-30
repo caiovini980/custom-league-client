@@ -19,6 +19,14 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
   private FILE_LIST_TO_DENY: string[] = [];
 
   private FILE_LIST_TO_DOWNLOAD = [
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/summoner-spells.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/champion-summary.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/champions/.*.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/items.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/maps.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/queues.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/perks.json',
+    'plugins/rcp-be-lol-game-data/global/{{locale}}/v1/perkstyles.json',
     'plugins/rcp-fe-lol-shared-components/global/default/unranked.png',
     'plugins/rcp-fe-lol-shared-components/global/default/iron.png',
     'plugins/rcp-fe-lol-shared-components/global/default/bronze.png',
@@ -40,7 +48,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
 
   private async fetchFileList(locale: string, url: string): Promise<string[]> {
     const filterAllow: RegExp[] = this.FILE_LIST_TO_DOWNLOAD.map(
-      (r) => new RegExp(r),
+      (r) => new RegExp(r.replace('{{locale}}', locale.toLowerCase())),
     );
     const filterDeny: RegExp[] = this.FILE_LIST_TO_DENY.map(
       (r) => new RegExp(r),

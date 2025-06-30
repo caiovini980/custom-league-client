@@ -7,14 +7,14 @@ import {
 } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useStore } from '@render/zustand/store';
 import { useState } from 'react';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 export const SpellSelect = () => {
   const { currentPlayer, gameMode } = useChampSelectContext();
   const { spellIcon } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-  const spells = useStore().gameData.spells();
+  const spells = gameDataStore.spells.use();
 
   const [loadingChangeSpell, setLoadingChangeSpell] = useState(false);
 

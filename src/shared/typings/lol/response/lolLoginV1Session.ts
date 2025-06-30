@@ -1,7 +1,7 @@
 export interface LolLoginV1Session {
   accountId: number;
   connected: boolean;
-  error: {
+  error: null | {
     description: string;
     errorCode: string;
     messageId: string;

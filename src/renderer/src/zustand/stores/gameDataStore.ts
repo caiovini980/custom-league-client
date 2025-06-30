@@ -1,5 +1,5 @@
 import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
-import { createStore } from 'zustand-x';
+import { store } from '@davstack/store';
 
 export type GameDataState = {
   loaded: boolean;
@@ -17,11 +17,11 @@ const initialState: GameDataState = {
   translate: {} as GameDataState['translate'],
 };
 
-export const gameDataStore = createStore('gameData')<GameDataState>(
-  initialState,
-  { devtools: { enabled: true } },
-).extendActions((set) => ({
+export const gameDataStore = store(initialState, {
+  name: 'gameData',
+  devtools: { enabled: true },
+}).actions((store) => ({
   setGameData: (value: GameDataState) => {
-    set.state(() => value);
+    store.set(value);
   },
 }));

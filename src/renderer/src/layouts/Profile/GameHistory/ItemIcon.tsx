@@ -1,6 +1,6 @@
 import { SquareIcon } from '@render/components/SquareIcon';
-import { useStore } from '@render/zustand/store';
 import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ItemIconProps {
   itemId: number;
@@ -8,7 +8,7 @@ interface ItemIconProps {
 }
 
 export const ItemIcon = ({ itemId, src }: ItemIconProps) => {
-  const items = useStore().gameData.items();
+  const items = gameDataStore.items.use();
   const getDescription = () => {
     const item = items.find((i) => i.id === itemId);
     if (!item) return '';

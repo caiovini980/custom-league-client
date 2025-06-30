@@ -72,7 +72,7 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
                 : t.palette.matchHistory.defeat,
               0.6,
             ),
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
+          borderBottom: '1px solid var(--mui-palette-divider)',
         }}
       >
         <Typography>

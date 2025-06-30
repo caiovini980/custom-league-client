@@ -15,8 +15,10 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
+import { useAudio } from '@render/hooks/useAudioManager';
 
 export const PreEndGame = () => {
+  useAudio('sfx-honor-votingceremony-intro', true);
   const { rcpFeLolHonor } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
@@ -53,7 +55,17 @@ export const PreEndGame = () => {
         setPlayersData(res.body);
       } else {
         // TODO: jump to EndGameScreen
-        makeRequest('POST', '/lol-lobby/v2/play-again', undefined);
+        makeRequest('POST', '/lol-lobby/v2/play-again', undefined).then(
+          (res) => {
+            if (!res.ok) {
+              makeRequest(
+                'POST',
+                '/lol-end-of-game/v1/state/dismiss-stats',
+                undefined,
+              );
+            }
+          },
+        );
       }
     });
   }, [honorData]);
@@ -68,6 +80,7 @@ export const PreEndGame = () => {
 
   return (
     <Stack
+      className={'theme-dark'}
       direction={'column'}
       justifyContent={'space-between'}
       alignItems={'center'}

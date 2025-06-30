@@ -1,12 +1,13 @@
-import { storeActions, useStore } from '@render/zustand/store';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 export const useLobby = () => {
-  const lobby = useStore().lobby.lobby();
-  const gameFlow = useStore().lobby.gameFlow();
-  const matchMakingErros = useStore().lobby.matchMaking()?.errors ?? [];
-  const setLobby = storeActions.lobby.lobby;
-  const queues = useStore().gameData.queues();
-  const currentSummonerId = useStore().currentSummoner.info()?.summonerId ?? 0;
+  const lobby = lobbyStore.lobby.use();
+  const gameFlow = lobbyStore.gameFlow.use();
+  const matchMakingErros = lobbyStore.matchMaking.use()?.errors ?? [];
+  const queues = gameDataStore.queues.use();
+  const currentSummonerId = currentSummonerStore.info.use()?.summonerId ?? 0;
 
   const getLobbyOrThrow = () => {
     if (!lobby) {
@@ -34,7 +35,7 @@ export const useLobby = () => {
   };
 
   return {
-    setLobby,
+    setLobby: lobbyStore.lobby.set,
     getLobby: () => lobby,
     getLobbyOrThrow,
     canStartActivity,

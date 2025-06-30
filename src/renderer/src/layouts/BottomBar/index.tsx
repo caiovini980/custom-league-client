@@ -1,72 +1,49 @@
-import { Box, Drawer, IconButton, Paper, Stack } from '@mui/material';
-import { AppConfig } from '@render/layouts/BottomBar/AppConfig';
-import {
-  electronListen,
-  useElectronHandle,
-} from '@render/utils/electronFunction.util';
-import { storeActions } from '@render/zustand/store';
-import { useEffect, useRef, useState } from 'react';
-import { FaCog } from 'react-icons/fa';
+import { Paper, Stack } from '@mui/material';
 import { Updater } from '@render/layouts/Updater';
-import { AudioPlayer, AudioPlayerRef } from '@render/components/AudioPlayer';
+import { AppConfigModal } from '@render/layouts/BottomBar/AppConfigModal';
+import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
+import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
+import { CloseClient } from '@render/layouts/BottomBar/CloseClient';
+import { ThemeModeShortcut } from '@render/layouts/BottomBar/ThemeModeShortcut';
+import { Conversations } from '@render/layouts/BottomBar/Conversations';
 
 export const BottomBar = () => {
-  const { appConfig } = useElectronHandle();
-  const setAppConfig = storeActions.appConfig;
-  const audioRef = useRef<AudioPlayerRef>(null);
-
-  const loadConfig = () => {
-    appConfig.getConfig().then((config) => {
-      setAppConfig.state(() => config);
-    });
-  };
-
-  const [open, setOpen] = useState({
-    open: false,
-    screen: 'config',
-  });
-
-  const openDrawer = (screen: string) => {
-    audioRef.current?.play();
-    setOpen({
-      open: true,
-      screen,
-    });
-  };
-
-  const closeDrawer = () => {
-    audioRef.current?.play();
-    setOpen((prevState) => ({ ...prevState, open: false }));
-  };
-
-  useEffect(() => {
-    electronListen.onChangeAppConfig((config) => {
-      setAppConfig.state(() => config);
-    });
-    loadConfig();
-  }, []);
+  const iconSize = 16;
 
   return (
     <Paper>
       <Stack
         direction={'row'}
-        columnGap={2}
-        justifyContent={'flex-end'}
-        height={30}
+        columnGap={3}
+        justifyContent={'space-between'}
+        height={40}
         width={'100%'}
-        p={0.5}
+        px={0.5}
       >
-        <Updater />
-
-        <AudioPlayer path="open_settings.ogg" autoPlay={false} ref={audioRef} />
-
-        <IconButton size={'small'} onClick={() => openDrawer('config')}>
-          <FaCog size={14} />
-        </IconButton>
+        <Conversations />
+        <Stack
+          direction={'row'}
+          alignItems={'center'}
+          columnGap={1}
+          p={0.5}
+          sx={{
+            '& .MuiIconButton-root': {
+              p: 1,
+            },
+            '& svg': {
+              width: iconSize,
+              height: iconSize,
+            },
+          }}
+        >
+          <Updater />
+          <ThemeModeShortcut />
+          <CloseClient />
+          <ShowClient />
+          <VolumeBarShortcut />
+          <AppConfigModal />
+        </Stack>
       </Stack>
-      <Drawer anchor={'right'} open={open.open} onClose={closeDrawer}>
-        <Box width={280}>{open.screen === 'config' && <AppConfig />}</Box>
-      </Drawer>
     </Paper>
   );
 };

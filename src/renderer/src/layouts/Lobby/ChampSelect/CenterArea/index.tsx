@@ -4,8 +4,12 @@ import { ActionButton } from '@render/layouts/Lobby/ChampSelect/CenterArea/Actio
 import { SpellSelect } from '@render/layouts/Lobby/ChampSelect/CenterArea/SpellSelect';
 import { ChampionSelectList } from '@render/layouts/Lobby/ChampSelect/CenterArea/ChampionSelectList';
 import { Runes } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { SubsetChampionPick } from '@render/layouts/Lobby/ChampSelect/CenterArea/SubsetChampionPick';
 
 export const CenterArea = () => {
+  const { session } = useChampSelectContext();
+
   return (
     <Stack
       width={'100%'}
@@ -15,7 +19,11 @@ export const CenterArea = () => {
       justifyContent={'flex-end'}
       overflow={'auto'}
     >
-      <ChampionSelectList />
+      {session.allowSubsetChampionPicks ? (
+        <SubsetChampionPick />
+      ) : (
+        <ChampionSelectList />
+      )}
       <SkinSelector />
       <Stack
         direction={'column'}

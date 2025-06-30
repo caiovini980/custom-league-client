@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { IconButton } from '@mui/material';
 import {
   OptionsObject,
   SnackbarAction,
@@ -6,6 +6,7 @@ import {
   useSnackbar as snackbar,
 } from 'notistack';
 import { createElement } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
 interface SnackBarProps extends OptionsObject {
   message?: string;
@@ -23,13 +24,13 @@ export const useSnackNotification = () => {
 
   const action: SnackbarAction = (key) => {
     return createElement(
-      Button,
+      IconButton,
       {
-        variant: 'text',
+        size: 'small',
         color: 'inherit',
         onClick: () => closeSnackbar(key),
       },
-      'Close',
+      createElement(FaTimes, { size: 14 }),
     );
   };
 

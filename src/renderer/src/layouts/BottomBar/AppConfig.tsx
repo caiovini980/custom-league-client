@@ -1,18 +1,19 @@
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { storeActions, useStore } from '@render/zustand/store';
 import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { CustomCheckBox } from '@render/components/input';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { VolumeBar } from './VolumeBar';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 export const AppConfig = () => {
   const { snackError } = useSnackNotification();
   const { localTranslate } = useLocalTranslate();
   const { appConfig, client } = useElectronHandle();
-  const config = useStore().appConfig;
-  const isClientOpen = useStore().leagueClient.isClientOpen();
+  const config = appConfigStore.use();
+  const isClientOpen = leagueClientStore.isClientOpen.use();
 
   const onClickChangeRiotPath = () => {
     appConfig
@@ -28,7 +29,7 @@ export const AppConfig = () => {
   };
 
   const onClickToggleClient = () => {
-    storeActions.leagueClient.isClientOpen(!isClientOpen);
+    leagueClientStore.isClientOpen.set(!isClientOpen);
     client.changeShowClient(!isClientOpen);
   };
 
@@ -49,7 +50,7 @@ export const AppConfig = () => {
   };
 
   const getConfig = (key: keyof GetAppConfigResponse) => {
-    return config[key]() ?? '-';
+    return config[key] ?? '-';
   };
 
   const btn = [

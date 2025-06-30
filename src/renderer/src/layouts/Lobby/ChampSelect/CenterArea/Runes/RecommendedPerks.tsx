@@ -4,14 +4,14 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useState } from 'react';
 import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
-import CustomDialog from '@render/components/CustomDialog';
-import { FaTimes } from 'react-icons/fa';
-import { CustomIconButton } from '@render/components/input';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
 import { ButtonBase, Stack, Typography } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useStore } from '@render/zustand/store';
 import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface RecommendedPerksProps {
   perkToChangeId?: number;
@@ -36,12 +36,13 @@ export const RecommendedPerks = ({
   const { loadChampionBackgroundImg, lolGameDataImg, spellIcon } =
     useLeagueImage();
 
-  const champions = useStore().gameData.champions();
+  const champions = gameDataStore.champions.use();
 
   const [recommendedPerk, setRecommendedPerk] = useState<
     LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id[]
   >([]);
 
+  const backgroundOffsetPerc = 25;
   const iconSize = {
     keystone: 120,
     secondary: 30,
@@ -59,18 +60,22 @@ export const RecommendedPerks = ({
     (data) => {
       setRecommendedPerk(data);
     },
+    {
+      deps: [championId, position, mapId],
+    },
   );
 
   const backgroundImgSx = {
     content: "''",
     background: `url(${loadChampionBackgroundImg('splashPath', championId)})`,
-    backgroundSize: '160% 160%',
+    backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-    backgroundPosition: '0px -65px',
+    backgroundPosition: '400px 0px',
     transform: 'scaleX(-1)',
     zIndex: -1,
     inset: 0,
     position: 'absolute',
+    maskImage: `linear-gradient(to right, transparent ${100 - backgroundOffsetPerc - 5}%, black ${100 - backgroundOffsetPerc + 3}%)`,
   };
 
   const onClickRecommendedPerk = (index: number) => {
@@ -103,6 +108,7 @@ export const RecommendedPerks = ({
     <CustomDialog
       open={open}
       fullWidth
+      className={'theme-dark'}
       maxWidth={'lg'}
       handleClose={onClose}
       actionsComponent={<div />}
@@ -110,32 +116,24 @@ export const RecommendedPerks = ({
         sx: {
           p: 0,
           position: 'relative',
-          height: '60vh',
+          height: '70vh',
           zIndex: 0,
-          pl: '25%',
+          pl: `${backgroundOffsetPerc}%`,
           pr: 2,
           pt: '60px',
           pb: 2,
           '&::before': backgroundImgSx,
           '&::after': {
             ...backgroundImgSx,
-            filter: ' blur(50px)',
-            maskImage: 'linear-gradient(to left, transparent 20%, black 25%)',
+            filter: ' blur(20px)',
+            backgroundSize: '20px 100%',
+            backgroundRepeat: 'repeat-x',
+            maskImage: `linear-gradient(to left, transparent ${backgroundOffsetPerc - 2}%, black ${backgroundOffsetPerc}%)`,
           },
         },
       }}
     >
-      <CustomIconButton
-        onClick={onClose}
-        sx={{
-          position: 'absolute',
-          top: 8,
-          right: 8,
-          zIndex: 2,
-        }}
-      >
-        <FaTimes size={20} />
-      </CustomIconButton>
+      <CustomDialogCloseFloatingButton handleClose={onClose} />
       <Stack
         direction={'row'}
         height={'100%'}
@@ -158,7 +156,7 @@ export const RecommendedPerks = ({
               rowGap={1.5}
               sx={{
                 p: 1,
-                border: (t) => `1px solid ${t.palette.divider}`,
+                border: '1px solid var(--mui-palette-divider)',
               }}
             >
               <img
@@ -220,7 +218,7 @@ export const RecommendedPerks = ({
                   }}
                 />
               </Stack>
-              <Stack direction={'row'} columnGap={2}>
+              <Stack direction={'row'} columnGap={2} display={'none'}>
                 <img
                   src={spellIcon(rp.summonerSpellIds[0])}
                   alt={''}

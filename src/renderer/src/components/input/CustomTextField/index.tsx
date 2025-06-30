@@ -36,18 +36,23 @@ export const CustomTextField = ({
   const [textValue, setTextValue] = useState('');
   const [tempKey, setTempKey] = useState(true);
   const lastPattern = useRef('');
+  const isTyping = useRef(false);
+  const isTypingTimeout = useRef<NodeJS.Timeout>();
   const lastValues = useRef(['', '']);
 
   const debounceText = useCallback(
     !debounceTime
       ? (d: string) => onChangeText?.(d)
-      : debounce((d: string) => onChangeText?.(d), debounceTime),
+      : debounce((d: string) => {
+          lastValues.current = [d, ''];
+          onChangeText?.(d);
+        }, debounceTime),
     [onChangeText, debounceTime],
   );
 
   useEffect(() => {
     if (value) {
-      if (!lastValues.current.includes(value) || pattern) {
+      if (!isTyping.current || pattern) {
         applyMask(value);
       }
     } else {
@@ -72,6 +77,12 @@ export const CustomTextField = ({
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    if (isTypingTimeout.current) clearTimeout(isTypingTimeout.current);
+    isTyping.current = true;
+    isTypingTimeout.current = setTimeout(() => {
+      isTyping.current = false;
+    }, debounceTime);
+
     applyMask(value);
   };
 
@@ -94,7 +105,7 @@ export const CustomTextField = ({
         if (pt === undefined) {
           val = justNumber ? getNumber(value) : value;
           setTextValue(limitarTexto(val));
-          if (onChangeText) debounceText(limitarTexto(val));
+          debounceText(limitarTexto(val));
           return;
         }
         patt = pt;
@@ -115,9 +126,10 @@ export const CustomTextField = ({
     } else {
       val = justNumber ? getNumber(value) : value;
       setTextValue(limitarTexto(val));
+      lastValues.current = [val, ''];
     }
 
-    if (onChangeText) debounceText(limitarTexto(val));
+    debounceText(limitarTexto(val));
   };
 
   const getLimitCaracterText = () => {

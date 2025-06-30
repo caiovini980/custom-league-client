@@ -1,11 +1,11 @@
 import { Stack, Typography } from '@mui/material';
 import { CustomIconButtonTooltip } from '@render/components/input';
-import { useStore } from '@render/zustand/store';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { Perk } from '@shared/typings/lol/json/perk';
 import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { PerkEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface SlotPerksProps {
   type: 'primary' | 'secondary' | 'stat';
@@ -19,8 +19,8 @@ export const SlotPerks = ({
   handleEditPerk,
 }: SlotPerksProps) => {
   const { lolGameDataImg } = useLeagueImage();
-  const perks = useStore().gameData.perks();
-  const perkStyles = useStore().gameData.perkStyles();
+  const perks = gameDataStore.perks.use();
+  const perkStyles = gameDataStore.perkStyles.use();
 
   const iconSize = 30;
 
@@ -152,7 +152,7 @@ export const SlotPerks = ({
   };
 
   return (
-    <Stack direction={'column'} rowGap={3}>
+    <Stack direction={'column'} rowGap={3} width={300}>
       {type !== 'stat' && (
         <Stack direction={'row'} justifyContent={'space-between'}>
           {getPerkStyles().map((perk) => {
@@ -163,9 +163,9 @@ export const SlotPerks = ({
                 placement={'top'}
                 onClick={() => onClickPerkStyle(perk.id)}
                 sx={{
-                  background: (t) =>
+                  background:
                     getCurrentPerkId() === perk.id
-                      ? t.palette.action.selected
+                      ? 'var(--mui-palette-action-selected)'
                       : undefined,
                 }}
               >
@@ -208,8 +208,9 @@ export const SlotPerks = ({
                 placement={'bottom'}
                 disableInteractive
                 sx={{
-                  background: (t) =>
-                    perkSelected ? t.palette.action.selected : undefined,
+                  background: perkSelected
+                    ? 'var(--mui-palette-action-selected)'
+                    : undefined,
                 }}
               >
                 <CircularIcon
