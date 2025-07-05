@@ -35,7 +35,7 @@ export const ConversationButton = ({
 
   const friends = chatStore.friends.use();
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
   const conversationWidth = 280;
 
   const messagesContainerDivRef = useRef<HTMLDivElement>(null);
@@ -46,6 +46,8 @@ export const ConversationButton = ({
   const [conversationMessages, setConversationMessages] = useState<
     LolChatV1Conversations_Id_MessagesRes[]
   >([]);
+  const lastConversationMessage =
+    useRef<LolChatV1Conversations_Id_MessagesRes>();
 
   const handleToggle = () => {
     setIsActive((prev) => !prev);
@@ -125,6 +127,7 @@ export const ConversationButton = ({
     (data) => {
       setConversationMessages(data);
       scrollToBottom();
+      lastConversationMessage.current = data.at(-1);
     },
     {
       deps: [conversation.id],
@@ -140,13 +143,13 @@ export const ConversationButton = ({
     (data) => {
       if (!isActive) {
         setIsHighlight(
-          !conversationMessages.some((c) => c.id === data.lastMessage.id),
+          lastConversationMessage.current?.id !== data.lastMessage.id,
         );
       }
       loadEventData();
     },
     {
-      deps: [conversationMessages.length, isActive],
+      deps: [isActive],
     },
   );
 

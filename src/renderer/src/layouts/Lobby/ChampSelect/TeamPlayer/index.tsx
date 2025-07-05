@@ -14,7 +14,7 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
   const { rcpFeLolChampSelect } = useLeagueTranslate();
   const { bans: bansData, session } = useChampSelectContext();
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const bans = isEnemyTeam ? bansData.theirTeam : bansData.myTeam;
   const team = isEnemyTeam ? session.theirTeam : session.myTeam;

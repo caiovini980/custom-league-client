@@ -30,6 +30,7 @@ export class AppService
     this.setupProtocols();
     this.logger.info('Initiating League Client Service...');
     this.leagueClientService.startListenServer().then();
+    this.mainWin.maximize();
     this.mainWin.show();
     if (!app.isPackaged) {
       const tempPath = path.join(process.cwd(), '.temp');

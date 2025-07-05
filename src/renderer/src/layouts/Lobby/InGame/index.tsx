@@ -8,7 +8,7 @@ export const InGame = () => {
   return (
     <CentralizedStack>
       <Typography>
-        {rcpFeLolL10n('trans')('postgame_game_in_progress')}
+        {rcpFeLolL10n.rcpFeLolL10nTrans('postgame_game_in_progress')}
       </Typography>
     </CentralizedStack>
   );

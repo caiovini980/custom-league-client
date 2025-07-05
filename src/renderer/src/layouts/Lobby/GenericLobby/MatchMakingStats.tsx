@@ -17,7 +17,7 @@ export const MatchMakingStats = ({
 
   const matchMaking = lobbyStore.matchMaking.use();
 
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   function onFindMatchButtonClicked() {
     makeRequest('POST', '/lol-lobby/v2/lobby/matchmaking/search', undefined);

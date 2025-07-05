@@ -6,7 +6,7 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 export const SoundTab = () => {
   const { rcpFeLolSettings } = useLeagueTranslate();
 
-  const rcpFeLolSettingsTrans = rcpFeLolSettings('trans');
+  const { rcpFeLolSettingsTrans } = rcpFeLolSettings;
 
   return (
     <Stack direction={'column'} rowGap={1} p={1}>

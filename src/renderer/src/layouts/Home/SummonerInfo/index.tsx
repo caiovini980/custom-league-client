@@ -22,7 +22,7 @@ export const SummonerInfo = () => {
   const [chatData, setChatData] = useState<LolChatV1Friends>();
   const [openModal, setOpenModal] = useState(false);
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   useLeagueClientEvent('/lol-chat/v1/me', (data) => {
     setChatData(data);

@@ -13,8 +13,8 @@ export const AddFriendForm = ({ addFriend }: AddFriendFormProps) => {
   const [gameName, setGameName] = useState('');
   const [tagLine, setTagLine] = useState('');
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-  const rcpFeLolSharedComponentsTrans = rcpFeLolSharedComponents('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
+  const { rcpFeLolSharedComponentsTrans } = rcpFeLolSharedComponents;
 
   const onClickAddFriend = () => {
     addFriend(gameName, tagLine).then((isSuccess) => {

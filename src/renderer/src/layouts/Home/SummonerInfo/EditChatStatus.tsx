@@ -26,10 +26,8 @@ export const EditChatStatus = ({
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-  const rcpFeLolSocialTransPlayerBehavior = rcpFeLolSocial(
-    'trans-player-behavior',
-  );
+  const { rcpFeLolSocialTrans, rcpFeLolSocialTransPlayerBehavior } =
+    rcpFeLolSocial;
 
   const [statusMessage, setStatusMessage] = useState('');
   const [statusAvailability, setStatusAvailability] = useState('');

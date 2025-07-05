@@ -7,7 +7,7 @@ export const EndGameActionButton = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolPostgame } = useLeagueTranslate();
 
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
+  const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
   const dismissStats = () => {
     makeRequest('POST', '/lol-end-of-game/v1/state/dismiss-stats', undefined);

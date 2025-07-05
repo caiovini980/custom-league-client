@@ -57,11 +57,10 @@ export const HighEloPlayers = () => {
     'CHALLENGER::RANKED_SOLO_5x5',
   );
 
-  const rcpFeLolLeaguesTrans = rcpFeLolLeagues('trans');
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-  const rcpFeLolSharedComponentsTransLeagueTierNames = rcpFeLolSharedComponents(
-    'trans-league-tier-names',
-  );
+  const { rcpFeLolLeaguesTrans } = rcpFeLolLeagues;
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
+  const { rcpFeLolSharedComponentsTransLeagueTierNames } =
+    rcpFeLolSharedComponents;
 
   const findPlayersInGame = async () => {
     const [tier, queue] = tierQueueSelected.split('::');

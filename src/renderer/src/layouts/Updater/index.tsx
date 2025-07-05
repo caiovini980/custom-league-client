@@ -5,9 +5,10 @@ import {
 } from '@render/utils/electronFunction.util';
 import { ProgressInfo } from 'electron-updater';
 import { ButtonBase, LinearProgress, Stack, Typography } from '@mui/material';
-import { CustomButton, CustomIconButton } from '@render/components/input';
-import CustomDialog from '@render/components/CustomDialog';
-import { FaTimes } from 'react-icons/fa';
+import { CustomButton } from '@render/components/input';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
 
 type UpdateStatus = 'checking' | 'downloading' | 'updated' | 'available';
 
@@ -46,7 +47,7 @@ export const Updater = () => {
         alignItems={'center'}
         gap={1}
         sx={{
-          '& > p': {
+          '&  p': {
             fontSize: isModal ? '1rem' : '0.7rem',
           },
         }}
@@ -95,12 +96,6 @@ export const Updater = () => {
       <CustomDialog
         title={'Updater'}
         open={openModal}
-        dialogContentProps={{
-          sx: {
-            p: 0,
-            position: 'relative',
-          },
-        }}
         actionsComponent={<div />}
       >
         {updateStatus === 'downloading' && updateComponent(true)}
@@ -112,17 +107,9 @@ export const Updater = () => {
             </CustomButton>
           </Stack>
         )}
-        <CustomIconButton
-          onClick={() => setOpenModal(false)}
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            zIndex: 3,
-          }}
-        >
-          <FaTimes size={20} />
-        </CustomIconButton>
+        <CustomDialogCloseFloatingButton
+          handleClose={() => setOpenModal(false)}
+        />
       </CustomDialog>
     </>
   );

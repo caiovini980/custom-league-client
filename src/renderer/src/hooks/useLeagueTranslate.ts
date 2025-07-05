@@ -2,14 +2,16 @@ import { KebabToCamelCase } from '@shared/typings/generic.typing';
 import { kebabToCamelCase } from '@shared/utils/string.util';
 import { translateJsonMap } from '@shared/utils/translate.util';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { useMemo } from 'react';
 
 type Translate = typeof translateJsonMap;
 type TranslatePath = keyof Translate;
 
-type TransReturn<F> = {
-  [K in TranslatePath as KebabToCamelCase<K>]: (
-    path: Translate[K][number],
-  ) => F;
+type TransReturn = {
+  [K in TranslatePath as KebabToCamelCase<K>]: Record<
+    KebabToCamelCase<`${K}-${Translate[K][number]}`>,
+    (key: string, ...args: unknown[]) => string
+  >;
 };
 
 export const useLeagueTranslate = () => {
@@ -47,15 +49,20 @@ export const useLeagueTranslate = () => {
       >,
     );
 
-    return (key: (typeof translateJsonMap)[K][number]) => f[key];
+    return translateJsonMap[path].reduce((prev, curr) => {
+      return Object.assign(prev, {
+        [kebabToCamelCase(`${path}-${curr}`)]: f[curr],
+      });
+    }, {});
   };
 
-  return Object.keys(translateJsonMap).reduce(
-    (prev, curr) => {
-      return Object.assign(prev, {
-        [kebabToCamelCase(curr)]: translateMapper(curr as TranslatePath),
-      });
-    },
-    {} as TransReturn<ReturnType<typeof translate>>,
+  return useMemo(
+    () =>
+      Object.keys(translateJsonMap).reduce((prev, curr) => {
+        return Object.assign(prev, {
+          [kebabToCamelCase(curr)]: translateMapper(curr as TranslatePath),
+        });
+      }, {} as TransReturn),
+    [translateData],
   );
 };

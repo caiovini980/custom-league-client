@@ -22,7 +22,7 @@ export const ErrorModal = ({ errors }: ErrorModalProps) => {
     {},
   );
 
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   useEffect(() => {
     setOpenModal(!!errors.length);

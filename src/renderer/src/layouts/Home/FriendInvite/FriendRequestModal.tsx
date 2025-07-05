@@ -39,7 +39,7 @@ export const FriendRequestModal = forwardRef<
   const [openModal, setOpenModal] = useState(false);
 
   const iconSize = 14;
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   useImperativeHandle(
     ref,

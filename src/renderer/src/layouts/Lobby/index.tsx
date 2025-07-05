@@ -36,7 +36,7 @@ export const Lobby = () => {
   );
 
   if (patchingData) {
-    const msg = rcpFeLolL10n('trans')(
+    const msg = rcpFeLolL10n.rcpFeLolL10nTrans(
       `patcher_primary_work_${patchingData.primaryWork.toLowerCase()}`,
     );
     const calcPercent = (total: number, current: number) => {

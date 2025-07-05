@@ -14,7 +14,7 @@ export const SearchFriend = ({ onSearchChange }: SearchFriendProps) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [search, setSearch] = useState('');
 
-  const rcpFeLolSharedComponentsTrans = rcpFeLolSharedComponents('trans');
+  const { rcpFeLolSharedComponentsTrans } = rcpFeLolSharedComponents;
 
   const handleCloseSearch = () => {
     setOpenSearch(false);

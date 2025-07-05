@@ -29,7 +29,7 @@ export const ChatItemMenu = ({
   const gameFlow = lobbyStore.gameFlow.use();
   const currentSummoner = currentSummonerStore.info.use();
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const disableInviteToGame = () => {
     const conditionsToDisable: boolean[] = [
@@ -43,7 +43,8 @@ export const ChatItemMenu = ({
         lobby.members.some((m) => m.puuid === friend.puuid),
       );
     }
-    conditionsToDisable.push(friend.productName !== 'league_of_legends');
+
+    conditionsToDisable.push(friend.product !== 'league_of_legends');
 
     return conditionsToDisable.some(Boolean);
   };

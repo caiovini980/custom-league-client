@@ -31,7 +31,7 @@ export const PlayerCardMenu = ({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement>();
 
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   const onClickGrantInvite = () => {
     setAnchorEl(undefined);

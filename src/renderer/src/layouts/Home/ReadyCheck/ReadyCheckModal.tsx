@@ -17,7 +17,7 @@ export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
   const { rcpFeLolL10n } = useLeagueTranslate();
   const gameFound = useAudio('game_found');
 
-  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
+  const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [matchReadyCheck, setMatchReadyCheck] =
     useState<LolMatchmakingV1ReadyCheck>();

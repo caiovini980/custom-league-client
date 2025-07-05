@@ -70,7 +70,7 @@ export const SwapButton = ({
     setChampionSwapData(data);
   });
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const onClickSwap = (
     type: 'position' | 'pick-order' | 'champion',

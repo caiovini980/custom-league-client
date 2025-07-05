@@ -17,8 +17,8 @@ export const AppConfigModal = withClientConnected(() => {
 
   const [open, setOpen] = useState(false);
 
-  const rcpFeLolSharedComponentsTrans = rcpFeLolSharedComponents('trans');
-  const rcpFeLolSettingsTrans = rcpFeLolSettings('trans');
+  const { rcpFeLolSharedComponentsTrans } = rcpFeLolSharedComponents;
+  const { rcpFeLolSettingsTrans } = rcpFeLolSettings;
 
   const handleChangeOpenSetting = (value: boolean) => {
     play('open_settings');

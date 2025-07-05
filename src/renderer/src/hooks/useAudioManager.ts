@@ -96,27 +96,35 @@ export const useAudioManager = () => {
 };
 
 export const useAudio = (name: SoundNameKeys, autoPlay = false) => {
-  const audio = useRef(audioFactory(name));
+  const audio = useRef<HTMLAudioElement>();
   const volume = appConfigStore.VOLUME.use();
 
   useEffect(() => {
-    if (autoPlay) audio.current.play();
+    audio.current = audioFactory(name);
+  }, []);
+
+  useEffect(() => {
+    if (autoPlay) audio.current?.play();
   }, [autoPlay]);
 
   useEffect(() => {
-    audio.current.volume = volume;
+    if (audio.current) {
+      audio.current.volume = volume;
+    }
   }, [volume]);
 
   const stop = () => {
-    audio.current.pause();
-    audio.current.currentTime = 0;
+    if (audio.current) {
+      audio.current.pause();
+      audio.current.currentTime = 0;
+    }
   };
 
   const play = (replayOnPlayAgain = true) => {
     if (replayOnPlayAgain) {
       stop();
     }
-    audio.current.play();
+    audio.current?.play();
   };
 
   return { play, stop };

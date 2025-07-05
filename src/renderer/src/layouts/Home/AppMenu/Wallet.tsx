@@ -50,7 +50,7 @@ const Icon = (props: { tooltipKey: string; src: string; value: number }) => {
   const { rcpFeLolNavigation } = useLeagueTranslate();
   const { genericImg } = useLeagueImage();
 
-  const rcpFeLolNavigationTrans = rcpFeLolNavigation('trans');
+  const { rcpFeLolNavigationTrans } = rcpFeLolNavigation;
 
   return (
     <Tooltip

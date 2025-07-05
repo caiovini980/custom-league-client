@@ -23,7 +23,7 @@ export const RecentlyPlayerSummoners = ({
   const { championIcon } = useLeagueImage();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const recentlyPlayerSummonersFiltered = () => {
     const friends = chatStore.friends.get();

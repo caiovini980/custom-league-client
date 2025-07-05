@@ -24,10 +24,9 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
   const [championMastery, setChampionMastery] =
     useState<LolChampionMasteryV1_Id_ChampionMastery[]>();
 
-  const transChampionMastery = rcpFeLolSharedComponents(
-    'trans-champion-mastery',
-  );
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolSharedComponentsTransChampionMastery } =
+    rcpFeLolSharedComponents;
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   const getChampionName = (id: number) => {
     return champions.find((c) => c.id === id)?.name ?? '';
@@ -73,7 +72,10 @@ export const ChampionMastery = ({ puuid }: ChampionMasteryProps) => {
               {`#${index + 1} ${getChampionName(cm.championId)} (${cm.highestGrade || 'N/A'})`}
             </Typography>
             <Typography>
-              {transChampionMastery('cm_mastery_level', cm.championLevel)}
+              {rcpFeLolSharedComponentsTransChampionMastery(
+                'cm_mastery_level',
+                cm.championLevel,
+              )}
             </Typography>
             <Typography variant={'caption'}>
               {rcpFeLolPartiesTrans(

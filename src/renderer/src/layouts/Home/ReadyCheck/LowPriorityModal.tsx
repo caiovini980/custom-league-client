@@ -16,7 +16,7 @@ export const LowPriorityModal = ({
   const { rcpFeLolParties } = useLeagueTranslate();
   const matchMaking = lobbyStore.matchMaking.use();
 
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   return (
     <CustomDialog

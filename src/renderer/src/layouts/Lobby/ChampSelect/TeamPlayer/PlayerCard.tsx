@@ -36,7 +36,7 @@ export const TeamPlayerCard = ({
     useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const profileRef = useRef<ProfileModalRef>(null);
 

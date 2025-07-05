@@ -13,7 +13,7 @@ export const Lobby = () => {
   const { getLobby, getQueueName, canStartActivity, phase } = useLobby();
 
   const lobby = getLobby();
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   const onReturnMainMenuButtonClicked = () => {
     makeRequest('DELETE', '/lol-lobby/v2/lobby', undefined).then();
