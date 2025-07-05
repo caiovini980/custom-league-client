@@ -14,8 +14,8 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
         const win = new BrowserWindow({
           icon: nativeImage.createFromPath(appIcon),
           title: 'Decent League Client',
-          width: 1024,
-          height: 768,
+          minWidth: 1024,
+          minHeight: 768,
           show: false,
           autoHideMenuBar: false,
           webPreferences: {

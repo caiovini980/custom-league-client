@@ -1,4 +1,4 @@
-import { Paper, Stack } from '@mui/material';
+import { Box, Paper, Stack } from '@mui/material';
 import { Updater } from '@render/layouts/Updater';
 import { AppConfigModal } from '@render/layouts/BottomBar/AppConfigModal';
 import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
@@ -20,9 +20,8 @@ export const BottomBar = () => {
         width={'100%'}
         px={0.5}
       >
-        <Stack direction={'row'}>
-          <Conversations />
-        </Stack>
+        <Conversations />
+        <Box flexGrow={1} />
         <Stack
           direction={'row'}
           alignItems={'center'}
