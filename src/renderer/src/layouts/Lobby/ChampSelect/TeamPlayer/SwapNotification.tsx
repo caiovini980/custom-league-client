@@ -28,7 +28,8 @@ export const SwapNotification = ({
   const { time, startTimer, stopAndResetTimer, stopTimer } = useTimer();
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const timeAmount = 10;
 

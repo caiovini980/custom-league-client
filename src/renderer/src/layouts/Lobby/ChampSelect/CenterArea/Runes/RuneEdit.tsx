@@ -34,7 +34,7 @@ export const RuneEdit = () => {
   const [rune, setRune] = useState<LolPerksV1Pages>();
   const [perksEdit, setPerkEdit] = useState<PerkEdit>();
 
-  const rcpFeLolCollectionsTransPerks = rcpFeLolCollections('trans-perks');
+  const { rcpFeLolCollectionsTransPerks } = rcpFeLolCollections;
 
   useLeagueClientEvent('/lol-perks/v1/currentpage', (data) => {
     setRune(data);

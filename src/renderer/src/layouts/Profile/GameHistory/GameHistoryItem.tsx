@@ -33,7 +33,7 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSharedComponents } = useLeagueTranslate();
 
-  const transReplays = rcpFeLolSharedComponents('trans-replays');
+  const { rcpFeLolSharedComponentsTransReplays } = rcpFeLolSharedComponents;
 
   const [showMoreDetail, setShowMoreDetail] = useState(false);
   const [replayState, setReplayState] = useState<LolReplaysV1Metadata_Id>({
@@ -46,7 +46,7 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
   const replayBtn = (): CustomIconButtonTooltipProps => {
     const iconSize = 16;
 
-    const title = transReplays(
+    const title = rcpFeLolSharedComponentsTransReplays(
       `replays_button_default_tooltip_${replayState.state}`,
     );
     if (replayState.state === 'download') {

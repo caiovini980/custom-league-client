@@ -28,13 +28,10 @@ export const LeagueClientEvent = () => {
 
   const [errors, setErrors] = useState<ErrorModal[]>([]);
 
-  const rcpFeLolSocialTransPlayerBehavior = rcpFeLolSocial(
-    'trans-player-behavior',
-  );
-  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
-  const rcpFeLolNavigationTrans = rcpFeLolNavigation('trans');
-  const rcpFeLolNavigationTransAppControls =
-    rcpFeLolNavigation('trans-app-controls');
+  const { rcpFeLolSocialTransPlayerBehavior } = rcpFeLolSocial;
+  const { rcpFeLolL10nTrans } = rcpFeLolL10n;
+  const { rcpFeLolNavigationTrans, rcpFeLolNavigationTransAppControls } =
+    rcpFeLolNavigation;
 
   const addError = (err: ErrorModal) => {
     setErrors((prev) => [

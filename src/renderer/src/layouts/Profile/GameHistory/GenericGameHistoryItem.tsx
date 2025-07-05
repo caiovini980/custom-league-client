@@ -48,7 +48,7 @@ export const GenericGameHistoryItem = ({
 
   const profileRef = useRef<ProfileModalRef>(null);
 
-  const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
+  const { rcpFeLolMatchHistoryTrans } = rcpFeLolMatchHistory;
 
   const summaryGameData = (() => {
     const participant = game.participants.find(

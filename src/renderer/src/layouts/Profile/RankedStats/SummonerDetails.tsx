@@ -30,8 +30,8 @@ export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
 
   const iconSize = 180;
   const levelSize = 55;
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
+  const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
   const [challengeStats, setChallengeStats] =
     useState<LolChallengesV1SummaryPlayerDataPlayer_Id>();

@@ -16,7 +16,7 @@ export const ChatItem = ({ chatFriend, onClick }: ChatItemProps) => {
   const { rcpFeLolSocial } = useLeagueTranslate();
 
   const iconSize = 30;
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const getChatStats = (chat: LolChatV1Friends) => {
     const gameStatus = chat.lol?.gameStatus;

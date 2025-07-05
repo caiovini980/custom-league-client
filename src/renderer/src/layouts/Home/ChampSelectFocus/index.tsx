@@ -22,8 +22,8 @@ export const ChampSelectFocus = withChampSelectSession(({ session }) => {
     useChampSelect(session);
   const { time, title } = useChampSelectTimer(session, getAction());
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   useEffect(() => {
     if (summonerData?.isActingNow) {
@@ -101,7 +101,7 @@ const Player = (props: {
   const { championIcon } = useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const getName = () => {
     const { session, action } = props;

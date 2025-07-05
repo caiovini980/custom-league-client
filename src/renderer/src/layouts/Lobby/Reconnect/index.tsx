@@ -11,7 +11,7 @@ export const Reconnect = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
+  const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const onClickReconnect = () => {
     setLoading(true);

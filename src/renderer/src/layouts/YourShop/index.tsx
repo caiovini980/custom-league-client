@@ -17,7 +17,7 @@ export const YourShop = () => {
   const { rcpFeLolYourshop } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
-  const rcpFeLolYourshopTrans = rcpFeLolYourshop('trans');
+  const { rcpFeLolYourshopTrans } = rcpFeLolYourshop;
 
   const offerModalRef = useRef<OfferModalRef>(null);
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();

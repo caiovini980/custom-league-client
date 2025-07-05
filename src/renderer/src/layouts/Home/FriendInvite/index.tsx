@@ -17,7 +17,7 @@ export const FriendInvite = () => {
 
   const modalRef = useRef<FriendRequestModalRef>(null);
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const { loadEventData } = useLeagueClientEvent(
     '/lol-chat/v2/friend-requests',

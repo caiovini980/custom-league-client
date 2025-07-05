@@ -15,8 +15,8 @@ export const ReadyCheck = () => {
   const { rcpFeLolParties, rcpFeLolL10n } = useLeagueTranslate();
   const { getLobby, currentSummonerId, getQueueName, phase } = useLobby();
 
-  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+  const { rcpFeLolL10nTrans } = rcpFeLolL10n;
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   const [autoAccept, setAutoAccept] = useState(false);
 

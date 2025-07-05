@@ -34,8 +34,8 @@ export const AddFriendModal = ({
     LolChatV2FriendRequests[]
   >([]);
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
+  const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
   const addPlayer = async (gameName: string, tagLine: string) => {
     const error = () => {

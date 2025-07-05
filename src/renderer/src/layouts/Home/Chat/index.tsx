@@ -28,7 +28,7 @@ export const Chat = () => {
 
   const profileModal = useRef<ProfileModalRef>(null);
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const chat = chatStore.friends.use();
   const [chatGroups, setChatGroups] = useState<LolChatV1FriendGroups[]>([]);
@@ -65,6 +65,10 @@ export const Chat = () => {
   });
 
   useLeagueClientEvent('/lol-chat/v1/friend-counts', () => {
+    loadEventDataFriends();
+  });
+
+  useLeagueClientEvent('/lol-chat/v1/friends/{id}', () => {
     loadEventDataFriends();
   });
 

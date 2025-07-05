@@ -45,7 +45,7 @@ export const QueueList = () => {
     const queuesGrouped: { name: string; queues: LolGameQueuesV1Queues[] }[] =
       [];
 
-    const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+    const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
     const tftQueues = queuesFiltered.filter(
       (q) =>

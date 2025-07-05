@@ -23,7 +23,7 @@ export const TeamHistory = ({ teamIndex, game }: TeamHistoryProps) => {
   });
 
   const teamId = teamIndex * 100;
-  const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
+  const { rcpFeLolMatchHistoryTrans } = rcpFeLolMatchHistory;
 
   const team = game.teams.find((t) => t.teamId === teamId);
   if (!team) {

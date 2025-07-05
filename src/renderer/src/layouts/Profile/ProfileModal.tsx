@@ -23,7 +23,7 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
     loading: false,
   });
 
-  const rcpFeLolPostgameTrans = rcpFeLolPostgame('trans');
+  const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
   useImperativeHandle(
     ref,

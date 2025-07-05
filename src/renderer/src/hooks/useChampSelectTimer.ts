@@ -9,7 +9,7 @@ export const useChampSelectTimer = (
 ) => {
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const [timeLeft, setTimeLeft] = useState(0);
 

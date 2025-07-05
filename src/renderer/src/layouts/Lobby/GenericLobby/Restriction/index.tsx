@@ -13,7 +13,8 @@ interface RestrictionProps {
 export const Restriction = ({ restrictions }: RestrictionProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const rcpFeLolPartiesTrans = rcpFeLolParties('trans');
+
+  const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
   const [summoners, setSummoners] = useState<LolSummonerV1Summoners_Id[]>([]);
 

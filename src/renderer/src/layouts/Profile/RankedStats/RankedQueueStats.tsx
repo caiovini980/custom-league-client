@@ -11,13 +11,12 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
   const { tierImg } = useLeagueImage();
   const { rcpFeLolSharedComponents, rcpFeLolProfiles } = useLeagueTranslate();
 
-  const transLeagueTierNames = rcpFeLolSharedComponents(
-    'trans-league-tier-names',
-  );
-  const rcpFeLolProfilesTrans = rcpFeLolProfiles('trans');
+  const { rcpFeLolSharedComponentsTransLeagueTierNames } =
+    rcpFeLolSharedComponents;
+  const { rcpFeLolProfilesTrans } = rcpFeLolProfiles;
 
   const getTierName = (tierKey: string) => {
-    return transLeagueTierNames(
+    return rcpFeLolSharedComponentsTransLeagueTierNames(
       `lol_league_queue_name_${tierKey.toLowerCase()}`,
     );
   };
@@ -27,11 +26,16 @@ export const RankedQueueStats = ({ stats }: RankedQueueStatsProps) => {
   ) => {
     const { tier, division, leaguePoints } = queue;
     if (division === 'NA')
-      return transLeagueTierNames('lol_league_tier_names_unranked');
-    const tierT = transLeagueTierNames(
+      return rcpFeLolSharedComponentsTransLeagueTierNames(
+        'lol_league_tier_names_unranked',
+      );
+    const tierT = rcpFeLolSharedComponentsTransLeagueTierNames(
       `lol_league_tier_names_${tier.toLowerCase()}`,
     );
-    const tierDivision = transLeagueTierNames('lol_league_lp', leaguePoints);
+    const tierDivision = rcpFeLolSharedComponentsTransLeagueTierNames(
+      'lol_league_lp',
+      leaguePoints,
+    );
     return `${tierT} ${division} - ${tierDivision}`;
   };
 

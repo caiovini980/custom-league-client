@@ -17,7 +17,7 @@ export const AppMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const rcpFeLolL10nTrans = rcpFeLolL10n('trans');
+  const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
 

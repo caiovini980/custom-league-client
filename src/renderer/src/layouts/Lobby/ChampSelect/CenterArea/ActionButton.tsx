@@ -19,7 +19,7 @@ export const ActionButton = () => {
   } = useChampSelectContext();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const rcpFeLolChampSelectTrans = rcpFeLolChampSelect('trans');
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   useEffect(() => {
     if (isPlayerAction) {

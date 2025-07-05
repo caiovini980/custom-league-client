@@ -11,11 +11,10 @@ export const CloseClient = withClientConnected(() => {
   const { rcpFeLolNavigation } = useLeagueTranslate();
   const { client } = useElectronHandle();
 
-  const rcpFeLolNavigationTransAppControls =
-    rcpFeLolNavigation('trans-app-controls');
-  const rcpFeLolNavigationTransLoadingScreen = rcpFeLolNavigation(
-    'trans-loading-screen',
-  );
+  const {
+    rcpFeLolNavigationTransAppControls,
+    rcpFeLolNavigationTransLoadingScreen,
+  } = rcpFeLolNavigation;
 
   const [open, setOpen] = useState(false);
 

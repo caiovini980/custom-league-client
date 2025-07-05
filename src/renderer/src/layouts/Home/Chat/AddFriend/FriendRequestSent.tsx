@@ -20,7 +20,7 @@ export const FriendRequestSent = ({
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const rcpFeLolSocialTrans = rcpFeLolSocial('trans');
+  const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const onClickRemoveFriendRequest = (id: string) => {
     makeRequest(

@@ -20,7 +20,9 @@ export const BottomBar = () => {
         width={'100%'}
         px={0.5}
       >
-        <Conversations />
+        <Stack direction={'row'}>
+          <Conversations />
+        </Stack>
         <Stack
           direction={'row'}
           alignItems={'center'}

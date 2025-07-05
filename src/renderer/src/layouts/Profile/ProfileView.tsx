@@ -21,8 +21,8 @@ export const ProfileView = ({ summonerId }: ProfileViewProps) => {
   const { lolGameDataImg, genericImg } = useLeagueImage();
   const { rcpFeLolMatchHistory, rcpFeLolCollections } = useLeagueTranslate();
 
-  const rcpFeLolMatchHistoryTrans = rcpFeLolMatchHistory('trans');
-  const rcpFeLolCollectionsTrans = rcpFeLolCollections('trans');
+  const { rcpFeLolMatchHistoryTrans } = rcpFeLolMatchHistory;
+  const { rcpFeLolCollectionsTrans } = rcpFeLolCollections;
 
   const [summonerData, setSummonerData] = useState<LolSummonerV1Summoners_Id>();
   const [backgroundUrl, setBackgroundUrl] = useState(

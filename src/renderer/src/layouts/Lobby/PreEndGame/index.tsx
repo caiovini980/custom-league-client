@@ -22,7 +22,7 @@ export const PreEndGame = () => {
   const { rcpFeLolHonor } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
-  const rcpFeLolHonorTrans = rcpFeLolHonor('trans');
+  const { rcpFeLolHonorTrans } = rcpFeLolHonor;
 
   const [honorData, setHonorData] = useState<LolHonorV2V1Ballot>();
   const [playersData, setPlayersData] = useState<LolSummonerV1Summoners_Id[]>(
