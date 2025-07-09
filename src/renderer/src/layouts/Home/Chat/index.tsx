@@ -10,20 +10,21 @@ import {
 } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { AddFriendIcon } from '@render/layouts/Home/Chat/AddFriend/AddFriendIcon';
+import { ChatItem } from '@render/layouts/Home/Chat/ChatItem';
+import { SearchFriend } from '@render/layouts/Home/Chat/SearchFriend';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { chatStore } from '@render/zustand/stores/chatStore';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
 import { sortBy } from 'lodash';
 import { Fragment, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
-import { ChatItem } from '@render/layouts/Home/Chat/ChatItem';
-import { chatStore } from '@render/zustand/stores/chatStore';
-import { AddFriendIcon } from '@render/layouts/Home/Chat/AddFriend/AddFriendIcon';
-import { SearchFriend } from '@render/layouts/Home/Chat/SearchFriend';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 
-export const Chat = () => {
+export const Chat = withSystemReady('chat', () => {
   const { rcpFeLolSocial } = useLeagueTranslate();
 
   const profileModal = useRef<ProfileModalRef>(null);
@@ -125,7 +126,10 @@ export const Chat = () => {
         <SearchFriend onSearchChange={setSearch} />
       </Stack>
       <Divider />
-      <List sx={{ width: '100%' }} disablePadding>
+      <List
+        sx={{ width: '100%', height: '100%', overflow: 'auto' }}
+        disablePadding
+      >
         {chatGroups.map((cg) => (
           <Fragment key={cg.id}>
             <ListItemButton onClick={() => onClickGroup(cg.id)}>
@@ -153,4 +157,4 @@ export const Chat = () => {
       <ProfileModal ref={profileModal} />
     </Stack>
   );
-};
+});

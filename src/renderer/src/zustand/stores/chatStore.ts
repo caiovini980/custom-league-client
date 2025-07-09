@@ -1,5 +1,5 @@
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { store } from '@davstack/store';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 
 export interface ChatState {
   friends: LolChatV1Friends[];

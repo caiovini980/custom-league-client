@@ -1,11 +1,11 @@
-import { CustomIconButtonTooltip } from '@render/components/input';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import CustomDialog from '@render/components/CustomDialog';
-import { useState } from 'react';
 import { Typography } from '@mui/material';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { FaDoorOpen } from 'react-icons/fa6';
+import CustomDialog from '@render/components/CustomDialog';
+import { CustomIconButtonTooltip } from '@render/components/input';
 import { withClientConnected } from '@render/hoc/withClientConnected';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
+import { useState } from 'react';
+import { FaDoorOpen } from 'react-icons/fa6';
 
 export const CloseClient = withClientConnected(() => {
   const { rcpFeLolNavigation } = useLeagueTranslate();

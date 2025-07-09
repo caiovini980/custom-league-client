@@ -1,7 +1,7 @@
 import { Box, BoxProps } from '@mui/material';
-import { PropsWithChildren } from 'react';
 import { BoxTypeMap } from '@mui/system';
 import { useLazyImage } from '@render/hooks/useLazyImage';
+import { PropsWithChildren } from 'react';
 
 type LazyImageProps<
   E extends React.ElementType = BoxTypeMap['defaultComponent'],

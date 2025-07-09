@@ -1,6 +1,6 @@
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { useEffect, useRef } from 'react';
 import { random } from 'lodash';
+import { useEffect, useRef } from 'react';
 
 const soundName = [
   'game_found',

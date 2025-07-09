@@ -2,8 +2,8 @@ import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ErrorModal } from '@render/layouts/Lobby/GenericLobby/ErrorModal';
-import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { secondsToDisplayTime } from '@shared/utils/date.util';
 
 interface MatchMakingStatsProps {
   canStartActivity: boolean;

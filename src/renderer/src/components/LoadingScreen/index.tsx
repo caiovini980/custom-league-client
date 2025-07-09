@@ -5,8 +5,8 @@ import {
   Typography,
   TypographyProps,
 } from '@mui/material';
-import { useStyles } from './styles';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { useStyles } from './styles';
 
 type Colors = CircularProgressProps['color'] | TypographyProps['color'];
 

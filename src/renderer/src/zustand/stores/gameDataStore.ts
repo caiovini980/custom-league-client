@@ -1,5 +1,5 @@
-import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import { store } from '@davstack/store';
+import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 
 export type GameDataState = {
   loaded: boolean;

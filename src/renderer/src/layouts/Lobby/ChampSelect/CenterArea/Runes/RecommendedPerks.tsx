@@ -1,17 +1,17 @@
+import { ButtonBase, Stack, Typography } from '@mui/material';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
-import CustomDialog, {
-  CustomDialogCloseFloatingButton,
-} from '@render/components/CustomDialog';
-import { ButtonBase, Stack, Typography } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
+import { useState } from 'react';
 
 interface RecommendedPerksProps {
   perkToChangeId?: number;

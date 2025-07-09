@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LabelAction } from '@render/layouts/BottomBar/AppConfigModal/LabelAction';
 import { VolumeBar } from '@render/layouts/BottomBar/VolumeBar';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 export const SoundTab = () => {
   const { rcpFeLolSettings } = useLeagueTranslate();

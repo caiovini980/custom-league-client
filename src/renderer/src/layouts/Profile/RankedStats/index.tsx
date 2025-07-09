@@ -1,12 +1,12 @@
 import { Stack } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { ChampionMostPlayer } from '@render/layouts/Profile/RankedStats/ChampionMostPlayer';
 import { RankedQueueStats } from '@render/layouts/Profile/RankedStats/RankedQueueStats';
+import { SummonerDetails } from '@render/layouts/Profile/RankedStats/SummonerDetails';
 import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
-import { SummonerDetails } from '@render/layouts/Profile/RankedStats/SummonerDetails';
-import { ChampionMostPlayer } from '@render/layouts/Profile/RankedStats/ChampionMostPlayer';
 
 interface RankedStatsProps {
   summonerData: LolSummonerV1Summoners_Id;

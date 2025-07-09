@@ -1,11 +1,10 @@
 import { Box, Paper, Stack } from '@mui/material';
-import { Updater } from '@render/layouts/Updater';
 import { AppConfigModal } from '@render/layouts/BottomBar/AppConfigModal';
-import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
-import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
 import { CloseClient } from '@render/layouts/BottomBar/CloseClient';
+import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
 import { ThemeModeShortcut } from '@render/layouts/BottomBar/ThemeModeShortcut';
-import { Conversations } from '@render/layouts/BottomBar/Conversations';
+import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
+import { Updater } from '@render/layouts/Updater';
 
 export const BottomBar = () => {
   const iconSize = 16;
@@ -20,7 +19,6 @@ export const BottomBar = () => {
         width={'100%'}
         px={0.5}
       >
-        <Conversations />
         <Box flexGrow={1} />
         <Stack
           direction={'row'}

@@ -1,8 +1,8 @@
+import { electronHandle } from '@render/utils/electronFunction.util';
 import { PropsWithChildren, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import ErrorScreen from './ErrorScreen';
 import { useNavigate } from 'react-router-dom';
-import { electronHandle } from '@render/utils/electronFunction.util';
+import ErrorScreen from './ErrorScreen';
 
 export interface CustomErrorBoundaryProps {
   btnLabel?: string;

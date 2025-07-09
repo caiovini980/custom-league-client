@@ -1,6 +1,3 @@
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Divider,
@@ -12,22 +9,26 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { LoadingScreen } from '@render/components/LoadingScreen';
 import {
   CustomIconButton,
   CustomSelect,
   CustomSelectProps,
 } from '@render/components/input';
-import { CircularIcon } from '@render/components/CircularIcon';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { sortBy } from 'lodash';
-import { formatCurrency } from '@shared/utils/string.util';
-import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { formatCurrency } from '@shared/utils/string.util';
+import { sortBy } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
 import { FaArrowsRotate, FaEye } from 'react-icons/fa6';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 
 interface PlayerData {
   puuid: string;
@@ -41,7 +42,7 @@ interface PlayerData {
   leaguePoints: number;
 }
 
-export const HighEloPlayers = () => {
+export const HighEloPlayers = withSystemReady('ranked', () => {
   const { profileIcon } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolLeagues, rcpFeLolSharedComponents, rcpFeLolSocial } =
@@ -199,25 +200,29 @@ export const HighEloPlayers = () => {
               zIndex: 2,
             }}
           >
-            <TableCell>
-              <Typography width={50}>#</Typography>
-            </TableCell>
-            <TableCell>
-              <Typography>
-                {rcpFeLolLeaguesTrans('LEAGUES_PROFILE_TABLE_HEADER_PLAYERS')}
-              </Typography>
-            </TableCell>
-            <TableCell align={'center'}>
-              <Typography>
-                {rcpFeLolLeaguesTrans('LEAGUES_PROFILE_TABLE_HEADER_WIN_LOSE')}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography>
-                {rcpFeLolLeaguesTrans('LEAGUES_PROFILE_TABLE_HEADER_POINTS')}
-              </Typography>
-            </TableCell>
-            <TableCell />
+            <TableRow>
+              <TableCell>
+                <Typography width={50}>#</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography>
+                  {rcpFeLolLeaguesTrans('LEAGUES_PROFILE_TABLE_HEADER_PLAYERS')}
+                </Typography>
+              </TableCell>
+              <TableCell align={'center'}>
+                <Typography>
+                  {rcpFeLolLeaguesTrans(
+                    'LEAGUES_PROFILE_TABLE_HEADER_WIN_LOSE',
+                  )}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography>
+                  {rcpFeLolLeaguesTrans('LEAGUES_PROFILE_TABLE_HEADER_POINTS')}
+                </Typography>
+              </TableCell>
+              <TableCell />
+            </TableRow>
           </TableHead>
           <TableBody>
             {challengersPlayerInGame.map((player) => {
@@ -280,4 +285,4 @@ export const HighEloPlayers = () => {
       <ProfileModal ref={profileModalRef} />
     </Stack>
   );
-};
+});

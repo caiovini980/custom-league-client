@@ -1,11 +1,11 @@
 import { Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { CustomIconButtonTooltip } from '@render/components/input';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { Perk } from '@shared/typings/lol/json/perk';
-import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
-import { CircularIcon } from '@render/components/CircularIcon';
 import { PerkEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { Perk } from '@shared/typings/lol/json/perk';
+import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 
 interface SlotPerksProps {
   type: 'primary' | 'secondary' | 'stat';

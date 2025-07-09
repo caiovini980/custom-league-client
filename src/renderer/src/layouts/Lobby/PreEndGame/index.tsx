@@ -1,21 +1,21 @@
 import { Stack, Typography } from '@mui/material';
+import { CentralizedStack } from '@render/components/CentralizedStack';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useAudio } from '@render/hooks/useAudioManager';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useEffect, useState } from 'react';
-import { LolHonorV2V1Ballot } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
-import { LoadingScreen } from '@render/components/LoadingScreen';
-import {
-  HonorCardContainer,
-  HonorCard,
-} from '@render/layouts/Lobby/PreEndGame/HonorCard';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
-import { CentralizedStack } from '@render/components/CentralizedStack';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
-import { useAudio } from '@render/hooks/useAudioManager';
+import {
+  HonorCard,
+  HonorCardContainer,
+} from '@render/layouts/Lobby/PreEndGame/HonorCard';
+import { LolHonorV2V1Ballot } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
+import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { useEffect, useState } from 'react';
 
 export const PreEndGame = () => {
   useAudio('sfx-honor-votingceremony-intro', true);

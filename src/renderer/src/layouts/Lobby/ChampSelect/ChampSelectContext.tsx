@@ -1,16 +1,16 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
+import { Box } from '@mui/material';
+import {
+  ChampSelectionActions,
+  useChampSelect,
+} from '@render/hooks/useChampSelect';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { Undefined } from '@shared/typings/generic.typing';
 import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionAction,
   LolChampSelectV1SessionTeam,
 } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { Undefined } from '@shared/typings/generic.typing';
-import { Box } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import {
-  ChampSelectionActions,
-  useChampSelect,
-} from '@render/hooks/useChampSelect';
+import { PropsWithChildren, createContext, useContext } from 'react';
 
 interface ChampSelectContextState {
   gameMode: string;

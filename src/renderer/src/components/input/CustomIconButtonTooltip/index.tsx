@@ -1,6 +1,6 @@
 import { Box, ClickAwayListener, Tooltip, TooltipProps } from '@mui/material';
-import CustomIconButton, { CustomIconButtonProps } from '../CustomIconButton';
 import { ReactNode, useState } from 'react';
+import CustomIconButton, { CustomIconButtonProps } from '../CustomIconButton';
 
 export interface CustomIconButtonTooltipProps
   extends Omit<CustomIconButtonProps, 'title'> {

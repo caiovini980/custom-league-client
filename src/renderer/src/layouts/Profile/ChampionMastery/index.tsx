@@ -1,15 +1,15 @@
 import { Grid, Stack, Typography } from '@mui/material';
+import { LazyImage } from '@render/components/LazyImage';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
 import { formatDateTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
 import { useEffect, useState } from 'react';
-import { LazyImage } from '@render/components/LazyImage';
-import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ChampionMasteryProps {
   puuid: string;

@@ -1,7 +1,7 @@
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { KebabToCamelCase } from '@shared/typings/generic.typing';
 import { kebabToCamelCase } from '@shared/utils/string.util';
 import { translateJsonMap } from '@shared/utils/translate.util';
-import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { useMemo } from 'react';
 
 type Translate = typeof translateJsonMap;

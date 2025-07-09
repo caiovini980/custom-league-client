@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { ButtonBase, LinearProgress, Stack, Typography } from '@mui/material';
+import CustomDialog, {
+  CustomDialogCloseFloatingButton,
+} from '@render/components/CustomDialog';
+import { CustomButton } from '@render/components/input';
 import {
   useElectronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
 import { ProgressInfo } from 'electron-updater';
-import { ButtonBase, LinearProgress, Stack, Typography } from '@mui/material';
-import { CustomButton } from '@render/components/input';
-import CustomDialog, {
-  CustomDialogCloseFloatingButton,
-} from '@render/components/CustomDialog';
+import { useEffect, useState } from 'react';
 
 type UpdateStatus = 'checking' | 'downloading' | 'updated' | 'available';
 

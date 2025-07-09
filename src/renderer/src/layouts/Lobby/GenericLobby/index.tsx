@@ -1,6 +1,6 @@
 import { Divider, Stack } from '@mui/material';
-import { QueueList } from '@render/layouts/Lobby/GenericLobby/QueueList';
 import { Lobby } from '@render/layouts/Lobby/GenericLobby/Lobby';
+import { QueueList } from '@render/layouts/Lobby/GenericLobby/QueueList';
 
 export const GenericLobby = () => {
   return (

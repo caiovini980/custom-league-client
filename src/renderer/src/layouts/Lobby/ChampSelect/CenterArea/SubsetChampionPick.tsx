@@ -1,14 +1,14 @@
+import { ButtonBase, Paper, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { ButtonBase, Paper, Stack, Typography } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { gameDataStore } from '@render/zustand/stores/gameDataStore';
-import { CircularIcon } from '@render/components/CircularIcon';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { useState } from 'react';
 
 export const SubsetChampionPick = () => {
   const { loadChampionBackgroundImg, genericImg } = useLeagueImage();

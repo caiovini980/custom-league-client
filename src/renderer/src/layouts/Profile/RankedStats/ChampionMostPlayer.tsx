@@ -1,12 +1,12 @@
+import { Stack, Typography } from '@mui/material';
+import { LazyImage } from '@render/components/LazyImage';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useEffect, useState } from 'react';
-import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { Stack, Typography } from '@mui/material';
-import { LoadingScreen } from '@render/components/LoadingScreen';
-import { LazyImage } from '@render/components/LazyImage';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { LolChampionMasteryV1_Id_ChampionMastery } from '@shared/typings/lol/response/lolChampionMasteryV1_Id_ChampionMastery';
+import { useEffect, useState } from 'react';
 
 interface ChampionMostPlayerProps {
   puuid: string;

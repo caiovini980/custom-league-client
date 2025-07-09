@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import { CustomButton, CustomTextField } from '@render/components/input';
-import { useState } from 'react';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useState } from 'react';
 
 interface AddFriendFormProps {
   addFriend: (gameName: string, tagLine: string) => Promise<boolean>;

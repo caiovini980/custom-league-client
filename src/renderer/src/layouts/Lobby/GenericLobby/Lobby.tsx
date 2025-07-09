@@ -1,11 +1,12 @@
+import { Stack, Typography } from '@mui/material';
+import { CustomButton, CustomCheckBox } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLobby } from '@render/hooks/useLobby';
-import { Stack, Typography } from '@mui/material';
-import { CustomButton, CustomCheckBox } from '@render/components/input';
+import { ChatGroup } from '@render/layouts/Lobby/ChatGroup';
+import { MatchMakingStats } from '@render/layouts/Lobby/GenericLobby/MatchMakingStats';
 import { PlayerList } from '@render/layouts/Lobby/GenericLobby/PlayerList';
 import { Restriction } from '@render/layouts/Lobby/GenericLobby/Restriction';
-import { MatchMakingStats } from '@render/layouts/Lobby/GenericLobby/MatchMakingStats';
 
 export const Lobby = () => {
   const { makeRequest } = useLeagueClientRequest();
@@ -52,6 +53,10 @@ export const Lobby = () => {
       <CustomButton variant="outlined" onClick={onReturnMainMenuButtonClicked}>
         {rcpFeLolPartiesTrans('parties_button_quit')}
       </CustomButton>
+      <ChatGroup
+        mucJwtDto={lobby.mucJwtDto}
+        connectWhen={lobby.members.length > 1}
+      />
     </Stack>
   );
 };

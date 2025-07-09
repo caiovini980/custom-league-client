@@ -1,12 +1,12 @@
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { CustomCheckBox } from '@render/components/input';
-import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
-import { VolumeBar } from './VolumeBar';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
+import { VolumeBar } from './VolumeBar';
 
 export const AppConfig = () => {
   const { snackError } = useSnackNotification();

@@ -1,5 +1,5 @@
-import { FunctionComponent } from 'react';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { FunctionComponent } from 'react';
 
 export const withClientConnected = <P,>(Component: FunctionComponent<P>) => {
   return (props: P) => {

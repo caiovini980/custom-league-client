@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 
 export const Timer = () => {
   const { session, currentAction } = useChampSelectContext();

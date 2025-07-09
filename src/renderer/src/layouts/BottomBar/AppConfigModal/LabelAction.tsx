@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 interface LabelActionProps {
   label: string;

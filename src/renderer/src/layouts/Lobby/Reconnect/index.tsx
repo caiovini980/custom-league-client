@@ -1,9 +1,9 @@
+import { Typography } from '@mui/material';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useState } from 'react';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { Typography } from '@mui/material';
+import { useState } from 'react';
 
 export const Reconnect = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();

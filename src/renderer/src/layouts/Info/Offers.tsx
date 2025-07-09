@@ -1,20 +1,21 @@
 import { Box, Grid, GridProps, Stack, Typography } from '@mui/material';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { Children, PropsWithChildren, useEffect, useState } from 'react';
-import { Carousel } from 'react-responsive-carousel';
+import { alpha } from '@mui/material/styles';
+import { CentralizedStack } from '@render/components/CentralizedStack';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { LoadingScreen } from '@render/components/LoadingScreen';
-import { CentralizedStack } from '@render/components/CentralizedStack';
-import { LolStoreV1Catalog_InventoryType } from '@shared/typings/lol/response/lolStoreV1Catalog_InventoryType';
-import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { alpha } from '@mui/material/styles';
-import { CircularIcon } from '@render/components/CircularIcon';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { LolStoreV1Catalog_InventoryType } from '@shared/typings/lol/response/lolStoreV1Catalog_InventoryType';
+import { Children, PropsWithChildren, useEffect, useState } from 'react';
+import { Carousel } from 'react-responsive-carousel';
 
-export const Offers = (props: GridProps) => {
+export const Offers = withSystemReady('store', (props: GridProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { lolGameDataImg } = useLeagueImage();
 
@@ -161,7 +162,7 @@ export const Offers = (props: GridProps) => {
       </Grid>
     </>
   );
-};
+});
 
 const CustomCarousel = ({ children }: PropsWithChildren) => {
   return (

@@ -15,11 +15,15 @@ export const formatOnlyTime = (date: Date | number | string) => {
   return format(date, 'HH:mm');
 };
 
-export const secondsToDisplayTime = (seconds: number) => {
-  const hours = Math.floor(seconds / 3600);
+export const secondsToDisplayTime = (seconds: number, addDays = false) => {
+  const days = Math.floor(seconds / 86400);
+  const hours = addDays
+    ? Math.floor((seconds % 86400) / 3600)
+    : Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const display: number[] = [];
 
+  if (addDays && days) display.push(days);
   if (hours) display.push(hours);
   display.push(minutes);
   display.push(Math.floor(seconds % 60));

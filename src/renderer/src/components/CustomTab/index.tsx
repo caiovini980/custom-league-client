@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  ReactElement,
 } from 'react';
 import { LoadingScreen } from '../LoadingScreen';
 import { useCustomTabStyle } from './useCustomTabStyle';
@@ -35,6 +36,8 @@ export interface CustomTabPanelProps {
   disabled?: boolean;
   hidden?: boolean;
   customTab?: (props: TabProps) => ReactNode;
+  icon?: ReactElement;
+  iconPosition?: TabProps['iconPosition'];
 }
 
 export interface TabData extends CustomTabPanelProps {
@@ -50,7 +53,9 @@ const CustomTab = ({
   tabsProps,
   mode = 'default',
 }: PropsWithChildren<CustomTabProps>) => {
-  const classes = useCustomTabStyle();
+  const classes = useCustomTabStyle({
+    orientation: tabsProps?.orientation ?? 'horizontal',
+  });
 
   const [value, setValue] = useState(0);
   const tabFiltered = useMemo<TabData[]>(() => {
@@ -91,7 +96,7 @@ const CustomTab = ({
   }, [index]);
 
   return (
-    <Box sx={classes('container', tabsProps?.orientation ?? 'horizontal')}>
+    <Box sx={classes('container')}>
       <LoadingScreen loading={loading} backdrop />
       <Tabs
         variant="scrollable"
@@ -101,8 +106,10 @@ const CustomTab = ({
         sx={classes('tabs', mode)}
         value={value}
         onChange={(_, value) => handleChange(value)}
-        slots={{
-          indicator: () => <span className="MuiTabs-indicatorSpan" />,
+        slotProps={{
+          indicator: {
+            children: <span className="MuiTabs-indicatorSpan" />,
+          },
         }}
       >
         {tabFiltered.map((l, i) => {
@@ -118,6 +125,8 @@ const CustomTab = ({
               key={l.name}
               label={l.label}
               disabled={l.disabled}
+              icon={l.icon}
+              iconPosition={l.iconPosition}
               {...a11yProps(i)}
               sx={classes('tab', mode)}
             />

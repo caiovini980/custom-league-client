@@ -1,12 +1,12 @@
-import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { Divider, Stack, Typography } from '@mui/material';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { SquareIcon } from '@render/components/SquareIcon';
-import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
 import { alpha } from '@mui/material/styles';
-import { IconValue } from './IconValue';
+import { SquareIcon } from '@render/components/SquareIcon';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useSpriteImage } from '@render/hooks/useSpriteImage';
+import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
+import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
+import { IconValue } from './IconValue';
 
 interface TeamHistoryProps {
   teamIndex: number;

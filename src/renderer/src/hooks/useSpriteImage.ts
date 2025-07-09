@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useEffect, useState } from 'react';
 
 interface UseSpriteImageProps {
   src: string;

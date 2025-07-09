@@ -21,6 +21,7 @@
     "build:linux": "npm run build && electron-builder --config ./electron-builder.json --linux",
     "generator": "ts-node generator",
     "g": "npm run generator",
+    "lint": "biome check --write --error-on-warnings ./src",
     "lint:main": "biome check --write --error-on-warnings ./src/main",
     "lint:preload": "biome check --write --error-on-warnings ./src/preload",
     "lint:renderer": "biome check --write --error-on-warnings ./src/renderer"

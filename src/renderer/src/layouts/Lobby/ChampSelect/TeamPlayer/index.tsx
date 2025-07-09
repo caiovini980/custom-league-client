@@ -1,9 +1,9 @@
 import { Stack, Typography } from '@mui/material';
-import { TeamPlayerCard } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/PlayerCard';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { SquareIcon } from '@render/components/SquareIcon';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { TeamPlayerCard } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/PlayerCard';
 
 interface TeamPlayerProps {
   isEnemyTeam?: boolean;
@@ -23,14 +23,17 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
     if (session.benchEnabled) return '';
     const action = session.actions.flat().find((a) => a.type === 'pick');
     if (!action) return '';
-    if ((isEnemyTeam && !action.isAllyAction) || action.isAllyAction) {
+    if (
+      (isEnemyTeam && !action.isAllyAction) ||
+      (!isEnemyTeam && action.isAllyAction)
+    ) {
       return rcpFeLolChampSelectTrans('first_pick');
     }
     return '';
   };
 
   return (
-    <Stack direction={'column'} rowGap={2} height={'100%'}>
+    <Stack direction={'column'} height={'100%'}>
       <Stack direction={'row'} justifyContent={'space-between'}>
         {bans.map((b, i) => {
           return <SquareIcon key={i} src={championIcon(b)} size={35} />;
@@ -38,8 +41,9 @@ export const TeamPlayer = ({ isEnemyTeam }: TeamPlayerProps) => {
       </Stack>
       <Typography
         textAlign={isEnemyTeam ? 'right' : 'left'}
-        height={10}
+        height={18}
         color={'highlight'}
+        my={1}
       >
         {getFirstPickLabel()}
       </Typography>

@@ -60,20 +60,19 @@ export class LeagueClientService
         port: Number(appPort),
         password,
       };
-      return true
+      return true;
     } catch (e) {
       this.logger.error('Error on read lockfile');
       this.logger.error(e);
     }
-    return false
+    return false;
   }
 
   async startListenServer() {
-    const hasCredentials =await this.readLockfileAndGetCredentials();
+    const hasCredentials = await this.readLockfileAndGetCredentials();
     if (!hasCredentials) {
       this.sendMsgClientDisconnected();
     } else {
-
       try {
         const res = await this.rawHandleEndpoint(
           'GET',

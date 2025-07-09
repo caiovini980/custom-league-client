@@ -7,10 +7,11 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import config from '@render/utils/config.util';
+import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
 import { sortBy } from 'lodash';
 import { useState } from 'react';
-import { LolRemedyV1RemedyNotificationsTransgression } from '@shared/typings/lol/response/lolRemedyV1RemedyNotifications';
-import config from '@render/utils/config.util';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 interface ErrorModal {
   eventName: string;
@@ -26,12 +27,17 @@ export const LeagueClientEvent = () => {
     useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
+  const isStopping = leagueClientStore.isStopping.use();
+
   const [errors, setErrors] = useState<ErrorModal[]>([]);
 
   const { rcpFeLolSocialTransPlayerBehavior } = rcpFeLolSocial;
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
-  const { rcpFeLolNavigationTrans, rcpFeLolNavigationTransAppControls } =
-    rcpFeLolNavigation;
+  const {
+    rcpFeLolNavigationTrans,
+    rcpFeLolNavigationTransAppControls,
+    rcpFeLolNavigationTransGameInProgress,
+  } = rcpFeLolNavigation;
 
   const addError = (err: ErrorModal) => {
     setErrors((prev) => [
@@ -72,12 +78,16 @@ export const LeagueClientEvent = () => {
   useLeagueClientEvent('/riot-messaging-service/v1/state', (state, event) => {
     if (state === 'Connected') {
       removeError(event);
-    }
-    if (state === 'Disconnected') {
+    } else {
       addError({
         eventName: event,
         mode: 'loading',
-        msg: 'Retrying connection...',
+        title: rcpFeLolNavigationTransGameInProgress(
+          'reconnect_notification_title',
+        ),
+        msg: rcpFeLolNavigationTransGameInProgress(
+          'reconnect_notification_reconnect_message',
+        ),
         priority: 1,
       });
     }
@@ -124,6 +134,8 @@ export const LeagueClientEvent = () => {
         mode: 'fatal-error',
         priority: 0,
       });
+    } else {
+      removeError(event);
     }
   });
 
@@ -223,7 +235,7 @@ export const LeagueClientEvent = () => {
 
   return (
     <CustomDialog
-      open={!!errors.length}
+      open={!!errors.length && !isStopping}
       hiddenBtnCancel
       hiddenBtnConfirm
       maxWidth={'xs'}

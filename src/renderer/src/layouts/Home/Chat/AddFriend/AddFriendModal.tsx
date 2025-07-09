@@ -1,17 +1,17 @@
+import { Stack } from '@mui/material';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
-import { useEffect, useState } from 'react';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { Stack } from '@mui/material';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
-import { LolMatchHistoryV1RecentlyPlayedSummoners } from '@shared/typings/lol/response/lolMatchHistoryV1RecentlyPlayedSummoners';
-import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
 import { AddFriendForm } from '@render/layouts/Home/Chat/AddFriend/AddFriendForm';
 import { FriendRequestSent } from '@render/layouts/Home/Chat/AddFriend/FriendRequestSent';
 import { RecentlyPlayerSummoners } from '@render/layouts/Home/Chat/AddFriend/RecentlyPlayerSummoners';
+import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { LolMatchHistoryV1RecentlyPlayedSummoners } from '@shared/typings/lol/response/lolMatchHistoryV1RecentlyPlayedSummoners';
+import { useEffect, useState } from 'react';
 
 interface AddFriendModalProps {
   openModal: boolean;
@@ -46,7 +46,7 @@ export const AddFriendModal = ({
       'GET',
       buildEventUrl(
         '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
-        encodeURIComponent(gameName),
+        gameName,
         tagLine,
       ),
       undefined,

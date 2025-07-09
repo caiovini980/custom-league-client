@@ -1,7 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "organizeImports": {
-    "enabled": true
+    "enabled": false
+  },
+  "formatter": {
+    "lineEnding": "lf"
   },
   "linter": {
     "enabled": true,
@@ -12,6 +15,7 @@
         "useHookAtTopLevel": "error"
       },
       "suspicious": {
+        "noEmptyInterface": "off",
         "noShadowRestrictedNames": "off",
         "noArrayIndexKey": "off"
       },
@@ -34,7 +38,8 @@
     }
   },
   "files": {
-    "ignore": ["./**/dist/**", "./**/out/**"]
+    "include": ["src"],
+    "ignore": ["node_modules", "./**/dist/**", "./**/out/**"]
   },
   "javascript": {
     "formatter": {

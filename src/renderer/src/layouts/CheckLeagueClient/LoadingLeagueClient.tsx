@@ -1,14 +1,14 @@
 import { Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { CentralizedStack } from '@render/components/CentralizedStack';
+import { CustomButton } from '@render/components/input';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import {
   useElectronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
-import { useState } from 'react';
-import { CentralizedStack } from '@render/components/CentralizedStack';
-import { CustomButton } from '@render/components/input';
-import { useSnackNotification } from '@render/hooks/useSnackNotification';
-import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { useState } from 'react';
 
 export const LoadingLeagueClient = () => {
   const { localTranslate } = useLocalTranslate();

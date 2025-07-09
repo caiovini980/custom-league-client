@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'react';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { LoadingScreen } from '@render/components/LoadingScreen';
 import { CentralizedStack } from '@render/components/CentralizedStack';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { FunctionComponent } from 'react';
 
 export interface ExtendProps {
   useLoading?: boolean;

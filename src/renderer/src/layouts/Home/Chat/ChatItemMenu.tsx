@@ -1,11 +1,11 @@
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
-import { PropsWithChildren } from 'react';
 import { List, ListItemButton, ListItemText, Tooltip } from '@mui/material';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { PropsWithChildren } from 'react';
 
 interface LolPartyData {
   summoners: number[];
@@ -82,9 +82,12 @@ export const ChatItemMenu = ({
         makeRequest('POST', '/lol-chat/v1/conversations', {
           id: friend.id,
           type: 'chat',
-        });
-        makeRequest('PUT', '/lol-chat/v1/conversations/active', {
-          id: friend.id,
+        }).then((res) => {
+          if (res.ok) {
+            makeRequest('PUT', '/lol-chat/v1/conversations/active', {
+              id: friend.id,
+            });
+          }
         });
       },
     },

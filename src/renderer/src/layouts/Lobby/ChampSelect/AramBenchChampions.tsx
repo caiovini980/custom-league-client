@@ -1,7 +1,7 @@
 import { ButtonBase, Stack } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 

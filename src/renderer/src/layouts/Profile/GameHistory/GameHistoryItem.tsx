@@ -10,6 +10,10 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
+import { TeamHistory } from '@render/layouts/Profile/GameHistory/TeamHistory';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { LolReplaysV1Metadata_Id } from '@shared/typings/lol/response/lolReplaysV1Metadata_Id';
 import { useEffect, useState } from 'react';
@@ -19,10 +23,6 @@ import {
   FaDownload,
   FaPlay,
 } from 'react-icons/fa6';
-import { GenericGameHistoryItem } from '@render/layouts/Profile/GameHistory/GenericGameHistoryItem';
-import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
-import { TeamHistory } from '@render/layouts/Profile/GameHistory/TeamHistory';
-import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 
 interface GameHistoryItemProps {
   puuid: string;

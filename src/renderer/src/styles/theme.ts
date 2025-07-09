@@ -1,6 +1,6 @@
 import {
-  createTheme,
   PaletteOptions,
+  createTheme,
   responsiveFontSizes,
 } from '@mui/material';
 import { deepmerge } from '@mui/utils';
@@ -10,7 +10,7 @@ const palette: PaletteOptions = {
     main: '#007a94',
   },
   secondary: {
-    main: '#95160C',
+    main: '#9275ff',
   },
   error: {
     main: '#e05252',

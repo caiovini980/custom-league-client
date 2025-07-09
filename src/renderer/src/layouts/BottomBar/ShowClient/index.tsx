@@ -1,9 +1,9 @@
 import { CustomIconButtonTooltip } from '@render/components/input';
-import { FaEye, FaEyeSlash } from 'react-icons/fa6';
-import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { withClientConnected } from '@render/hoc/withClientConnected';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 export const ShowClient = withClientConnected(() => {
   const { localTranslate } = useLocalTranslate();

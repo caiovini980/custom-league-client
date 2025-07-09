@@ -1,20 +1,20 @@
+import { ButtonBase, Grid, Stack, Typography } from '@mui/material';
+import { SquareIcon } from '@render/components/SquareIcon';
+import { CustomIconButton, CustomTextField } from '@render/components/input';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { ButtonBase, Grid, Stack, Typography } from '@mui/material';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { SquareIcon } from '@render/components/SquareIcon';
-import { useState } from 'react';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { LolChampSelectV1AllGridCampions } from '@shared/typings/lol/response/lolChampSelectV1AllGridChampions';
-import { LolChampSelectV1PickableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1PickableChampionIds';
 import { LolChampSelectV1BannableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1BannableChampionIds';
 import { LolChampSelectV1DisabledChampionIds } from '@shared/typings/lol/response/lolChampSelectV1DisabledChampionIds';
-import { CustomIconButton, CustomTextField } from '@render/components/input';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { FaTimes } from 'react-icons/fa';
+import { LolChampSelectV1PickableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1PickableChampionIds';
 import { LolPerksV1RecommendedChampionPositions } from '@shared/typings/lol/response/lolPerksV1RecommendedChampionPositions';
+import { useState } from 'react';
+import { MdClose } from 'react-icons/md';
 
 export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
@@ -163,7 +163,7 @@ export const ChampionSelectList = () => {
           onChangeText={setChampionNameFilter}
           endIcon={
             <CustomIconButton onClick={() => setChampionNameFilter('')}>
-              <FaTimes size={12} />
+              <MdClose size={12} />
             </CustomIconButton>
           }
         />

@@ -1,22 +1,22 @@
 import { Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { SquareIcon } from '@render/components/SquareIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { LolChampSelectV1SessionTeam } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { CustomIconButton } from '@render/components/input';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useRef, useState } from 'react';
-import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
-import { CircularIcon } from '@render/components/CircularIcon';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { SwapButton } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapButton';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
-import { CustomIconButton } from '@render/components/input';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { LolChampSelectV1SessionTeam } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
+import { useRef, useState } from 'react';
 
 interface TeamPlayerCardProps {
   slotId: number;
@@ -88,7 +88,6 @@ export const TeamPlayerCard = ({
       sx={{
         position: 'relative',
         overflow: 'hidden',
-        borderRadius: '10px',
         zIndex: 0,
         backgroundColor: summonerData?.isActingNow
           ? 'rgba(255,255,255,0.22)'

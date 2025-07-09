@@ -1,12 +1,12 @@
 import { ButtonBase, Stack, Typography } from '@mui/material';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useRef, useState } from 'react';
-import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
   FriendRequestModal,
   FriendRequestModalRef,
 } from '@render/layouts/Home/FriendInvite/FriendRequestModal';
+import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { useRef, useState } from 'react';
 
 export const FriendInvite = () => {
   const { rcpFeLolSocial } = useLeagueTranslate();

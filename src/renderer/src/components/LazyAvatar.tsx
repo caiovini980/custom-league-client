@@ -1,10 +1,10 @@
+import { Avatar, AvatarOwnProps, Box } from '@mui/material';
 import { useLazyImage } from '@render/hooks/useLazyImage';
-import { Avatar, Box, AvatarOwnProps } from '@mui/material';
 
 export interface LazyAvatarProps {
   src: string;
   size?: number;
-  grayScale?: boolean;
+  grayScale?: boolean | number;
   variant: AvatarOwnProps['variant'];
 }
 
@@ -15,6 +15,12 @@ export const LazyAvatar = ({
   variant,
 }: LazyAvatarProps) => {
   const { isVisible, containerRef } = useLazyImage();
+
+  const getGrayScaleValue = () => {
+    if (grayScale === undefined) return 0;
+    if (typeof grayScale === 'boolean') return grayScale ? 1 : 0;
+    return grayScale;
+  };
 
   if (!src) {
     return <Box height={size} width={size} />;
@@ -28,7 +34,7 @@ export const LazyAvatar = ({
       sx={{
         height: size,
         width: size,
-        filter: `grayscale(${grayScale ? 1 : 0})`,
+        filter: `grayscale(${getGrayScaleValue()})`,
         background: 'transparent',
       }}
     >

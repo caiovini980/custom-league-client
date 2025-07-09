@@ -1,7 +1,7 @@
+import { Stack } from '@mui/material';
+import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { CustomButton } from '@render/components/input';
-import { Stack } from '@mui/material';
 
 export const EndGameActionButton = () => {
   const { makeRequest } = useLeagueClientRequest();
