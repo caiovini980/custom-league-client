@@ -1,11 +1,9 @@
 import { Stack } from '@mui/material';
-import { SkinSelector } from 'src/layouts/Lobby/ChampSelect/CenterArea/SkinSelector';
 import { ActionButton } from '@render/layouts/Lobby/ChampSelect/CenterArea/ActionButton';
-import { SpellSelect } from '@render/layouts/Lobby/ChampSelect/CenterArea/SpellSelect';
 import { ChampionSelectList } from '@render/layouts/Lobby/ChampSelect/CenterArea/ChampionSelectList';
-import { Runes } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { SubsetChampionPick } from '@render/layouts/Lobby/ChampSelect/CenterArea/SubsetChampionPick';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { SkinSelector } from 'src/layouts/Lobby/ChampSelect/CenterArea/SkinSelector';
 
 export const CenterArea = () => {
   const { session } = useChampSelectContext();
@@ -25,24 +23,7 @@ export const CenterArea = () => {
         <ChampionSelectList />
       )}
       <SkinSelector />
-      <Stack
-        direction={'column'}
-        width={'100%'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        rowGap={1}
-      >
-        <ActionButton />
-        <Stack
-          direction={'row'}
-          justifyContent={'center'}
-          alignItems={'center'}
-          columnGap={2}
-        >
-          <Runes />
-          <SpellSelect />
-        </Stack>
-      </Stack>
+      <ActionButton />
     </Stack>
   );
 };

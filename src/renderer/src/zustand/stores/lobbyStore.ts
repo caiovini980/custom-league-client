@@ -1,9 +1,9 @@
-import { Null } from '@shared/typings/generic.typing';
-import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 import { store } from '@davstack/store';
-import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
-import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
+import { Null } from '@shared/typings/generic.typing';
 import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
+import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
+import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 
 export interface LobbyState {
   lobby: Null<LolLobbyV2Lobby>;

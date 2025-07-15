@@ -1,24 +1,24 @@
+import { Stack, Tooltip, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import {
   CustomButton,
   CustomIconButtonTooltip,
 } from '@render/components/input';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { Stack, Tooltip, Typography } from '@mui/material';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useEffect, useState } from 'react';
-import { LolChampSelectV1OngoingPickOrderSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPickOrderSwap';
-import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { SwapNotification } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapNotification';
 import { capitalize } from '@render/utils/stringUtil';
 import { ClientEndpointKeys } from '@shared/typings/lol/clientEndpoint';
 import { LolChampSelectV1OngoingChampionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingChampionSwap';
+import { LolChampSelectV1OngoingPickOrderSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPickOrderSwap';
+import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
+import { useEffect, useState } from 'react';
 
 interface PositionSwapProps {
   slotId: number;

@@ -6,7 +6,7 @@ const useFirstRender = () => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
     }
-  });
+  }, []);
 
   return {
     isFirstRender: firstUpdate.current,

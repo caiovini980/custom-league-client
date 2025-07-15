@@ -1,15 +1,15 @@
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useMemo, useRef, useState } from 'react';
-import { LolChampSelectV1SkinCarouselSkins } from '@shared/typings/lol/response/lolChampSelectV1SkinCarouselSkins';
 import {
   Box,
   ButtonBase,
   Paper,
   Stack,
-  Typography,
   Tooltip,
+  Typography,
 } from '@mui/material';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { LolChampSelectV1SkinCarouselSkins } from '@shared/typings/lol/response/lolChampSelectV1SkinCarouselSkins';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -28,15 +28,14 @@ export const SkinSelector = () => {
     setSkins(data);
   });
 
-  const onChangeSkin = (index: number) => {
-    const skin = skins[index];
-
-    if (!skin.unlocked) return;
-
-    const skinId = skin.id;
-
-    handleChangeSkinId(skinId);
-  };
+  const onChangeSkin = useCallback(
+    (index: number) => {
+      const skin = skins[index];
+      if (!skin.unlocked) return;
+      handleChangeSkinId(skin.id);
+    },
+    [skins.map((s) => s.id).join(':')],
+  );
 
   const handleChangeSkinId = (skinId: number) => {
     makeRequest('PATCH', '/lol-champ-select/v1/session/my-selection', {
@@ -57,7 +56,7 @@ export const SkinSelector = () => {
       return s.childSkins.some((cs) => cs.id === currentPlayer.selectedSkinId);
     });
     return skinIndex === -1 ? 0 : skinIndex;
-  }, [skins.length, currentPlayer.selectedSkinId]);
+  }, [skins.map((s) => s.id).join(':'), currentPlayer.selectedSkinId]);
 
   if (!skins.length) return;
 
@@ -80,7 +79,7 @@ export const SkinSelector = () => {
         showStatus={false}
         showThumbs={false}
         swipeable={false}
-        onChange={(i) => onChangeSkin(i)}
+        onChange={onChangeSkin}
       >
         {skins.map((s, index) => (
           <Tooltip

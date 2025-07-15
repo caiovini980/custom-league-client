@@ -1,12 +1,12 @@
 import { Stack } from '@mui/material';
-import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
-import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
-import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
-import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
+import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
+import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { useState } from 'react';
 
 interface LegacyProps {
   gameMode: string;

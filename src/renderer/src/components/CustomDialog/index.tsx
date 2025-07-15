@@ -6,6 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useTheme } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
+import { CustomIconButton } from '@render/components/input';
 import {
   FormEvent,
   PropsWithChildren,
@@ -16,11 +17,10 @@ import {
   useRef,
   useState,
 } from 'react';
+import { MdClose } from 'react-icons/md';
 import { LoadingScreen } from '../LoadingScreen';
 import CustomButton from '../input/CustomButton';
 import { CustomButtonProps } from '../input/CustomButton';
-import { FaTimes } from 'react-icons/fa';
-import { CustomIconButton } from '@render/components/input';
 
 type Color =
   | 'initial'
@@ -254,7 +254,7 @@ export const CustomDialogCloseFloatingButton = ({
         color: getColor(),
       }}
     >
-      <FaTimes size={20} />
+      <MdClose size={20} />
     </CustomIconButton>
   );
 };

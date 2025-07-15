@@ -1,18 +1,18 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { electronHandle } from '@render/utils/electronFunction.util';
-import { useEffect } from 'react';
 import { Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
+import { useChampSelect } from '@render/hooks/useChampSelect';
+import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { ChampSelectAudio } from '@render/layouts/Home/ChampSelectFocus/ChampSelectAudio';
+import { electronHandle } from '@render/utils/electronFunction.util';
 import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionAction,
 } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
-import { useChampSelect } from '@render/hooks/useChampSelect';
-import { ChampSelectAudio } from '@render/layouts/Home/ChampSelectFocus/ChampSelectAudio';
-import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const ChampSelectFocus = withChampSelectSession(({ session }) => {
   const navigate = useNavigate();

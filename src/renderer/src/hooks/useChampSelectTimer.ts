@@ -1,7 +1,7 @@
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useEffect, useState } from 'react';
 import { ChampSelectionActions } from '@render/hooks/useChampSelect';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { useEffect, useState } from 'react';
 
 export const useChampSelectTimer = (
   session: LolChampSelectV1Session,

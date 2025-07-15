@@ -1,11 +1,11 @@
-import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { Grid, Stack, Typography } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { Grid, Stack, Typography } from '@mui/material';
-import { FriendCardItem } from '@render/layouts/Home/Chat/AddFriend/FriendCardItem';
-import { FaX } from 'react-icons/fa6';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { FriendCardItem } from '@render/layouts/Home/Chat/AddFriend/FriendCardItem';
+import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { FaX } from 'react-icons/fa6';
 
 interface FriendRequestSentProps {
   friendRequests: LolChatV2FriendRequests[];

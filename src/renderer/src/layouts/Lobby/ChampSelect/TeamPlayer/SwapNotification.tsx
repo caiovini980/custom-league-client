@@ -1,11 +1,11 @@
-import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import { CustomButton } from '@render/components/input';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { ClientEndpointKeys } from '@shared/typings/lol/clientEndpoint';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useTimer } from '@render/hooks/useTimer';
+import { ClientEndpointKeys } from '@shared/typings/lol/clientEndpoint';
+import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
 import { useEffect } from 'react';
 
 interface PositionSwapProps {

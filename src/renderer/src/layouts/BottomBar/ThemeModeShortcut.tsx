@@ -1,8 +1,8 @@
 import { CustomIconButtonTooltip } from '@render/components/input';
-import { FaMoon, FaSun } from 'react-icons/fa6';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { electronHandle } from '@render/utils/electronFunction.util';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { FaMoon, FaSun } from 'react-icons/fa6';
 
 export const ThemeModeShortcut = () => {
   const { localTranslate } = useLocalTranslate();

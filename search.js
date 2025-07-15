@@ -6,7 +6,7 @@ const tempFile = fs.readFileSync(path.join(process.cwd(), '.temp'), {
 });
 
 const baseDir = path.join(tempFile.trim(), 'plugins');
-const searchWord = process.argv[2]; // palavra que você quer buscar
+const searchWord = process.argv[2];
 const fileRegex = /^(.*)\.json$/;
 
 function findFilesWithWord(dir, word, results = []) {
@@ -17,7 +17,8 @@ function findFilesWithWord(dir, word, results = []) {
     const fullPath = path.join(dir, item.name);
 
     if (item.isDirectory()) {
-      findFilesWithWord(fullPath, word, results); // Recurse em subdiretórios
+      if (fullPath.includes('v1\\champions')) continue
+      findFilesWithWord(fullPath, word, results);
     } else if (fileRegex.test(item.name)) {
       let jsonString = fs.readFileSync(fullPath, 'utf8');
       if (jsonString.charCodeAt(0) === 0xfeff) {

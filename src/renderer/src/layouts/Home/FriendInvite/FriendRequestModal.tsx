@@ -1,21 +1,21 @@
+import { Box, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
-import { FaTimes } from 'react-icons/fa';
 import { CustomIconButton } from '@render/components/input';
-import { Box, Stack, Typography } from '@mui/material';
-import { CircularIcon } from '@render/components/CircularIcon';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { FaBan, FaCheck } from 'react-icons/fa6';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { FaBan, FaCheck } from 'react-icons/fa6';
+import { MdClose } from 'react-icons/md';
 
 interface FriendRequestModalProps {
   reload: () => void;
@@ -123,7 +123,7 @@ export const FriendRequestModal = forwardRef<
                   <FaCheck size={iconSize} />
                 </CustomIconButton>
                 <CustomIconButton onClick={() => onClickDeny(f.puuid)}>
-                  <FaTimes size={iconSize} />
+                  <MdClose size={iconSize} />
                 </CustomIconButton>
                 <CustomIconButton
                   onClick={() => onClickBlock(f.puuid)}

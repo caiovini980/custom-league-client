@@ -1,19 +1,19 @@
-import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
-import { CircularIcon } from '@render/components/CircularIcon';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { CustomButton } from '@render/components/input';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolChallengesV1SummaryPlayerDataPlayer_Id } from '@shared/typings/lol/response/lolChallengesV1SummaryPlayerDataPlayer_Id';
-import { CustomButton } from '@render/components/input';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { chatStore } from '@render/zustand/stores/chatStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
-import { useSnackNotification } from '@render/hooks/useSnackNotification';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { LolChallengesV1SummaryPlayerDataPlayer_Id } from '@shared/typings/lol/response/lolChallengesV1SummaryPlayerDataPlayer_Id';
+import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
+import { useState } from 'react';
 
 interface SummonerDetailsProps {
   summoner: LolSummonerV1Summoners_Id;

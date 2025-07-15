@@ -4,12 +4,12 @@ import {
   ListItemText,
   ListSubheader,
 } from '@mui/material';
-import { Fragment, useEffect, useState } from 'react';
-import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLobby } from '@render/hooks/useLobby';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
+import { Fragment, useEffect, useState } from 'react';
 
 export const QueueList = () => {
   const { makeRequest } = useLeagueClientRequest();

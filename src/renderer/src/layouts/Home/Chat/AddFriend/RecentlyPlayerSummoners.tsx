@@ -1,12 +1,12 @@
-import { LolMatchHistoryV1RecentlyPlayedSummoners } from '@shared/typings/lol/response/lolMatchHistoryV1RecentlyPlayedSummoners';
-import { orderBy } from 'lodash';
-import { parseISO } from 'date-fns';
-import { Stack, Typography, Grid } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { chatStore } from '@render/zustand/stores/chatStore';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
 import { FriendCardItem } from '@render/layouts/Home/Chat/AddFriend/FriendCardItem';
+import { chatStore } from '@render/zustand/stores/chatStore';
+import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
+import { LolMatchHistoryV1RecentlyPlayedSummoners } from '@shared/typings/lol/response/lolMatchHistoryV1RecentlyPlayedSummoners';
+import { parseISO } from 'date-fns';
+import { orderBy } from 'lodash';
 import { FaUserPlus } from 'react-icons/fa';
 
 interface RecentlyPlayerSummonersProps {

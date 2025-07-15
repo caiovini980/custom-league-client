@@ -7,5 +7,5 @@ export interface LolChatV1Conversations_Id_Messages {
   id: string;
   isHistorical: boolean;
   timestamp: string;
-  type: 'system' | 'chat';
+  type: 'system' | 'chat' | 'groupchat';
 }

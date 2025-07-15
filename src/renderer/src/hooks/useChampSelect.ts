@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import {
   buildEventUrl,
   onLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import {
   LolChampSelectV1Session,
   LolChampSelectV1SessionTeam,
 } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
+import { useEffect, useState } from 'react';
 
 export type ChampSelectionActions =
   | 'planning'

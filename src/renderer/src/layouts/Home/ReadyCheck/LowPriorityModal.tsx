@@ -1,8 +1,8 @@
 import { Stack, Typography } from '@mui/material';
-import { secondsToDisplayTime } from '@shared/utils/date.util';
 import CustomDialog from '@render/components/CustomDialog';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { secondsToDisplayTime } from '@shared/utils/date.util';
 
 interface LowPriorityModalProps {
   onQuitMatchmaking: () => void;

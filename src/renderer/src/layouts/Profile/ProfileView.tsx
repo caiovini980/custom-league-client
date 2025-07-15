@@ -5,13 +5,13 @@ import {
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampionMastery } from '@render/layouts/Profile/ChampionMastery';
 import { GameHistory } from '@render/layouts/Profile/GameHistory/GameHistory';
 import { RankedStats } from '@render/layouts/Profile/RankedStats';
+import { capitalize } from '@render/utils/stringUtil';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useState } from 'react';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { capitalize } from '@render/utils/stringUtil';
 
 interface ProfileViewProps {
   summonerId: number;

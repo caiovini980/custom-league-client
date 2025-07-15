@@ -1,6 +1,8 @@
 import { Null } from '@shared/typings/generic.typing';
 import { PositionPreference } from '@shared/typings/lol/request/lolLobbyV2LobbyMembersLocalMemberPositionPreferences';
 
+type Positions = 'MIDDLE' | 'JUNGLE' | 'BOTTOM' | 'TOP' | 'UTILITY';
+
 export interface LolLobbyV2Lobby {
   canStartActivity: boolean;
   gameConfig: GameConfig;
@@ -14,8 +16,8 @@ export interface LolLobbyV2Lobby {
   partyType: 'open' | 'closed';
   popularChampions: unknown[];
   restrictions: Null<Restriction[]>;
-  scarcePositions: unknown[];
-  warnings: unknown[];
+  scarcePositions: Positions[];
+  warnings: Warning[];
 }
 
 interface GameConfig {
@@ -135,6 +137,15 @@ interface MucJwtDto {
 
 interface Restriction {
   expiredTimestamp: number;
+  restrictionArgs: {};
+  restrictionCode: string;
+  summonerIds: number[];
+  summonerIdsString: string;
+}
+
+interface Warning {
+  expiredTimestamp: number;
+  puuids: string[];
   restrictionArgs: {};
   restrictionCode: string;
   summonerIds: number[];

@@ -1,6 +1,6 @@
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 
 export const useLobby = () => {
   const lobby = lobbyStore.lobby.use();

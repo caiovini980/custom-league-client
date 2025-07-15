@@ -1,11 +1,11 @@
-import { ReactElement, useRef } from 'react';
-import { CustomIconButton } from '@render/components/input';
-import { CircularIcon } from '@render/components/CircularIcon';
 import { Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { CustomIconButton } from '@render/components/input';
 import {
   ProfileModal,
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
+import { ReactElement, useRef } from 'react';
 
 interface FriendCardItemProps {
   summonerId: number;

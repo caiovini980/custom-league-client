@@ -5,20 +5,20 @@ import {
   useColorScheme,
 } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
   useElectronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
-import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
-import { useNavigate } from 'react-router-dom';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
-import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const navigate = useNavigate();

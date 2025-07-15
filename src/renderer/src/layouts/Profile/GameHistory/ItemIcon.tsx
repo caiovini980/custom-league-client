@@ -1,5 +1,5 @@
-import { SquareIcon } from '@render/components/SquareIcon';
 import { Box, Divider, Stack, Tooltip, Typography } from '@mui/material';
+import { SquareIcon } from '@render/components/SquareIcon';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 
 interface ItemIconProps {

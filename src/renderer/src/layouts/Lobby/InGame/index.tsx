@@ -1,5 +1,5 @@
-import { CentralizedStack } from '@render/components/CentralizedStack';
 import { Typography } from '@mui/material';
+import { CentralizedStack } from '@render/components/CentralizedStack';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 export const InGame = () => {

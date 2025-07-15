@@ -6,7 +6,8 @@ import {
   EventMessage,
   EventMessageMap,
 } from '@shared/typings/lol/eventMessage';
-import { DependencyList, useCallback, useEffect } from 'react';
+import { DependencyList, useCallback, useEffect, useMemo } from 'react';
+import useFirstRender from '@render/hooks/useFirstRender';
 
 interface Options {
   showDeleted?: boolean;
@@ -22,13 +23,13 @@ type Cb<K extends keyof EventMessageMap> = (
 const regexMap = {
   '{id}': '.+',
   '{digits}': '[0-9]+',
-  '{string}': '[a-zA-Z]+',
+  '{string}': '[a-zA-Z_]+',
   '{uuid}':
     '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
 };
 
 const readMessage = <K extends keyof EventMessageMap>(
-  event: K,
+  event: RegExp,
   eventData: EventMessage,
   cb: Cb<K>,
   showDeleted: boolean,
@@ -36,18 +37,22 @@ const readMessage = <K extends keyof EventMessageMap>(
   if (eventData.eventType === 'Delete' && !showDeleted) {
     return;
   }
+
+  if (event.test(eventData.uri)) {
+    // @ts-ignore
+    cb(eventData.data, eventData.uri);
+  }
+};
+
+const buildRegex = (event: string) => {
+  if (event === 'all') {
+    return /.*/;
+  }
   const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
     return prev.replaceAll(curr, regexMap[curr]);
   }, event);
 
-  if (
-    new RegExp(`^${eventParsed}$`).test(eventData.uri) ||
-    eventData.uri === event ||
-    event === 'all'
-  ) {
-    // @ts-ignore
-    cb(eventData.data, eventData.uri);
-  }
+  return new RegExp(`^${eventParsed}$`);
 };
 
 export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
@@ -55,9 +60,10 @@ export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
   cb: Cb<K>,
   showDeleted: boolean,
 ) => {
+  const regex = buildRegex(event);
   const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
     // @ts-ignore
-    readMessage(event, message[2], cb, showDeleted);
+    readMessage(regex, message[2], cb, showDeleted);
   });
 
   return {
@@ -71,6 +77,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   options?: Partial<Options>,
 ) => {
   const { client } = useElectronHandle();
+  const { isFirstRender } = useFirstRender();
 
   const currentOptions = Object.assign(
     {
@@ -81,9 +88,10 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     options,
   ) as Required<Options>;
 
+  const regexEvent = useMemo(() => buildRegex(event), [event]);
+
   const loadEventData = useCallback(() => {
-    const isRegexKeys = Object.keys(regexMap).some((rk) => event.includes(rk));
-    if (event !== 'all' && currentOptions?.makeInitialRequest && !isRegexKeys) {
+    if (event !== 'all' && regexEvent.test(event)) {
       client
         .makeRequest({
           method: 'GET',
@@ -93,7 +101,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         .then((res) => {
           if (res.ok) {
             readMessage(
-              event,
+              regexEvent,
               {
                 uri: event,
                 eventType: 'Update',
@@ -106,7 +114,7 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         });
     }
   }, [
-    event,
+    regexEvent,
     currentOptions.makeInitialRequest,
     currentOptions.showDeleted,
     ...currentOptions.deps,
@@ -118,7 +126,9 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       cb,
       currentOptions.showDeleted,
     );
-    loadEventData();
+    if (currentOptions?.makeInitialRequest && isFirstRender) {
+      loadEventData();
+    }
 
     return () => {
       unsubscribe();
@@ -135,6 +145,6 @@ export const buildEventUrl = <K extends keyof EventMessageMap>(
   ...params: (string | number)[]
 ) => {
   return params.reduce((prev, curr) => {
-    return String(prev).replace(/\{.+?}/, String(curr));
+    return String(prev).replace(/\{.+?}/, encodeURIComponent(String(curr)));
   }, url) as K;
 };

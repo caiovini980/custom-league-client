@@ -1,12 +1,12 @@
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import CustomDialog from '@render/components/CustomDialog';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useEffect, useState } from 'react';
-import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { electronHandle } from '@render/utils/electronFunction.util';
 import { useAudio } from '@render/hooks/useAudioManager';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { electronHandle } from '@render/utils/electronFunction.util';
+import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
+import { useEffect, useState } from 'react';
 
 interface ReadyCheckModalProps {
   autoAccept: boolean;

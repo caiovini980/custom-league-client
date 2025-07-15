@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { GetPatchNotesResponse } from '@shared/typings/ipc-function/handle/client.typing';
-import { electronHandle } from '@render/utils/electronFunction.util';
 import { Box, ButtonBase, Stack, Typography } from '@mui/material';
-import { LoadingScreen } from '@render/components/LoadingScreen';
 import { alpha } from '@mui/material/styles';
+import { CentralizedStack } from '@render/components/CentralizedStack';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
-import { CentralizedStack } from '@render/components/CentralizedStack';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { electronHandle } from '@render/utils/electronFunction.util';
+import { GetPatchNotesResponse } from '@shared/typings/ipc-function/handle/client.typing';
+import { useEffect, useState } from 'react';
 
 export const PatchNotes = () => {
   const [openPatchNotesModal, setOpenPatchNotesModal] = useState(false);

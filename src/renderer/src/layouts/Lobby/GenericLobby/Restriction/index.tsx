@@ -32,8 +32,6 @@ export const Restriction = ({ restrictions }: RestrictionProps) => {
     });
   }, [restrictions.length]);
 
-  if (!restrictions.length) return;
-
   const getFirstRestriction = () => {
     const firstRestriction = restrictions[0];
     if (firstRestriction) {
@@ -43,6 +41,8 @@ export const Restriction = ({ restrictions }: RestrictionProps) => {
     }
     return '';
   };
+
+  if (!restrictions.length) return;
 
   return <AlertBox type={'error'} message={getFirstRestriction()} />;
 };

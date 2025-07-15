@@ -1,18 +1,19 @@
 import { Box, ButtonBase, Paper, Stack, Typography } from '@mui/material';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useRef, useState } from 'react';
-import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
-import { LolYourShopV1Offers } from '@shared/typings/lol/response/lolYourShopV1Offers';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { parseISO } from 'date-fns';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { OfferModal, OfferModalRef } from '@render/layouts/YourShop/OfferModal';
+import { LolYourShopV1Offers } from '@shared/typings/lol/response/lolYourShopV1Offers';
+import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
+import { parseISO } from 'date-fns';
+import { useRef, useState } from 'react';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 
-export const YourShop = () => {
+export const YourShop = withSystemReady('yourShop', () => {
   const { loadChampionBackgroundImg } = useLeagueImage();
   const { rcpFeLolYourshop } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
@@ -146,4 +147,4 @@ export const YourShop = () => {
       <OfferModal ref={offerModalRef} />
     </Stack>
   );
-};
+});

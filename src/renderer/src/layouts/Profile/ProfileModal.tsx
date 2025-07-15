@@ -1,12 +1,12 @@
 import CustomDialog from '@render/components/CustomDialog';
 import { CustomIconButton } from '@render/components/input';
-import { ProfileView } from '@render/layouts/Profile/ProfileView';
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { ProfileView } from '@render/layouts/Profile/ProfileView';
+import { forwardRef, useImperativeHandle, useState } from 'react';
+import { MdClose } from 'react-icons/md';
 
 export interface ProfileModalRef {
   open: (summonerId: number) => void;
@@ -44,7 +44,7 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
             'GET',
             buildEventUrl(
               '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
-              encodeURIComponent(gameName),
+              gameName,
               tag,
             ),
             undefined,
@@ -104,7 +104,7 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
           zIndex: 3,
         }}
       >
-        <FaTimes size={20} />
+        <MdClose size={20} />
       </CustomIconButton>
       <ProfileView summonerId={modalData.summonerId} />
     </CustomDialog>

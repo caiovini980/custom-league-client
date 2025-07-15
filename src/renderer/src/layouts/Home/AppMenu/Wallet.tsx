@@ -1,11 +1,11 @@
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolInventoryV1WalletAll } from '@shared/typings/lol/response/lolInventoryV1WalletAll';
-import { Stack, Typography, Tooltip } from '@mui/material';
+import { Stack, Tooltip, Typography } from '@mui/material';
 import { CircularIcon } from '@render/components/CircularIcon';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { formatCurrency } from '@shared/utils/string.util';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { LolInventoryV1WalletAll } from '@shared/typings/lol/response/lolInventoryV1WalletAll';
+import { formatCurrency } from '@shared/utils/string.util';
+import { useState } from 'react';
 
 export const Wallet = () => {
   const [wallet, setWallet] = useState<LolInventoryV1WalletAll>();

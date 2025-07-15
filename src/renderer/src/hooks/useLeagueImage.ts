@@ -1,5 +1,5 @@
-import { Undefined } from '@shared/typings/generic.typing';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { Undefined } from '@shared/typings/generic.typing';
 
 type Id = string | number;
 type Tier =

@@ -1,10 +1,10 @@
 import { ButtonBase, Paper, Stack, Typography } from '@mui/material';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import {
   LolHonorV2V1BallotEligible,
   LolHonorV2V1BallotHonoredPlayer,
 } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { PropsWithChildren } from 'react';
 
 interface HonorCardProps {

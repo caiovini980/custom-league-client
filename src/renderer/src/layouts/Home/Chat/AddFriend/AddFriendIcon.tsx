@@ -1,7 +1,7 @@
 import { CustomIconButton } from '@render/components/input';
-import { FaUserPlus } from 'react-icons/fa6';
-import { useState } from 'react';
 import { AddFriendModal } from '@render/layouts/Home/Chat/AddFriend/AddFriendModal';
+import { useState } from 'react';
+import { FaUserPlus } from 'react-icons/fa6';
 
 export const AddFriendIcon = () => {
   const [openModal, setOpenModal] = useState(false);

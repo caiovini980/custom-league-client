@@ -1,10 +1,10 @@
 import { ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChatItemMenu } from '@render/layouts/Home/Chat/ChatItemMenu';
-import { CircularIcon } from '@render/components/CircularIcon';
 import { getChatAvailabilityColor } from '@render/utils/chat.util';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 
 interface ChatItemProps {
   chatFriend: LolChatV1Friends;

@@ -70,6 +70,13 @@ export default defineConfig({
     ],
   },
   renderer: {
+    server: {
+      watch: {
+        usePolling: true,
+        interval: 1000,
+        ignored: ['**/.idea/**', '**/node_modules/**']
+      }
+    },
     plugins: [
       tsconfigPaths({
         configNames: ['tsconfig.web.json'],

@@ -1,12 +1,12 @@
 import { Stack, Switch } from '@mui/material';
-import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
-import { useElectronHandle } from '@render/utils/electronFunction.util';
-import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
-import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { LabelAction } from '@render/layouts/BottomBar/AppConfigModal/LabelAction';
 import { CustomIconButton } from '@render/components/input';
-import { FaEdit } from 'react-icons/fa';
+import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
+import { LabelAction } from '@render/layouts/BottomBar/AppConfigModal/LabelAction';
+import { useElectronHandle } from '@render/utils/electronFunction.util';
+import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { GetAppConfigResponse } from '@shared/typings/ipc-function/handle/app-config.typing';
+import { FaEdit } from 'react-icons/fa';
 
 export const GeneralTab = () => {
   const { snackError } = useSnackNotification();

@@ -5,7 +5,17 @@ export interface LeagueClientState {
   locale: string;
   isConnected: boolean;
   isAvailable: boolean;
+  isStopping: boolean;
   isClientOpen: boolean;
+  systemReady: {
+    activeCenter: boolean;
+    chat: boolean;
+    store: boolean;
+    objectives: boolean;
+    loot: boolean;
+    ranked: boolean;
+    yourShop: boolean;
+  };
 }
 
 const initialState: LeagueClientState = {
@@ -14,6 +24,16 @@ const initialState: LeagueClientState = {
   isConnected: false,
   isAvailable: false,
   isClientOpen: true,
+  isStopping: false,
+  systemReady: {
+    activeCenter: false,
+    chat: false,
+    loot: false,
+    objectives: false,
+    store: false,
+    ranked: false,
+    yourShop: false,
+  },
 };
 
 export const leagueClientStore = store(initialState, {

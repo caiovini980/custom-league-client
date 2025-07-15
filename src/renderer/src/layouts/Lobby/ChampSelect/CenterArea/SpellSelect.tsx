@@ -1,14 +1,14 @@
 import { Grid, Stack } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import {
   CustomIconButton,
   CustomIconButtonTooltip,
 } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
-import { useState } from 'react';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { useState } from 'react';
 
 export const SpellSelect = () => {
   const { currentPlayer, gameMode } = useChampSelectContext();

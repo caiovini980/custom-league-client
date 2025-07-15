@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 export interface AudioSettings {
   path: string;

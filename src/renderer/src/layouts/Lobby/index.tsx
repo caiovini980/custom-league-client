@@ -1,19 +1,19 @@
 import { LinearProgress, Stack, Typography } from '@mui/material';
+import { CentralizedStack } from '@render/components/CentralizedStack';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
+import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
+import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
 import { GenericLobby } from '@render/layouts/Lobby/GenericLobby';
+import { InGame } from '@render/layouts/Lobby/InGame';
+import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
+import { Reconnect } from '@render/layouts/Lobby/Reconnect';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
 import { useState } from 'react';
-import { InGame } from '@render/layouts/Lobby/InGame';
-import { Reconnect } from '@render/layouts/Lobby/Reconnect';
-import { PreEndGame } from '@render/layouts/Lobby/PreEndGame';
-import { EndOfGame } from '@render/layouts/Lobby/EndOfGame';
-import { CentralizedStack } from '@render/components/CentralizedStack';
-import { EndGameActionButton } from '@render/layouts/Lobby/EndOfGame/EndGameActionButton';
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();

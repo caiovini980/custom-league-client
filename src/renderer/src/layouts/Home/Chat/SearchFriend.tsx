@@ -1,8 +1,9 @@
-import { CustomIconButton, CustomTextField } from '@render/components/input';
-import { FaSearch, FaTimes } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
 import { Box, ClickAwayListener, Collapse } from '@mui/material';
+import { CustomIconButton, CustomTextField } from '@render/components/input';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useEffect, useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
+import { MdClose } from 'react-icons/md';
 
 interface SearchFriendProps {
   onSearchChange: (value: string) => void;
@@ -52,7 +53,7 @@ export const SearchFriend = ({ onSearchChange }: SearchFriendProps) => {
             )}
             endIcon={
               <CustomIconButton onClick={handleCloseSearch}>
-                <FaTimes size={14} />
+                <MdClose size={14} />
               </CustomIconButton>
             }
           />

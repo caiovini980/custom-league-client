@@ -1,17 +1,17 @@
 import { Box, ButtonBase, Stack, Typography } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { CircularIcon } from '@render/components/CircularIcon';
-import config from '@render/utils/config.util';
 import { alpha } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState, MouseEvent } from 'react';
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
-import { getChatAvailabilityColor } from '@render/utils/chat.util';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { CustomIconButton } from '@render/components/input';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { EditChatStatus } from '@render/layouts/Home/SummonerInfo/EditChatStatus';
+import { getChatAvailabilityColor } from '@render/utils/chat.util';
+import config from '@render/utils/config.util';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { MouseEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const SummonerInfo = () => {
   const navigate = useNavigate();

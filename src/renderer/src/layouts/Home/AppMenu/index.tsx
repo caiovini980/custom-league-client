@@ -1,15 +1,15 @@
 import { BottomNavigation, BottomNavigationAction, Box } from '@mui/material';
-import { Null } from '@shared/typings/generic.typing';
-import { SyntheticEvent, useState } from 'react';
-import { FaGamepad, FaStore, FaTags, FaUser } from 'react-icons/fa6';
-import { useLocation, useNavigate } from 'react-router-dom';
-import config from '@render/utils/config.util';
-import { FaHome } from 'react-icons/fa';
+import { useAudioManager } from '@render/hooks/useAudioManager';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
-import { useAudioManager } from '@render/hooks/useAudioManager';
+import config from '@render/utils/config.util';
+import { Null } from '@shared/typings/generic.typing';
+import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
+import { SyntheticEvent, useState } from 'react';
+import { FaHome } from 'react-icons/fa';
+import { FaBox, FaGamepad, FaStore, FaTags, FaUser } from 'react-icons/fa6';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const AppMenu = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
@@ -20,9 +20,14 @@ export const AppMenu = () => {
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
+  const [lootReady, setLootReady] = useState(false);
 
   useLeagueClientEvent('/lol-yourshop/v1/status', (data) => {
     setYourShopStatus(data);
+  });
+
+  useLeagueClientEvent('/lol-loot/v1/ready', (data) => {
+    setLootReady(data);
   });
 
   const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {
@@ -52,6 +57,12 @@ export const AppMenu = () => {
       path: 'store',
       title: rcpFeLolL10nTrans('navbar_store'),
       hidden: true,
+    },
+    {
+      icon: FaBox,
+      path: 'loot',
+      title: rcpFeLolL10nTrans('navbar_loot'),
+      hidden: !lootReady,
     },
     {
       icon: FaTags,

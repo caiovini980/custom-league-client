@@ -9,12 +9,11 @@ export const GlobalStyles = () => {
     <GlobalStylesMui
       styles={{
         '*': {
-          scrollBehavior: 'smooth',
+          boxSizing: 'border-box',
         },
         body: {
           margin: 0,
           height: '100vh',
-          boxSizing: 'border-box',
           webkitFontSmoothing: 'antialiased',
           mozOsxFontSmoothing: 'grayscale',
         },

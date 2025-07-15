@@ -1,15 +1,15 @@
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
-import { useState } from 'react';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { CustomIconButton } from '@render/components/input';
-import { FaCog } from 'react-icons/fa';
-import { useAudioManager } from '@render/hooks/useAudioManager';
 import CustomTab, { CustomTabPanel } from '@render/components/CustomTab';
-import { SoundTab } from '@render/layouts/BottomBar/AppConfigModal/SoundTab';
-import { GeneralTab } from '@render/layouts/BottomBar/AppConfigModal/GeneralTab';
+import { CustomIconButton } from '@render/components/input';
 import { withClientConnected } from '@render/hoc/withClientConnected';
+import { useAudioManager } from '@render/hooks/useAudioManager';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { GeneralTab } from '@render/layouts/BottomBar/AppConfigModal/GeneralTab';
+import { SoundTab } from '@render/layouts/BottomBar/AppConfigModal/SoundTab';
+import { useState } from 'react';
+import { FaCog } from 'react-icons/fa';
 
 export const AppConfigModal = withClientConnected(() => {
   const { play } = useAudioManager();

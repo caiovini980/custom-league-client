@@ -1,15 +1,15 @@
+import { Stack, debounce } from '@mui/material';
 import CustomDialog from '@render/components/CustomDialog';
 import {
   CustomCheckBox,
   CustomSelect,
   CustomTextField,
 } from '@render/components/input';
-import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
-import { useCallback, useEffect, useState } from 'react';
-import { debounce, Stack } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
+import { useCallback, useEffect, useState } from 'react';
 
 interface EditChatStatusProps {
   chatData: LolChatV1Friends;

@@ -1,4 +1,4 @@
-const env = import.meta.env.VITE_NODE_ENV ?? 'production'
+const env = import.meta.env.VITE_NODE_ENV ?? 'production';
 
 const config = {
   env,

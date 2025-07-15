@@ -1,9 +1,9 @@
 import { useAudio, useAudioManager } from '@render/hooks/useAudioManager';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { ChampSelectionActions } from '@render/hooks/useChampSelect';
-import { useEffect, useRef } from 'react';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
+import { useEffect, useRef } from 'react';
 
 interface ChampSelectAudioProps {
   session: LolChampSelectV1Session;

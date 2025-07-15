@@ -1,13 +1,13 @@
 import { Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { PlayerCardMenu } from '@render/layouts/Lobby/GenericLobby/PlayerList/PlayerCardMenu';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
 import { PositionIcon } from './PositionIcon';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { PlayerCardMenu } from '@render/layouts/Lobby/GenericLobby/PlayerList/PlayerCardMenu';
 
 interface PlayerCardProps {
   isLeader: boolean;
