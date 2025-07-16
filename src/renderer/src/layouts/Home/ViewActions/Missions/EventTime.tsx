@@ -1,8 +1,8 @@
-import { useTimer } from '@render/hooks/useTimer';
-import { useEffect, useMemo } from 'react';
-import { differenceInSeconds, parseISO } from 'date-fns';
-import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { Stack, Typography } from '@mui/material';
+import { useTimer } from '@render/hooks/useTimer';
+import { secondsToDisplayTime } from '@shared/utils/date.util';
+import { differenceInSeconds, parseISO } from 'date-fns';
+import { useEffect, useMemo } from 'react';
 import { FaClock } from 'react-icons/fa6';
 
 interface EventTimeProps {

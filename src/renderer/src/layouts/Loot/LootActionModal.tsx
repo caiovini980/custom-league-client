@@ -1,17 +1,17 @@
-import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { Box, Divider, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
-import { Box, Divider, Stack, Typography } from '@mui/material';
-import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { CustomButton } from '@render/components/input';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLootContext } from '@render/layouts/Loot/LootContext';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
+import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 interface LootActionModalProps {
   loot: LolLootV1PlayerLoot;
@@ -99,18 +99,14 @@ export const LootActionModal = forwardRef<
     });
   };
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open: (menu) => {
-          setOpenModal(true);
-          setMenu(menu);
-        },
-      };
-    },
-    [],
-  );
+  useImperativeHandle(ref, () => {
+    return {
+      open: (menu) => {
+        setOpenModal(true);
+        setMenu(menu);
+      },
+    };
+  }, []);
 
   return (
     <CustomDialog

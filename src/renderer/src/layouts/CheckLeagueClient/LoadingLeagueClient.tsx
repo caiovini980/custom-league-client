@@ -4,7 +4,7 @@ import { CustomButton } from '@render/components/input';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import {
-  useElectronHandle,
+  electronHandle,
   useElectronListen,
 } from '@render/utils/electronFunction.util';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
@@ -13,7 +13,7 @@ import { useState } from 'react';
 export const LoadingLeagueClient = () => {
   const { localTranslate } = useLocalTranslate();
   const { snackError, snackSuccess } = useSnackNotification();
-  const { client, appConfig } = useElectronHandle();
+  const { client, appConfig } = electronHandle;
 
   const riotClientPath = appConfigStore.RIOT_CLIENT_PATH.use();
 

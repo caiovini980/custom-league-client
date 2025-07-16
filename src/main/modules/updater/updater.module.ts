@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UpdaterService } from './updater.service';
 import { UpdaterController } from './updater.controller';
+import { UpdaterService } from './updater.service';
 
 @Module({
   imports: [],

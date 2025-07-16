@@ -1,9 +1,9 @@
-import { Slider, Stack, debounce } from '@mui/material';
+import { debounce, Slider, Stack } from '@mui/material';
 import { CustomIconButton } from '@render/components/input';
 import { useAudioManager } from '@render/hooks/useAudioManager';
 import { electronHandle } from '@render/utils/electronFunction.util';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { delay } from 'lodash';
+import { delay } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from 'react-icons/fa6';
 

@@ -10,7 +10,7 @@ import {
   LolChampSelectV1SessionAction,
   LolChampSelectV1SessionTeam,
 } from '@shared/typings/lol/response/lolChampSelectV1Session';
-import { PropsWithChildren, createContext, useContext } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 
 interface ChampSelectContextState {
   gameMode: string;

@@ -8,8 +8,8 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LolChatV1Conversations_Id_Messages as LolChatV1Conversations_Id_MessagesRes } from '@shared/typings/lol/response/lolChatV1Conversations_Id_Messages';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 interface ChatGroupProps {
   connectWhen?: boolean;

@@ -2,8 +2,8 @@ import { IconButton } from '@mui/material';
 import {
   OptionsObject,
   SnackbarAction,
-  VariantType,
   useSnackbar as snackbar,
+  VariantType,
 } from 'notistack';
 import { createElement } from 'react';
 import { FaTimes } from 'react-icons/fa';

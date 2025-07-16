@@ -1,8 +1,4 @@
 import {
-  LolMissionsV1Missions,
-  LolMissionsV1MissionsObjectProgress,
-} from '@shared/typings/lol/response/lolMissionsV1Missions';
-import {
   Box,
   CircularProgress,
   Divider,
@@ -12,11 +8,15 @@ import {
   Typography,
   useColorScheme,
 } from '@mui/material';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { MdCheckCircle } from 'react-icons/md';
 import { alpha } from '@mui/material/styles';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import {
+  LolMissionsV1Missions,
+  LolMissionsV1MissionsObjectProgress,
+} from '@shared/typings/lol/response/lolMissionsV1Missions';
+import { MdCheckCircle } from 'react-icons/md';
 
 interface MissionsProps {
   missions: LolMissionsV1Missions[];

@@ -1,4 +1,4 @@
-import { useElectronHandle } from '@render/utils/electronFunction.util';
+import { electronHandle } from '@render/utils/electronFunction.util';
 import {
   ClientMakeRequestMethod,
   ClientMakeRequestResponse,
@@ -10,14 +10,12 @@ import {
 } from '@shared/typings/lol/clientEndpoint';
 
 export const useLeagueClientRequest = () => {
-  const { client } = useElectronHandle();
-
   const makeRequest = async <K extends ClientEndpointKeys>(
     method: ClientMakeRequestMethod,
     uri: K,
     data: ClientEndpointRequest[K],
   ) => {
-    return (await client.makeRequest({
+    return (await electronHandle.client.makeRequest({
       method,
       uri,
       data,

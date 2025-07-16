@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { AppContextType, ContextKeys } from '@main/typings/context.typings';
 import type { Undefined } from '@shared/typings/generic.typing';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { v4 as uuidV4 } from 'uuid';
 
 export class ContextUtil {

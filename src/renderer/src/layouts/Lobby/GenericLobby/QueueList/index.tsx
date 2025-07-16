@@ -22,9 +22,9 @@ export const QueueList = () => {
 
   useEffect(() => {
     makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
-      const queuesAvailable = [400, 420, 440, 480, 450];
+      const gameMode = ['CLASSIC', 'ARAM', 'TFT'];
       if (res.ok) {
-        setQueueList(res.body.filter((q) => queuesAvailable.includes(q.id)));
+        setQueueList(res.body.filter((q) => gameMode.includes(q.gameMode)));
       }
     });
   }, []);

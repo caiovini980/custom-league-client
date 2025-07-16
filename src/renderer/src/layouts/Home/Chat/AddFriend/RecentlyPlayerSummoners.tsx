@@ -6,7 +6,7 @@ import { chatStore } from '@render/zustand/stores/chatStore';
 import { LolChatV2FriendRequests } from '@shared/typings/lol/response/lolChatV2FriendRequests';
 import { LolMatchHistoryV1RecentlyPlayedSummoners } from '@shared/typings/lol/response/lolMatchHistoryV1RecentlyPlayedSummoners';
 import { parseISO } from 'date-fns';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { FaUserPlus } from 'react-icons/fa';
 
 interface RecentlyPlayerSummonersProps {

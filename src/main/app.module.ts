@@ -12,9 +12,9 @@ import { Module } from '@nestjs/common';
 
 // Modules
 
-import { UpdaterModule } from '@main/modules/updater/updater.module';
 import { AppConfigModule } from '@main/modules/app-config/app-config.module';
 import { ClientModule } from '@main/modules/client/client.module';
+import { UpdaterModule } from '@main/modules/updater/updater.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({

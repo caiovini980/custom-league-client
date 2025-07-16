@@ -1,6 +1,6 @@
 import {
-  PaletteOptions,
   createTheme,
+  PaletteOptions,
   responsiveFontSizes,
 } from '@mui/material';
 import { deepmerge } from '@mui/utils';

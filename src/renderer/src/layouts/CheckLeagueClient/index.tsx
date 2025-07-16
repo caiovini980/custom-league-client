@@ -4,8 +4,12 @@ import {
   Typography,
   useColorScheme,
 } from '@mui/material';
+import { CentralizedStack } from '@render/components/CentralizedStack';
+import { CustomButton } from '@render/components/input';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
+import { LeagueClientImperativeModal } from '@render/layouts/CheckLeagueClient/LeagueClientImperativeModal';
+import { LeagueClientObserverEvent } from '@render/layouts/CheckLeagueClient/LeagueClientObserverEvent';
 import { LoadingLeagueClient } from '@render/layouts/CheckLeagueClient/LoadingLeagueClient';
 import {
   useElectronHandle,
@@ -36,10 +40,18 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     file: '',
   });
 
+  const [isGameDataError, setIsGameDataError] = useState(false);
+
   const setClientStatus = (status: ClientStatusResponse) => {
     leagueClientStore.isConnected.set(status.connected);
     leagueClientStore.version.set(status.info.version);
     leagueClientStore.locale.set(status.info.locale);
+    leagueClientStore.language.set(status.info.language);
+  };
+
+  const onClickTryAgain = () => {
+    setIsGameDataError(false);
+    client.reloadGameData();
   };
 
   useElectronListen('clientStatus', (data) => {
@@ -51,8 +63,15 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   });
 
   useElectronListen('onLoadGameData', (data) => {
-    if (data.status === 'downloading') {
+    if (data.status === 'error') {
+      setIsGameDataError(true);
       gameDataStore.loaded.set(false);
+      setLoadingGameData({
+        percent: 0,
+        file: '',
+      });
+    }
+    if (data.status === 'downloading') {
       setLoadingGameData({
         file: data.info.currentFileDownloading,
         percent: data.info.currentPercent,
@@ -101,6 +120,15 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     return <LoadingLeagueClient />;
   }
 
+  if (isGameDataError) {
+    return (
+      <CentralizedStack>
+        <Typography>Error on downloading game data</Typography>
+        <CustomButton onClick={onClickTryAgain}>Try Again!</CustomButton>
+      </CentralizedStack>
+    );
+  }
+
   if (!gameDataLoaded) {
     return (
       <Stack
@@ -130,5 +158,11 @@ export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <LeagueClientImperativeModal />
+      <LeagueClientObserverEvent />
+      {children}
+    </>
+  );
 };

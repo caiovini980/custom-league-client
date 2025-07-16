@@ -1,7 +1,7 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { migration } from './migrations';
 import path from 'node:path';
 import { app } from 'electron';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { migration } from './migrations';
 
 export const dataSourceOptions = (databaseName?: string): DataSourceOptions => {
   const defaultDbName = 'main.db';

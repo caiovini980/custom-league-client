@@ -1,6 +1,8 @@
 import { ValidationErrorException } from '@main/exceptions/validation-error.exception';
-import { ClassType } from 'class-transformer-validator';
-import { transformAndValidateSync as tvs } from 'class-transformer-validator';
+import {
+  ClassType,
+  transformAndValidateSync as tvs,
+} from 'class-transformer-validator';
 import { ValidationError } from 'class-validator';
 
 export const transformAndValidateSync = <T extends object>(

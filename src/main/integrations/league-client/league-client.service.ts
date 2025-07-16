@@ -1,21 +1,23 @@
+import * as https from 'node:https';
+import path from 'node:path';
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
+import { AppConfigService } from '@main/modules/app-config/app-config.service';
 import { OnApplicationShutdown } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Null } from '@shared/typings/generic.typing';
 import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { EventMessage } from '@shared/typings/lol/eventMessage';
 import { RiotClientRegionLocale } from '@shared/typings/lol/response/riotClientRegionLocale';
 import { SystemV1Builds } from '@shared/typings/lol/response/systemV1Builds';
 import { app } from 'electron';
 import fs from 'fs-extra';
 import {
-  createHttp1Request,
   Credentials,
+  createHttp1Request,
   HttpRequestOptions,
   LeagueWebSocket,
 } from 'league-connect';
-import path from 'node:path';
-import { AppConfigService } from '@main/modules/app-config/app-config.service';
-import * as https from 'node:https';
 
 export interface HandleEndpointResponse<T = unknown> {
   ok: boolean;
@@ -29,6 +31,7 @@ export class LeagueClientService
   implements OnApplicationShutdown
 {
   private credentials!: Credentials;
+  private leagueWebSocket: Null<LeagueWebSocket> = null;
   private isConnected = false;
   private promises: Map<string, Promise<HandleEndpointResponse>> = new Map();
 
@@ -145,7 +148,7 @@ export class LeagueClientService
 
         try {
           bodyRes = response.json();
-        } catch (e) {}
+        } catch (_e) {}
 
         return {
           ok: response.ok,
@@ -210,11 +213,13 @@ export class LeagueClientService
 
     if (regionRes.ok && systemRes.ok) {
       const [major, minor] = systemRes.body.version.split('.');
+      const { locale, region, webLanguage, webRegion } = regionRes.body;
       this.startWb();
       this.sendMsgClientConnected({
-        locale: regionRes.body.locale,
-        region: regionRes.body.region,
+        locale,
+        region,
         version: `${major}.${minor}`,
+        language: `${webLanguage}-${webRegion}`,
       });
       return;
     }
@@ -223,7 +228,13 @@ export class LeagueClientService
   private startWb() {
     const { password, port } = this.credentials;
     const url = `wss://riot:${password}@127.0.0.1:${port}`;
-    const ws = new LeagueWebSocket(url, {
+
+    if (this.leagueWebSocket) {
+      this.leagueWebSocket.close();
+      this.leagueWebSocket = null;
+    }
+
+    this.leagueWebSocket = new LeagueWebSocket(url, {
       headers: {
         Authorization: `Basic ${Buffer.from(`riot:${password}`).toString('base64')}`,
       },
@@ -231,13 +242,14 @@ export class LeagueClientService
         rejectUnauthorized: false,
       }),
     });
-    ws.on('message', (message) => {
+
+    this.leagueWebSocket.on('message', (message) => {
       try {
         const msgString = Buffer.from(message as Buffer)
           .toString('utf-8')
           .trim();
         if (!msgString) return;
-        const msgParsed = JSON.parse(msgString);
+        const msgParsed = JSON.parse(msgString)[2] as EventMessage;
         this.saveLogFile(msgParsed);
         this.sendMsgToRender('onLeagueClientEvent', msgParsed);
       } catch (e) {
@@ -246,18 +258,17 @@ export class LeagueClientService
     });
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  private saveLogFile(data: any) {
+  private saveLogFile(data: EventMessage) {
     if (app.isPackaged) return;
     if (process.env.MAIN_VITE_SAVE_LOG_LEAGUE_CLIENT !== 'true') return;
-    const { uri } = data[2];
+    const { uri } = data;
     const logPath = path.join(
       process.cwd(),
       'logs',
       `${uri.split('/')[1]}.log`,
     );
     fs.createFileSync(logPath);
-    const obj = Object.assign(data[2], {
+    const obj = Object.assign(data, {
       timestamp: new Date().toISOString(),
     });
     fs.appendFile(logPath, `${JSON.stringify(obj)}\n`, {

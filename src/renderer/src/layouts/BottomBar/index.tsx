@@ -4,7 +4,7 @@ import { CloseClient } from '@render/layouts/BottomBar/CloseClient';
 import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
 import { ThemeModeShortcut } from '@render/layouts/BottomBar/ThemeModeShortcut';
 import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
-import { Updater } from '@render/layouts/Updater';
+import { Version } from '@render/layouts/BottomBar/Version/Version';
 
 export const BottomBar = () => {
   const iconSize = 16;
@@ -19,6 +19,7 @@ export const BottomBar = () => {
         width={'100%'}
         px={0.5}
       >
+        <Version />
         <Box flexGrow={1} />
         <Stack
           direction={'row'}
@@ -35,7 +36,6 @@ export const BottomBar = () => {
             },
           }}
         >
-          <Updater />
           <ThemeModeShortcut />
           <CloseClient />
           <ShowClient />

@@ -7,6 +7,7 @@ import {
   ClientMakeRequestResponse,
   GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
+import { VersionInfo } from '@shared/typings/ipc-function/handle/updater.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { LoadGameData } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import {
@@ -14,6 +15,7 @@ import {
   ClientEndpointResponse,
 } from '@shared/typings/lol/clientEndpoint';
 import { ProgressInfo } from 'electron-updater';
+import { EventMessage } from '@shared/typings/lol/eventMessage';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -25,6 +27,7 @@ export interface IpcFunction {
   updater: {
     check: () => boolean;
     quitAndInstallUpdate: () => void;
+    versionInfo: () => VersionInfo;
   };
   client: {
     priorityApp: () => void;
@@ -46,7 +49,7 @@ export interface IpcMainToRenderer extends Record<string, RVoid> {
   processStatus: (status: 'exited' | 'initialized') => void;
   clientStatus: (status: ClientStatusResponse) => void;
   onChangeAppConfig: (configs: GetAppConfigResponse) => void;
-  onLeagueClientEvent: (data: unknown) => void;
+  onLeagueClientEvent: (data: EventMessage) => void;
   onLoadGameData: (data: LoadGameData) => void;
 }
 
@@ -77,6 +80,7 @@ export type IpcMainToRendererObjectMapper = {
 export type IpcRendererCallback = {
   [key in keyof IpcMainToRenderer]: (
     cb: (...args: Parameters<IpcMainToRenderer[key]>) => void,
+    name?: string,
   ) => {
     unsubscribe: () => void;
   };

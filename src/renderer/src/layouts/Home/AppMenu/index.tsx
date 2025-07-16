@@ -4,6 +4,7 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
 import config from '@render/utils/config.util';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { Null } from '@shared/typings/generic.typing';
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { SyntheticEvent, useState } from 'react';
@@ -20,14 +21,10 @@ export const AppMenu = () => {
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
-  const [lootReady, setLootReady] = useState(false);
+  const lootReady = leagueClientStore.systemReady.loot;
 
   useLeagueClientEvent('/lol-yourshop/v1/status', (data) => {
     setYourShopStatus(data);
-  });
-
-  useLeagueClientEvent('/lol-loot/v1/ready', (data) => {
-    setLootReady(data);
   });
 
   const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {

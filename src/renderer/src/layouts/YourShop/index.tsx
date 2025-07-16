@@ -1,4 +1,5 @@
 import { Box, ButtonBase, Paper, Stack, Typography } from '@mui/material';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 import {
   buildEventUrl,
   useLeagueClientEvent,
@@ -11,7 +12,6 @@ import { LolYourShopV1Offers } from '@shared/typings/lol/response/lolYourShopV1O
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { parseISO } from 'date-fns';
 import { useRef, useState } from 'react';
-import { withSystemReady } from '@render/hoc/withSystemReady';
 
 export const YourShop = withSystemReady('yourShop', () => {
   const { loadChampionBackgroundImg } = useLeagueImage();

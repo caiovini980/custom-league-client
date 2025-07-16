@@ -1,18 +1,15 @@
 import { Box, Grid, GridProps, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { CentralizedStack } from '@render/components/CentralizedStack';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { withSystemReady } from '@render/hoc/withSystemReady';
-import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { centerHubStore } from '@render/zustand/stores/centerHubStore';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { LolStoreV1Catalog_InventoryType } from '@shared/typings/lol/response/lolStoreV1Catalog_InventoryType';
-import { Children, PropsWithChildren, useEffect, useState } from 'react';
+import { Children, PropsWithChildren, useEffect } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 export const Offers = withSystemReady('store', (props: GridProps) => {
@@ -21,13 +18,8 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
 
   const champions = gameDataStore.champions.use();
 
-  const [storeReady, setStoreReady] = useState(false);
-  const [championSales, setChampionSales] = useState<
-    LolStoreV1Catalog_InventoryType[]
-  >([]);
-  const [championSkinSales, setChampionSkinSales] = useState<
-    LolStoreV1Catalog_InventoryType[]
-  >([]);
+  const championSales = centerHubStore.sales.champions.use();
+  const championSkinSales = centerHubStore.sales.skins.use();
 
   const getChampionData = (championId: number) => {
     return champions.find((c) => c.id === championId);
@@ -85,7 +77,7 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
       undefined,
     ).then((data) => {
       if (data.ok) {
-        setChampionSales(data.body);
+        centerHubStore.sales.champions.set(data.body);
       }
     });
     makeRequest(
@@ -98,31 +90,19 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
       undefined,
     ).then((data) => {
       if (data.ok) {
-        setChampionSkinSales(data.body);
+        centerHubStore.sales.skins.set(data.body);
       }
     });
   };
 
-  useLeagueClientEvent('/lol-store/v1/store-ready', (data) => {
-    setStoreReady(data);
-  });
-
   useEffect(() => {
-    if (!storeReady) return;
-    loadSales();
-  }, [storeReady]);
-
-  if (!storeReady) {
-    return (
-      <CentralizedStack>
-        <LoadingScreen />
-      </CentralizedStack>
-    );
-  }
+    loadSales().then();
+  }, []);
 
   return (
     <>
-      <Grid {...props}>
+      <Grid position={'relative'} {...props}>
+        <LoadingScreen loading={!championSkinSales.length} backdrop fullArea />
         <CustomCarousel>
           {championSkinSales.map((skin) => {
             const skinData = getSkinData(skin.itemId);
@@ -141,7 +121,8 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
           })}
         </CustomCarousel>
       </Grid>
-      <Grid {...props}>
+      <Grid position={'relative'} {...props}>
+        <LoadingScreen loading={!championSales.length} backdrop fullArea />
         <CustomCarousel>
           {championSales.map((champion) => {
             const championData = getChampionData(champion.itemId);

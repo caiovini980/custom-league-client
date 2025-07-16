@@ -1,4 +1,3 @@
-import { useLootContext } from '@render/layouts/Loot/LootContext';
 import {
   ButtonBase,
   Collapse,
@@ -6,8 +5,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { SquareIcon } from '@render/components/SquareIcon';
 import { CustomButton, CustomIconButton } from '@render/components/input';
+import { SquareIcon } from '@render/components/SquareIcon';
+import { useLootContext } from '@render/layouts/Loot/LootContext';
 import { MdClose } from 'react-icons/md';
 
 export const LootSlot = () => {

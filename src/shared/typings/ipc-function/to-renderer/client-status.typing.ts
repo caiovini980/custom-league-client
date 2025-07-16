@@ -4,6 +4,7 @@ export interface ClientStatusDisconnected {
     region: string;
     locale: string;
     version: string;
+    language: string;
   };
 }
 
@@ -13,6 +14,7 @@ export interface ClientStatusConnected {
     region: string;
     locale: string;
     version: string;
+    language: string;
   };
 }
 

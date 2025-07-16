@@ -1,6 +1,6 @@
 import { ButtonBase, Grid, Stack, Typography } from '@mui/material';
-import { SquareIcon } from '@render/components/SquareIcon';
 import { CustomIconButton, CustomTextField } from '@render/components/input';
+import { SquareIcon } from '@render/components/SquareIcon';
 import {
   buildEventUrl,
   useLeagueClientEvent,

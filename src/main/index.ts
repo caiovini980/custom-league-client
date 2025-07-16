@@ -4,11 +4,6 @@ import { ElectronIpcTransport } from '@main/ipc';
 import { NestFactory } from '@nestjs/core';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 import { app, protocol } from 'electron';
-import {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-  installExtension,
-} from 'electron-devtools-installer';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 
@@ -29,6 +24,7 @@ async function bootstrap() {
         secure: true,
         supportFetchAPI: true,
         bypassCSP: true,
+        standard: true,
       },
     },
     {
@@ -37,6 +33,8 @@ async function bootstrap() {
         secure: true,
         supportFetchAPI: true,
         bypassCSP: true,
+        standard: true,
+        codeCache: true,
       },
     },
   ]);
@@ -44,18 +42,6 @@ async function bootstrap() {
   await app.whenReady();
 
   const log = new WinstonLoggerService();
-
-  try {
-    const exts = await installExtension([
-      REDUX_DEVTOOLS,
-      REACT_DEVELOPER_TOOLS,
-    ]);
-    exts.forEach((e) => {
-      log.info(`Added extension: ${e.name}`);
-    });
-  } catch (err) {
-    console.log('An error occurred: ', err);
-  }
 
   const nestApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,

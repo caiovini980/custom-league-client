@@ -2,9 +2,9 @@ import path from 'node:path';
 import { LoggerAbstract } from '@main/abstracts/logger.abstract';
 import { ContextService } from '@main/context/context.service';
 import { BrowserWindowRegisterService } from '@main/integrations/browser-window-register/browser-window-register.service';
-import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { IpcMainToRenderer } from '@shared/typings/ipc.typing';
-import { BrowserWindow, app } from 'electron';
+import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { app, BrowserWindow } from 'electron';
 import fs from 'fs-extra';
 
 export abstract class ServiceAbstract extends LoggerAbstract {
@@ -29,11 +29,12 @@ export abstract class ServiceAbstract extends LoggerAbstract {
       return fs.readJSONSync(
         this.getClientInfoPath(),
       ) as ClientStatusConnected['info'];
-    } catch (e) {
+    } catch (_e) {
       return {
         locale: '',
         region: '',
         version: '',
+        language: '',
       };
     }
   }

@@ -6,16 +6,17 @@ import CustomDialog, {
 } from '@render/components/CustomDialog';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { electronHandle } from '@render/utils/electronFunction.util';
-import { GetPatchNotesResponse } from '@shared/typings/ipc-function/handle/client.typing';
+import { centerHubStore } from '@render/zustand/stores/centerHubStore';
 import { useEffect, useState } from 'react';
 
 export const PatchNotes = () => {
   const [openPatchNotesModal, setOpenPatchNotesModal] = useState(false);
-  const [patchNotes, setPatchNotes] = useState<GetPatchNotesResponse>();
+  const patchNotes = centerHubStore.patchNotes.use();
 
   useEffect(() => {
+    if (patchNotes) return;
     electronHandle.client.getPatchNotes().then((data) => {
-      setPatchNotes(data);
+      centerHubStore.patchNotes.set(data);
     });
   }, []);
 
@@ -70,12 +71,15 @@ export const PatchNotes = () => {
           handleClose={() => setOpenPatchNotesModal(false)}
         />
         <Box
+          id={'patch-note'}
           component={'iframe'}
           src={patchNotes.urlEmbed}
           sx={{
+            position: 'absolute',
+            right: 0,
             p: 0,
             border: 0,
-            width: '100%',
+            width: 'calc(100% + 200px)',
             height: '100%',
           }}
         />

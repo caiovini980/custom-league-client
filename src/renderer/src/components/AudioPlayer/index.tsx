@@ -16,26 +16,22 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioSettings>(
     const volume = appConfigStore.VOLUME.use();
     const audioRef = useRef<HTMLAudioElement>(null);
 
-    useImperativeHandle(
-      ref,
-      () => {
-        const audio = audioRef.current as HTMLAudioElement;
-        const stop = () => {
-          audio.pause();
-          audio.currentTime = 0;
-        };
+    useImperativeHandle(ref, () => {
+      const audio = audioRef.current as HTMLAudioElement;
+      const stop = () => {
+        audio.pause();
+        audio.currentTime = 0;
+      };
 
-        const play = (override = true) => {
-          if (override) {
-            stop();
-          }
-          audio.play();
-        };
+      const play = (override = true) => {
+        if (override) {
+          stop();
+        }
+        audio.play();
+      };
 
-        return { play, stop };
-      },
-      [],
-    );
+      return { play, stop };
+    }, []);
 
     useEffect(() => {
       if (audioRef.current) {

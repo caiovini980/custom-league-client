@@ -1,14 +1,15 @@
+import * as https from 'node:https';
 import * as path from 'node:path';
+import * as readline from 'node:readline';
+import { PassThrough } from 'node:stream';
 import { ServiceAbstract } from '@main/abstracts/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
 import { LeagueClientDataReaderService } from '@main/integrations/league-client/league-client-data-reader.service';
 import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
+import { GameData } from '@shared/typings/local-files.typing';
 import { translateJsonMap } from '@shared/utils/translate.util';
 import axios from 'axios';
 import fs from 'fs-extra';
-import * as https from 'node:https';
-import { PassThrough } from 'node:stream';
-import * as readline from 'node:readline';
 
 @Service()
 export class LeagueClientDataDownloadService extends ServiceAbstract {
@@ -46,10 +47,79 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     super();
   }
 
-  private async fetchFileList(locale: string, url: string): Promise<string[]> {
+  async downloadGameData(info: ClientStatusConnected['info']) {
+    if (this.IS_DOWNLOADING) {
+      this.logger.warn('GameData is downloading');
+      return;
+    }
+    const isDownloadInBackground = this.isDownloadInBackground(info.version);
+    try {
+      this.IS_DOWNLOADING = true;
+
+      if (isDownloadInBackground) {
+        await this.leagueClientDataReaderService.readGameData(info);
+      }
+
+      // Read this file (https://raw.communitydragon.org/latest/cdragon/files.exported.txt)
+      // And download contents
+      this.sendMsgToRender('onLoadGameData', {
+        status: 'downloading',
+        info: {
+          currentPercent: 0,
+          currentFileDownloading: '',
+        },
+      });
+      this.logger.info(JSON.stringify(info));
+      this.logger.info('Downloading file list...');
+      const { urls: filteredUrls, versionToDownload } =
+        await this.fetchFileList(info.locale, info.version);
+
+      const output = this.getResourcePath();
+      await fs.ensureDir(output);
+
+      this.logger.info('Starting downloading...');
+      await this.downloadInBatches(
+        filteredUrls,
+        versionToDownload,
+        250,
+        output,
+      );
+
+      fs.writeJSONSync(this.getGameDataFilePath(), {
+        ready: true,
+        filesVersion: info.version,
+      } satisfies GameData);
+
+      await this.leagueClientDataReaderService.readGameData(info);
+      this.IS_DOWNLOADING = false;
+    } catch (e) {
+      this.logger.error(e);
+      this.IS_DOWNLOADING = false;
+
+      if (!isDownloadInBackground) {
+        this.sendMsgToRender('onLoadGameData', {
+          status: 'error',
+          info: null,
+        });
+      }
+      fs.writeJSONSync(this.getGameDataFilePath(), {
+        ready: false,
+      } satisfies GameData);
+    }
+  }
+
+  private async fetchFileList(
+    locale: string,
+    version: string,
+  ): Promise<{ urls: string[]; versionToDownload: string }> {
+    let versionToDownload = version;
+    const buildUrl = (version: string) =>
+      this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('{version}', version);
+
     const filterAllow: RegExp[] = this.FILE_LIST_TO_DOWNLOAD.map(
       (r) => new RegExp(r.replace('{{locale}}', locale.toLowerCase())),
     );
+
     const filterDeny: RegExp[] = this.FILE_LIST_TO_DENY.map(
       (r) => new RegExp(r),
     );
@@ -60,12 +130,26 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
       );
     });
 
+    this.logger.info(
+      `Checking if version [${versionToDownload}] is possible download files`,
+    );
+
+    const response = await fetch(buildUrl(versionToDownload), {
+      method: 'HEAD',
+    });
+
+    if (!response.ok) {
+      this.logger.info(
+        `Version [${versionToDownload}] not available. Change to latest`,
+      );
+      versionToDownload = 'latest';
+    }
+
     const urls: string[] = [];
 
     return new Promise((resolve, reject) => {
       https
-        .get(url, (res) => {
-          let data = '';
+        .get(buildUrl(versionToDownload), (res) => {
           const stream = new PassThrough();
           res.pipe(stream);
 
@@ -90,11 +174,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
             }
           });
 
-          res.on('data', (chunk: string) => {
-            data += chunk;
-          });
-
-          rl.on('close', () => resolve(urls));
+          rl.on('close', () => resolve({ urls, versionToDownload }));
           res.on('error', reject);
         })
         .on('error', reject);
@@ -109,7 +189,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
       const { data } = await axios.get(url, { responseType: 'arraybuffer' });
       await fs.outputFile(outputPath, data);
 
-      this.logger.info(`Downloaded: ${url}`);
+      //this.logger.info(`Downloaded: ${url}`);
     } catch (error) {
       this.logger.error(`Download error ${url}:`, error);
     }
@@ -131,7 +211,7 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
         ((i + batch.length) * 100) / urls.length,
       );
       this.logger.info(
-        `Downloading files ${i + 1}-${i + batch.length} de ${urls.length}...`,
+        `Downloading files ${i + 1}-${i + batch.length} of ${urls.length}...`,
       );
       await Promise.all(
         batch.map((url) => {
@@ -160,36 +240,20 @@ export class LeagueClientDataDownloadService extends ServiceAbstract {
     this.logger.info('Download completed');
   }
 
-  async downloadGameData(info: ClientStatusConnected['info']) {
-    if (this.IS_DOWNLOADING) {
-      this.logger.warn('GameData is downloading');
-      return;
+  private isDownloadInBackground(version: string) {
+    const gameDataFilePath = this.getGameDataFilePath();
+    const isExistFileListPreviousDownload = fs.existsSync(gameDataFilePath);
+
+    if (!isExistFileListPreviousDownload) {
+      return false;
     }
-    this.IS_DOWNLOADING = true;
-    // Read this file (https://raw.communitydragon.org/latest/cdragon/files.exported.txt)
-    // And download contents
-    this.sendMsgToRender('onLoadGameData', {
-      status: 'downloading',
-      info: {
-        currentPercent: 0,
-        currentFileDownloading: '',
-      },
-    });
-    this.logger.info(JSON.stringify(info));
-    const version = 'latest';
-    this.logger.info('Downloading file list...');
-    const filteredUrls = await this.fetchFileList(
-      info.locale,
-      this.COMMUNITY_DRAGON_FILES_EXPORTED.replace('{version}', version),
-    );
 
-    const output = this.getResourcePath();
-    await fs.ensureDir(output);
+    const gameDataInfo = fs.readJSONSync(gameDataFilePath) as GameData;
 
-    this.logger.info('Starting downloading...');
-    await this.downloadInBatches(filteredUrls, version, 250, output);
+    return gameDataInfo.ready && gameDataInfo.filesVersion === version;
+  }
 
-    await this.leagueClientDataReaderService.readGameData(info);
-    this.IS_DOWNLOADING = false;
+  private getGameDataFilePath() {
+    return path.join(this.getResourcePath(), 'gameData.json');
   }
 }

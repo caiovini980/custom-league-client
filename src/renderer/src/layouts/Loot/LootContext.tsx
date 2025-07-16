@@ -1,4 +1,16 @@
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import {
+  ViewLootModal,
+  ViewLootModalRef,
+} from '@render/layouts/Loot/ViewLootModal';
+import { ClientMakeRequestResponse } from '@shared/typings/ipc-function/handle/client.typing';
+import { LolLootV1CraftMass } from '@shared/typings/lol/response/lolLootV1CraftMass';
 import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
+import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
+import { LolLootV1RecipesInitialItem_Id } from '@shared/typings/lol/response/lolLootV1RecipesInitialItem_Id';
 import {
   createContext,
   PropsWithChildren,
@@ -8,18 +20,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
-import { LolLootV1RecipesInitialItem_Id } from '@shared/typings/lol/response/lolLootV1RecipesInitialItem_Id';
-import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
-import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { ClientMakeRequestResponse } from '@shared/typings/ipc-function/handle/client.typing';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LolLootV1CraftMass } from '@shared/typings/lol/response/lolLootV1CraftMass';
-import {
-  ViewLootModal,
-  ViewLootModalRef,
-} from '@render/layouts/Loot/ViewLootModal';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
 
 interface LootContextProps {
   loots: LolLootV1PlayerLoot[];

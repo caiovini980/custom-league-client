@@ -7,12 +7,12 @@ import { Champion } from '@shared/typings/lol/json/champion';
 import { ChampionSummary } from '@shared/typings/lol/json/champion-summary';
 import { Item } from '@shared/typings/lol/json/item';
 import { Map } from '@shared/typings/lol/json/map';
+import { Perk } from '@shared/typings/lol/json/perk';
+import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { Queue } from '@shared/typings/lol/json/queue';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
 import { translateJsonMap } from '@shared/utils/translate.util';
 import fs from 'fs-extra';
-import { Perk } from '@shared/typings/lol/json/perk';
-import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 
 @Service()
 export class LeagueClientDataReaderService extends ServiceAbstract {

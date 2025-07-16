@@ -1,10 +1,10 @@
-import { FunctionComponent } from 'react';
+import { CentralizedStack } from '@render/components/CentralizedStack';
+import { LoadingScreen } from '@render/components/LoadingScreen';
 import {
   LeagueClientState,
   leagueClientStore,
 } from '@render/zustand/stores/leagueClientStore';
-import { CentralizedStack } from '@render/components/CentralizedStack';
-import { LoadingScreen } from '@render/components/LoadingScreen';
+import { FunctionComponent } from 'react';
 
 export const withSystemReady = <P,>(
   system: keyof LeagueClientState['systemReady'],
