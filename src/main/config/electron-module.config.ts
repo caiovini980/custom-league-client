@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { optimizer } from '@electron-toolkit/utils';
 import { ElectronModule } from '@main/ipc';
 import { DynamicModule } from '@nestjs/common';
-import { BrowserWindow, Menu, app, nativeImage, shell } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
 import appIcon from '../../../resources/icon.png?asset';
 
 export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
@@ -39,6 +39,7 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
         });
 
         if (isDev) {
+          win.webContents.openDevTools();
           if (process.platform === 'win32') {
             process.on('message', (data) => {
               if (data === 'graceful-exit') app.quit();

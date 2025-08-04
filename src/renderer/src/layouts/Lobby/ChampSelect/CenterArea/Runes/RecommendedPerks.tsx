@@ -12,6 +12,8 @@ import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
 import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
 import { useState } from 'react';
+import { CircularIcon } from '@render/components/CircularIcon';
+import { SquareIcon } from '@render/components/SquareIcon';
 
 interface RecommendedPerksProps {
   perkToChangeId?: number;
@@ -59,9 +61,6 @@ export const RecommendedPerks = ({
     ),
     (data) => {
       setRecommendedPerk(data);
-    },
-    {
-      deps: [championId, position, mapId],
     },
   );
 
@@ -159,13 +158,9 @@ export const RecommendedPerks = ({
                 border: '1px solid var(--mui-palette-divider)',
               }}
             >
-              <img
+              <CircularIcon
                 src={lolGameDataImg(rp.keystone.iconPath)}
-                alt={rp.keystone.name}
-                style={{
-                  width: iconSize.keystone,
-                  height: iconSize.keystone,
-                }}
+                size={iconSize.keystone}
               />
               <Typography variant={'h5'}>{rp.keystone.name}</Typography>
               <Typography variant={'caption'} color={'textSecondary'}>
@@ -175,59 +170,37 @@ export const RecommendedPerks = ({
                 dangerouslySetInnerHTML={{ __html: rp.keystone.shortDesc }}
               />
               <Stack direction={'row'} columnGap={2}>
-                <img
+                <CircularIcon
                   src={lolGameDataImg(rp.perks[4].iconPath)}
-                  alt={''}
-                  style={{
-                    width: iconSize.secondary,
-                    height: iconSize.secondary,
-                  }}
+                  size={iconSize.secondary}
                 />
-                <img
+                <CircularIcon
                   src={lolGameDataImg(rp.perks[5].iconPath)}
-                  alt={''}
-                  style={{
-                    width: iconSize.secondary,
-                    height: iconSize.secondary,
-                  }}
+                  size={iconSize.secondary}
                 />
               </Stack>
               <Stack direction={'row'} columnGap={2}>
-                <img
+                <CircularIcon
                   src={lolGameDataImg(rp.perks[6].iconPath)}
-                  alt={''}
-                  style={{
-                    width: iconSize.ternary,
-                    height: iconSize.ternary,
-                  }}
+                  size={iconSize.ternary}
                 />
-                <img
+                <CircularIcon
                   src={lolGameDataImg(rp.perks[7].iconPath)}
-                  alt={''}
-                  style={{
-                    width: iconSize.ternary,
-                    height: iconSize.ternary,
-                  }}
+                  size={iconSize.ternary}
                 />
-                <img
+                <CircularIcon
                   src={lolGameDataImg(rp.perks[8].iconPath)}
-                  alt={''}
-                  style={{
-                    width: iconSize.ternary,
-                    height: iconSize.ternary,
-                  }}
+                  size={iconSize.ternary}
                 />
               </Stack>
               <Stack direction={'row'} columnGap={2} display={'none'}>
-                <img
+                <SquareIcon
                   src={spellIcon(rp.summonerSpellIds[0])}
-                  alt={''}
-                  style={{ width: iconSize.spell, height: iconSize.spell }}
+                  size={iconSize.spell}
                 />
-                <img
+                <SquareIcon
                   src={spellIcon(rp.summonerSpellIds[1])}
-                  alt={''}
-                  style={{ width: iconSize.spell, height: iconSize.spell }}
+                  size={iconSize.spell}
                 />
               </Stack>
             </Stack>

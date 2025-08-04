@@ -68,7 +68,7 @@ export const PreEndGame = () => {
         );
       }
     });
-  }, [honorData]);
+  }, [honorData?.gameId]);
 
   if (!honorData || !playersData.length) {
     return (

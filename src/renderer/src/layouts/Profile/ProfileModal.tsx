@@ -25,56 +25,52 @@ export const ProfileModal = forwardRef<ProfileModalRef>((_props, ref) => {
 
   const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open: (summonerId: number) => {
-          setModalData({ open: true, summonerId, loading: false });
-        },
-        openWithGameNameAndTag: async (gameName, tag) => {
-          setModalData({ open: true, summonerId: -1, loading: true });
+  useImperativeHandle(ref, () => {
+    return {
+      open: (summonerId: number) => {
+        setModalData({ open: true, summonerId, loading: false });
+      },
+      openWithGameNameAndTag: async (gameName, tag) => {
+        setModalData({ open: true, summonerId: -1, loading: true });
 
-          const error = () => {
-            setModalData({ open: false, summonerId: -1, loading: false });
-            snackError(rcpFeLolPostgameTrans('postgame_view_profile_error'));
-          };
+        const error = () => {
+          setModalData({ open: false, summonerId: -1, loading: false });
+          snackError(rcpFeLolPostgameTrans('postgame_view_profile_error'));
+        };
 
-          const lookupProfile = await makeRequest(
-            'GET',
-            buildEventUrl(
-              '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
-              gameName,
-              tag,
-            ),
-            undefined,
-          );
-          if (!lookupProfile.ok) {
-            error();
-            return;
-          }
-          const sum = await makeRequest(
-            'GET',
-            buildEventUrl(
-              '/lol-summoner/v2/summoners/puuid/{uuid}',
-              lookupProfile.body.puuid,
-            ),
-            undefined,
-          );
-          if (!sum.ok) {
-            error();
-            return;
-          }
-          setModalData({
-            open: true,
-            summonerId: sum.body.summonerId,
-            loading: false,
-          });
-        },
-      };
-    },
-    [],
-  );
+        const lookupProfile = await makeRequest(
+          'GET',
+          buildEventUrl(
+            '/lol-summoner/v1/alias/lookup?gameName={string}&tagLine={string}',
+            gameName,
+            tag,
+          ),
+          undefined,
+        );
+        if (!lookupProfile.ok) {
+          error();
+          return;
+        }
+        const sum = await makeRequest(
+          'GET',
+          buildEventUrl(
+            '/lol-summoner/v2/summoners/puuid/{uuid}',
+            lookupProfile.body.puuid,
+          ),
+          undefined,
+        );
+        if (!sum.ok) {
+          error();
+          return;
+        }
+        setModalData({
+          open: true,
+          summonerId: sum.body.summonerId,
+          loading: false,
+        });
+      },
+    };
+  }, []);
 
   const onCloseModal = () => {
     setModalData((prev) => ({ ...prev, open: false }));

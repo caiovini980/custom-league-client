@@ -1,4 +1,4 @@
-import { Inject, applyDecorators } from '@nestjs/common';
+import { applyDecorators, Inject } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import {
   ELECTRON_WINDOW,

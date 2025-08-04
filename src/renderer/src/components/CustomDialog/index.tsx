@@ -9,18 +9,17 @@ import { TransitionProps } from '@mui/material/transitions';
 import { CustomIconButton } from '@render/components/input';
 import {
   FormEvent,
+  forwardRef,
   PropsWithChildren,
   ReactNode,
   Ref,
-  forwardRef,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import { MdClose } from 'react-icons/md';
+import CustomButton, { CustomButtonProps } from '../input/CustomButton';
 import { LoadingScreen } from '../LoadingScreen';
-import CustomButton from '../input/CustomButton';
-import { CustomButtonProps } from '../input/CustomButton';
 
 type Color =
   | 'initial'

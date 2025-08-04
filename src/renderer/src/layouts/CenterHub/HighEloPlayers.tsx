@@ -10,12 +10,14 @@ import {
   Typography,
 } from '@mui/material';
 import { CircularIcon } from '@render/components/CircularIcon';
-import { LoadingScreen } from '@render/components/LoadingScreen';
 import {
   CustomIconButton,
+  CustomIconButtonTooltip,
   CustomSelect,
   CustomSelectProps,
 } from '@render/components/input';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
@@ -25,10 +27,9 @@ import {
   ProfileModalRef,
 } from '@render/layouts/Profile/ProfileModal';
 import { formatCurrency } from '@shared/utils/string.util';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useEffect, useRef, useState } from 'react';
 import { FaArrowsRotate, FaEye } from 'react-icons/fa6';
-import { withSystemReady } from '@render/hoc/withSystemReady';
 
 interface PlayerData {
   puuid: string;
@@ -120,7 +121,7 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
     }
 
     const data: PlayerData[] = playersDataRes.body.map((player) => {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: none
       const leagueData = playersInGame.find((p) => p.puuid === player.puuid)!;
 
       return {
@@ -168,6 +169,13 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
 
   useEffect(() => {
     findPlayersInGame();
+    const timeout = setTimeout(() => {
+      findPlayersInGame();
+    }, 60000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [tierQueueSelected]);
 
   return (
@@ -179,7 +187,7 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
       position={'relative'}
     >
       <LoadingScreen loading={loading} fullArea backdrop />
-      <Stack direction={'row'} p={1} alignItems={'center'} columnGap={2}>
+      <Stack direction={'row'} mt={1} p={1} alignItems={'center'} columnGap={2}>
         <CustomSelect
           label={`${rcpFeLolLeaguesTrans('LEAGUES_DROPDOWN_APEX', '')} (${rcpFeLolSocialTrans('availability_inGame')})`}
           options={options()}
@@ -191,7 +199,7 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
         </CustomIconButton>
       </Stack>
       <Box display={'flex'} overflow={'auto'}>
-        <Table>
+        <Table size={'small'}>
           <TableHead
             sx={{
               position: 'sticky',
@@ -269,12 +277,13 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <CustomIconButton
+                    <CustomIconButtonTooltip
+                      title={rcpFeLolSocialTrans('context_menu_spectate_game')}
                       sx={{ p: 0.8 }}
                       onClick={() => startSpectate(player.puuid)}
                     >
                       <FaEye size={20} />
-                    </CustomIconButton>
+                    </CustomIconButtonTooltip>
                   </TableCell>
                 </TableRow>
               );

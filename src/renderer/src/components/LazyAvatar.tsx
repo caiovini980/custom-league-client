@@ -1,5 +1,9 @@
-import { Avatar, AvatarOwnProps, Box } from '@mui/material';
-import { useLazyImage } from '@render/hooks/useLazyImage';
+import {
+  Avatar,
+  AvatarOwnProps,
+  Skeleton,
+  SkeletonOwnProps,
+} from '@mui/material';
 
 export interface LazyAvatarProps {
   src: string;
@@ -14,23 +18,40 @@ export const LazyAvatar = ({
   grayScale,
   variant,
 }: LazyAvatarProps) => {
-  const { isVisible, containerRef } = useLazyImage();
-
   const getGrayScaleValue = () => {
     if (grayScale === undefined) return 0;
     if (typeof grayScale === 'boolean') return grayScale ? 1 : 0;
     return grayScale;
   };
 
+  const parse: Record<
+    NonNullable<AvatarOwnProps['variant']>,
+    SkeletonOwnProps['variant']
+  > = {
+    circular: 'circular',
+    rounded: 'rounded',
+    square: 'rectangular',
+  };
   if (!src) {
-    return <Box height={size} width={size} />;
+    return (
+      <Skeleton
+        variant={variant ? parse[variant] : 'rectangular'}
+        width={size}
+        height={size}
+        animation={'wave'}
+      />
+    );
   }
 
   return (
     <Avatar
-      ref={containerRef}
       variant={variant}
-      src={isVisible ? src : undefined}
+      src={src}
+      slotProps={{
+        img: {
+          loading: 'lazy',
+        },
+      }}
       sx={{
         height: size,
         width: size,
@@ -38,7 +59,12 @@ export const LazyAvatar = ({
         background: 'transparent',
       }}
     >
-      <div />
+      <Skeleton
+        variant={variant ? parse[variant] : 'rectangular'}
+        width={size}
+        height={size}
+        animation={'wave'}
+      />
     </Avatar>
   );
 };

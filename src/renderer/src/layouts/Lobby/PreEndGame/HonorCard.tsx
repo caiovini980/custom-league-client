@@ -6,6 +6,7 @@ import {
   LolHonorV2V1BallotHonoredPlayer,
 } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
 import { PropsWithChildren } from 'react';
+import { CircularIcon } from '@render/components/CircularIcon';
 
 interface HonorCardProps {
   eligiblePlayer: LolHonorV2V1BallotEligible;
@@ -46,6 +47,7 @@ export const HonorCard = ({
     <Paper
       component={ButtonBase}
       onClick={onClickPlayer}
+      disableRipple
       sx={{
         width: '100%',
         maxWidth: 220,
@@ -69,8 +71,7 @@ export const HonorCard = ({
       disabled={disabled()}
     >
       {isHonored && (
-        <img
-          alt={'voting_heart'}
+        <CircularIcon
           src={genericImg(
             'plugins/rcp-fe-lol-honor/global/default/assets/voting_heart.png',
           )}

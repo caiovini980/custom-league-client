@@ -1,6 +1,8 @@
+import path from 'node:path';
 import { ServiceRepoAbstract } from '@main/abstracts/service-repo.abstract';
 import { ServiceRepo } from '@main/decorators/service-repo.decorator';
 import { AppConfigEnum } from '@main/enums/app-config.enum';
+import { IpcException } from '@main/exceptions/ipc.exception';
 import { AppConfigEntity } from '@main/modules/app-config/app-config.entity';
 import { AppConfigRepository } from '@main/modules/app-config/app-config.repository';
 import {
@@ -8,9 +10,7 @@ import {
   type SetAppConfigData,
 } from '@shared/typings/ipc-function/handle/app-config.typing';
 import { dialog } from 'electron';
-import path from 'node:path';
 import fs from 'fs-extra';
-import { IpcException } from '@main/exceptions/ipc.exception';
 
 @ServiceRepo(AppConfigRepository)
 export class AppConfigService extends ServiceRepoAbstract<AppConfigRepository> {

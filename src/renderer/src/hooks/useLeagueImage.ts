@@ -21,10 +21,12 @@ export const useLeagueImage = () => {
 
   const link = (path: string, isLocal = false) => {
     if (!path) return '';
+    let url = `media://${path}`;
     if (isLocal) {
-      return `local-media://${path.replace('plugins/rcp-be-lol-game-data/global/default', 'lol-game-data/assets')}`;
+      url = `local-media://${path.replace('plugins/rcp-be-lol-game-data/global/default', 'lol-game-data/assets')}`;
     }
-    return `media://${path}`;
+
+    return url;
   };
 
   const profileIcon = (id: Undefined<Id>) => {

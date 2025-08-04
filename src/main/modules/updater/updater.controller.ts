@@ -11,6 +11,11 @@ export class UpdaterController {
     return await this.updaterService.checkUpdate();
   }
 
+  @IpcHandle('versionInfo')
+  async versionInfo() {
+    return this.updaterService.versionInfo();
+  }
+
   @IpcHandle('quitAndInstallUpdate')
   async quitAndInstallUpdate() {
     return await this.updaterService.quitAndInstallUpdate();

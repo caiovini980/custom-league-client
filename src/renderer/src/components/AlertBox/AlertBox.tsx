@@ -1,7 +1,10 @@
 import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
-import { FaExclamationTriangle, FaInfo } from 'react-icons/fa';
-import { FaExclamationCircle } from 'react-icons/fa';
+import {
+  FaExclamationCircle,
+  FaExclamationTriangle,
+  FaInfo,
+} from 'react-icons/fa';
 import useStyles from './styles';
 import { AlertBoxProps, AlertType } from './types';
 

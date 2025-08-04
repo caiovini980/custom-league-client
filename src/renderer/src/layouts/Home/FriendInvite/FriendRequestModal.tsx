@@ -41,15 +41,11 @@ export const FriendRequestModal = forwardRef<
   const iconSize = 14;
   const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open: () => setOpenModal(true),
-      };
-    },
-    [],
-  );
+  useImperativeHandle(ref, () => {
+    return {
+      open: () => setOpenModal(true),
+    };
+  }, []);
 
   const onClickBlock = (id: string) => {
     onClickDeny(id);

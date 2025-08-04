@@ -1,5 +1,5 @@
 import { Theme } from '@mui/material';
-import { PaletteColor, alpha } from '@mui/material/styles';
+import { alpha, PaletteColor } from '@mui/material/styles';
 import { makeSx } from '@render/styles/makeSx';
 import { AlertBoxStyleProps, AlertType } from './types';
 

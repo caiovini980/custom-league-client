@@ -1,17 +1,17 @@
-import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
-import { useState } from 'react';
-import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
 import { Divider, Grid, Stack, Typography } from '@mui/material';
-import { withSystemReady } from '@render/hoc/withSystemReady';
 import { CentralizedStack } from '@render/components/CentralizedStack';
-import { LoadingScreen } from '@render/components/LoadingScreen';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LootItem } from '@render/layouts/Loot/LootItem';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
 import { CircularIcon } from '@render/components/CircularIcon';
+import { LoadingScreen } from '@render/components/LoadingScreen';
+import { withSystemReady } from '@render/hoc/withSystemReady';
+import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LootContext } from '@render/layouts/Loot/LootContext';
+import { LootItem } from '@render/layouts/Loot/LootItem';
 import { LootSlot } from '@render/layouts/Loot/LootSlot';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
+import { useState } from 'react';
 
 export const Loot = withSystemReady('loot', () => {
   const { genericImg } = useLeagueImage();

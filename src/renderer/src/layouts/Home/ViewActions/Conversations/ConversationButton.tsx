@@ -6,6 +6,7 @@ import {
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { getChatAvailabilityColor } from '@render/utils/chat.util';
 import { chatStore } from '@render/zustand/stores/chatStore';
 import { LolChatV1Conversations } from '@shared/typings/lol/response/lolChatV1Conversations';
@@ -13,7 +14,6 @@ import { LolChatV1Conversations_Id_Messages as LolChatV1Conversations_Id_Message
 import { useEffect, useRef, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 import { GoDotFill } from 'react-icons/go';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 
 interface ConversationButtonProps {
   active: boolean;

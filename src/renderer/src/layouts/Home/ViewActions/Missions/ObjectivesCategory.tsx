@@ -1,9 +1,9 @@
-import { LolObjectivesV1Objectives_IdObjectivesCategory } from '@shared/typings/lol/response/lolObjectivesV1Objectives_Id';
-import CustomTab, { CustomTabPanel } from '@render/components/CustomTab';
-import { Missions } from '@render/layouts/Home/ViewActions/Missions/Missions';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { Box } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
+import CustomTab, { CustomTabPanel } from '@render/components/CustomTab';
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { Missions } from '@render/layouts/Home/ViewActions/Missions/Missions';
+import { LolObjectivesV1Objectives_IdObjectivesCategory } from '@shared/typings/lol/response/lolObjectivesV1Objectives_Id';
 
 interface ObjectivesCategoryProps {
   categories: LolObjectivesV1Objectives_IdObjectivesCategory[];

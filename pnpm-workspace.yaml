@@ -1,0 +1,10 @@
+nodeLinker: hoisted
+
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@nestjs/core'
+  - '@swc/core'
+  - better-sqlite3
+  - electron
+  - electron-winstaller
+  - esbuild

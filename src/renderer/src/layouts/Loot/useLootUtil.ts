@@ -1,6 +1,6 @@
+import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
-import { useLeagueImage } from '@render/hooks/useLeagueImage';
 
 export const useLootUtil = () => {
   const { genericImg, lolGameDataImg } = useLeagueImage();

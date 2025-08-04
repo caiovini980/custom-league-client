@@ -1,13 +1,17 @@
+import useFirstRender from '@render/hooks/useFirstRender';
 import {
+  electronHandle,
   electronListen,
-  useElectronHandle,
 } from '@render/utils/electronFunction.util';
 import {
   EventMessage,
   EventMessageMap,
 } from '@shared/typings/lol/eventMessage';
-import { DependencyList, useCallback, useEffect, useMemo } from 'react';
-import useFirstRender from '@render/hooks/useFirstRender';
+import {
+  buildRegexFromEvent,
+  hasKeyRegex,
+} from '@shared/utils/leagueClientEvent.util';
+import { DependencyList, useCallback, useEffect } from 'react';
 
 interface Options {
   showDeleted?: boolean;
@@ -20,14 +24,6 @@ type Cb<K extends keyof EventMessageMap> = (
   event: K,
 ) => void;
 
-const regexMap = {
-  '{id}': '.+',
-  '{digits}': '[0-9]+',
-  '{string}': '[a-zA-Z_]+',
-  '{uuid}':
-    '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
-};
-
 const readMessage = <K extends keyof EventMessageMap>(
   event: RegExp,
   eventData: EventMessage,
@@ -39,20 +35,8 @@ const readMessage = <K extends keyof EventMessageMap>(
   }
 
   if (event.test(eventData.uri)) {
-    // @ts-ignore
-    cb(eventData.data, eventData.uri);
+    cb(eventData.data as EventMessageMap[K], eventData.uri as K);
   }
-};
-
-const buildRegex = (event: string) => {
-  if (event === 'all') {
-    return /.*/;
-  }
-  const eventParsed = Object.keys(regexMap).reduce((prev, curr) => {
-    return prev.replaceAll(curr, regexMap[curr]);
-  }, event);
-
-  return new RegExp(`^${eventParsed}$`);
 };
 
 export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
@@ -60,15 +44,10 @@ export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
   cb: Cb<K>,
   showDeleted: boolean,
 ) => {
-  const regex = buildRegex(event);
-  const { unsubscribe } = electronListen.onLeagueClientEvent((message) => {
-    // @ts-ignore
-    readMessage(regex, message[2], cb, showDeleted);
-  });
-
-  return {
-    unsubscribe,
-  };
+  const regex = buildRegexFromEvent(event);
+  return electronListen.onLeagueClientEvent((message) => {
+    readMessage(regex, message, cb, showDeleted);
+  }, event);
 };
 
 export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
@@ -76,7 +55,6 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
   cb: (data: EventMessageMap[K], event: K) => void,
   options?: Partial<Options>,
 ) => {
-  const { client } = useElectronHandle();
   const { isFirstRender } = useFirstRender();
 
   const currentOptions = Object.assign(
@@ -88,11 +66,9 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
     options,
   ) as Required<Options>;
 
-  const regexEvent = useMemo(() => buildRegex(event), [event]);
-
   const loadEventData = useCallback(() => {
-    if (event !== 'all' && regexEvent.test(event)) {
-      client
+    if (event !== 'all' && !hasKeyRegex(event)) {
+      electronHandle.client
         .makeRequest({
           method: 'GET',
           uri: event,
@@ -100,21 +76,12 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
         })
         .then((res) => {
           if (res.ok) {
-            readMessage(
-              regexEvent,
-              {
-                uri: event,
-                eventType: 'Update',
-                data: res.body,
-              },
-              cb,
-              currentOptions.showDeleted,
-            );
+            cb(res.body as EventMessageMap[K], event);
           }
         });
     }
   }, [
-    regexEvent,
+    event,
     currentOptions.makeInitialRequest,
     currentOptions.showDeleted,
     ...currentOptions.deps,
@@ -126,13 +93,15 @@ export const useLeagueClientEvent = <K extends keyof EventMessageMap>(
       cb,
       currentOptions.showDeleted,
     );
-    if (currentOptions?.makeInitialRequest && isFirstRender) {
-      loadEventData();
-    }
 
     return () => {
       unsubscribe();
     };
+  }, [event, ...currentOptions.deps]);
+
+  useEffect(() => {
+    if (isFirstRender && !currentOptions?.makeInitialRequest) return;
+    loadEventData();
   }, [loadEventData]);
 
   return {

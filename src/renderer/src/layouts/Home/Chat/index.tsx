@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { withSystemReady } from '@render/hoc/withSystemReady';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { AddFriendIcon } from '@render/layouts/Home/Chat/AddFriend/AddFriendIcon';
@@ -19,10 +20,9 @@ import {
 } from '@render/layouts/Profile/ProfileModal';
 import { chatStore } from '@render/zustand/stores/chatStore';
 import { LolChatV1FriendGroups } from '@shared/typings/lol/response/lolChatV1FriendGroups';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { Fragment, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
-import { withSystemReady } from '@render/hoc/withSystemReady';
 
 export const Chat = withSystemReady('chat', () => {
   const { rcpFeLolSocial } = useLeagueTranslate();

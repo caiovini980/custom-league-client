@@ -2,11 +2,11 @@ import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatch
 
 export interface LolMatchHistoryV1productsLol_Id_Matches {
   accountId: number;
-  games: Games;
+  games: LolMatchHistoryV1productsLol_Id_MatchesGames;
   platformId: string;
 }
 
-interface Games {
+export interface LolMatchHistoryV1productsLol_Id_MatchesGames {
   gameBeginDate: string;
   gameCount: number;
   gameEndDate: string;

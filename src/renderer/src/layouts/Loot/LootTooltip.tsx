@@ -1,9 +1,9 @@
+import { Box, Divider, Paper, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
 import { useLootUtil } from './useLootUtil';
-import { Box, Divider, Paper, Stack, Typography } from '@mui/material';
-import { CircularIcon } from '@render/components/CircularIcon';
 
 interface LootTooltipProps {
   loot: LolLootV1PlayerLoot;

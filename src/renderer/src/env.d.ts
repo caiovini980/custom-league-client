@@ -17,6 +17,7 @@ declare global {
     electron: {
       handle: ElectronFunction;
       listen: IpcRendererCallback;
+      openExternal: (url: string) => Promise<void>;
     };
   }
 }

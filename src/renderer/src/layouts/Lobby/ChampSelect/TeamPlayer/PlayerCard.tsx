@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import { CircularIcon } from '@render/components/CircularIcon';
-import { SquareIcon } from '@render/components/SquareIcon';
 import { CustomIconButton } from '@render/components/input';
+import { SquareIcon } from '@render/components/SquareIcon';
 import {
   buildEventUrl,
   useLeagueClientEvent,

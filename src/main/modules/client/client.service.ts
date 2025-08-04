@@ -1,19 +1,18 @@
 import { spawn } from 'node:child_process';
 import { ServiceAbstract } from '@main/abstract/service.abstract';
 import { Service } from '@main/decorators/service.decorator';
-import { LeagueClientDataDownloadService } from '@main/integrations/league-client/league-client-data-download.service';
+import { IpcException } from '@main/exceptions/ipc.exception';
 import { LeagueClientService } from '@main/integrations/league-client/league-client.service';
+import { LeagueClientDataDownloadService } from '@main/integrations/league-client/league-client-data-download.service';
 import { AppConfigService } from '@main/modules/app-config/app-config.service';
+import { OnApplicationBootstrap } from '@nestjs/common';
 import {
   ClientMakeRequestPayload,
   ClientMakeRequestResponse,
   GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
-import { OnApplicationBootstrap } from '@nestjs/common';
-import { IpcException } from '@main/exceptions/ipc.exception';
 import * as cheerio from 'cheerio';
-import axios from 'axios';
 
 @Service()
 export class ClientService
@@ -132,11 +131,11 @@ export class ClientService
     const url = `https://embed.rgpub.io/league-client-blades/${info.locale.toLowerCase().replace('_', '-')}/latest-patch-notes`;
 
     try {
-      const { data: html } = await axios.get(url, {
+      const html = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0',
         },
-      });
+      }).then((res) => res.text());
       const $ = cheerio.load(html);
 
       const getMeta = (property) =>
@@ -152,7 +151,7 @@ export class ClientService
       };
     } catch (error) {
       // @ts-ignore
-      console.error('Erro ao buscar metadados:', error.message);
+      this.logger.error('Error on get metadata:', error.message);
       return {
         urlEmbed: '',
         urlExternal: '',

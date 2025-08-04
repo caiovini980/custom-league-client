@@ -1,6 +1,7 @@
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useAudio } from '@render/hooks/useAudioManager';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
@@ -13,10 +14,11 @@ import { Reconnect } from '@render/layouts/Lobby/Reconnect';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
+  const sfxVignette = useAudio('sfx-vignette-celebration-intro');
 
   const isAvailable = leagueClientStore.isAvailable.use();
   const gameFlow = lobbyStore.gameFlow.use();
@@ -34,6 +36,20 @@ export const Lobby = () => {
       }
     },
   );
+
+  useEffect(() => {
+    const unsubscribe = leagueClientStore.isAvailable.onChange(
+      (isAvailable) => {
+        if (isAvailable) {
+          sfxVignette.play(false);
+        }
+      },
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   if (patchingData) {
     const msg = rcpFeLolL10n.rcpFeLolL10nTrans(

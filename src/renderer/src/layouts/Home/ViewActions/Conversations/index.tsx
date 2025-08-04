@@ -5,8 +5,8 @@ import { ConversationButton } from '@render/layouts/Home/ViewActions/Conversatio
 import { ConversationsArea } from '@render/layouts/Home/ViewActions/Conversations/ConversationsArea';
 import { useViewActionButtonContext } from '@render/layouts/Home/ViewActions/ViewActionButton';
 import { LolChatV1Conversations } from '@shared/typings/lol/response/lolChatV1Conversations';
+import { orderBy } from 'lodash-es';
 import { useEffect, useState } from 'react';
-import { orderBy } from 'lodash';
 
 export const Conversations = () => {
   const { makeRequest } = useLeagueClientRequest();

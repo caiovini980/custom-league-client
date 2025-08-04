@@ -1,16 +1,16 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import {
-  LolLootV1CraftMass,
-  LolLootV1CraftMassDetail,
-} from '@shared/typings/lol/response/lolLootV1CraftMass';
+import { Grid, Stack, Typography } from '@mui/material';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
 import { SquareIcon } from '@render/components/SquareIcon';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
-import { Grid, Stack, Typography } from '@mui/material';
-import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import {
+  LolLootV1CraftMass,
+  LolLootV1CraftMassDetail,
+} from '@shared/typings/lol/response/lolLootV1CraftMass';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 export interface ViewLootModalRef {
   open: (loots: LolLootV1CraftMass) => void;
@@ -26,18 +26,14 @@ export const ViewLootModal = forwardRef<ViewLootModalRef>((_, ref) => {
   const [open, setOpen] = useState(false);
   const [loots, setLoots] = useState<LolLootV1CraftMassDetail[]>([]);
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open: (loots) => {
-          setOpen(true);
-          setLoots([...loots.added, ...loots.redeemed]);
-        },
-      };
-    },
-    [],
-  );
+  useImperativeHandle(ref, () => {
+    return {
+      open: (loots) => {
+        setOpen(true);
+        setLoots([...loots.added, ...loots.redeemed]);
+      },
+    };
+  }, []);
 
   return (
     <CustomDialog

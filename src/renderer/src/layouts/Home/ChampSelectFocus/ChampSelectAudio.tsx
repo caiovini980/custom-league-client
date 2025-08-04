@@ -63,18 +63,19 @@ export const ChampSelectAudio = ({
 
   useEffect(() => {
     if (action === 'pick') {
-      playOnce('sfx-cs-draft-pick-intro');
+      //playOnce('sfx-cs-draft-pick-intro');
     }
     if (action === 'ban') {
-      playOnce('sfx-cs-draft-10ban-intro');
+      //playOnce('sfx-cs-draft-10ban-intro');
     }
   }, [action]);
 
   useEffect(() => {
-    if (lobby?.gameConfig.gameMode === 'ARAM') {
-      musicAramChampSelect.play(false);
+    if (!lobby) return;
+    if (lobby.gameConfig.gameMode === 'ARAM') {
+      //musicAramChampSelect.play(false);
     } else {
-      musicChampSelect.play(false);
+      //musicChampSelect.play(false);
     }
 
     return () => {
@@ -93,5 +94,5 @@ export const ChampSelectAudio = ({
     }
   }, [summonerData?.isActingNow, time]);
 
-  return <></>;
+  return null;
 };

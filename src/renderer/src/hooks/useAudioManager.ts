@@ -1,12 +1,11 @@
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
-import { random } from 'lodash';
+import { random } from 'lodash-es';
 import { useEffect, useRef } from 'react';
 
 const soundName = [
   'game_found',
   'tab_change',
   'open_settings',
-  'background_music',
   'mute_unmute',
   'music-cs-allrandom-howlingabyss',
   'music-cs-blindpick-default',

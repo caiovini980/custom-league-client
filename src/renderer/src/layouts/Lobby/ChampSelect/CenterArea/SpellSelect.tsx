@@ -1,9 +1,9 @@
 import { Grid, Stack } from '@mui/material';
-import { SquareIcon } from '@render/components/SquareIcon';
 import {
   CustomIconButton,
   CustomIconButtonTooltip,
 } from '@render/components/input';
+import { SquareIcon } from '@render/components/SquareIcon';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';

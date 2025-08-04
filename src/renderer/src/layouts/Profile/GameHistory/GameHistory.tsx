@@ -1,32 +1,44 @@
 import { List, ListItem, ListItemText } from '@mui/material';
 import { LoadingScreen } from '@render/components/LoadingScreen';
-import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { GameHistoryItem } from '@render/layouts/Profile/GameHistory/GameHistoryItem';
-import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { useState } from 'react';
+import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
+import { useRunOnce } from '@render/hooks/useRunOnce';
 
 interface GameHistoryProps {
   puuid: string;
 }
 
 export const GameHistory = ({ puuid }: GameHistoryProps) => {
-  const [matchHistory, setMatchHistory] =
-    useState<LolMatchHistoryV1productsLol_Id_Matches>();
+  const { makeRequest } = useLeagueClientRequest();
 
-  useLeagueClientEvent(
-    buildEventUrl(
+  const [loading, setLoading] = useState(true);
+  const [matchHistory, setMatchHistory] = useState<LolMatchHistoryV1Games_Id[]>(
+    [],
+  );
+
+  const loadMore = () => {
+    setLoading(true);
+    const url = buildEventUrl(
       '/lol-match-history/v1/products/lol/{uuid}/matches?begIndex={digits}&endIndex={digits}',
       puuid,
       0,
-      30,
-    ),
-    (data) => {
-      setMatchHistory(data);
-    },
-  );
+      20,
+    );
+
+    makeRequest('GET', url, undefined).then((res) => {
+      setLoading(false);
+      if (res.ok) {
+        setMatchHistory(res.body.games.games);
+      }
+    });
+  };
+
+  useRunOnce(() => {
+    loadMore();
+  });
 
   return (
     <List
@@ -39,8 +51,8 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
         flexDirection: 'column',
       }}
     >
-      <LoadingScreen loading={!matchHistory} height={'100%'} fullArea />
-      {matchHistory?.games.games.length === 0 && (
+      <LoadingScreen loading={loading} height={'100%'} fullArea />
+      {matchHistory.length === 0 && (
         <ListItem>
           <ListItemText
             sx={{ textAlign: 'center' }}
@@ -48,7 +60,7 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
           />
         </ListItem>
       )}
-      {matchHistory?.games.games.map((g) => (
+      {matchHistory.map((g) => (
         <GameHistoryItem key={g.gameId} game={g} puuid={puuid} />
       ))}
     </List>

@@ -1,4 +1,3 @@
-import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
 import {
   Box,
   ClickAwayListener,
@@ -12,16 +11,17 @@ import {
   Typography,
 } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
-import { useEffect, useRef, useState } from 'react';
-import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
 import {
   LootActionModal,
   LootActionModalRef,
 } from '@render/layouts/Loot/LootActionModal';
 import { useLootContext } from '@render/layouts/Loot/LootContext';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
+import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
+import { useEffect, useRef, useState } from 'react';
 
 interface LootContextMenuProps {
   lootSelected: boolean;

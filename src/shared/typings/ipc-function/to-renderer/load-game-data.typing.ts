@@ -1,11 +1,16 @@
 import { Champion } from '@shared/typings/lol/json/champion';
 import { Item } from '@shared/typings/lol/json/item';
 import { Map } from '@shared/typings/lol/json/map';
+import { Perk } from '@shared/typings/lol/json/perk';
+import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { Queue } from '@shared/typings/lol/json/queue';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
 import { TranslatePathKeys } from '@shared/utils/translate.util';
-import { Perk } from '@shared/typings/lol/json/perk';
-import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
+
+export interface LoadGameDataError {
+  status: 'error';
+  info: null;
+}
 
 export interface LoadGameDataDownloading {
   status: 'downloading';
@@ -35,6 +40,7 @@ export interface LoadGameDataComplete {
 }
 
 export type LoadGameData =
+  | LoadGameDataError
   | LoadGameDataDownloading
   | LoadGameDataReading
   | LoadGameDataComplete;

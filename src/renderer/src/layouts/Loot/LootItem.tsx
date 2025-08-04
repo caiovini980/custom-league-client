@@ -1,11 +1,11 @@
-import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
 import { ButtonBase, Paper, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
 import { SquareIcon } from '@render/components/SquareIcon';
-import { LootContextMenu } from '@render/layouts/Loot/LootContextMenu';
-import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
-import { LootTooltip } from '@render/layouts/Loot/LootTooltip';
 import { useLootContext } from '@render/layouts/Loot/LootContext';
+import { LootContextMenu } from '@render/layouts/Loot/LootContextMenu';
+import { LootTooltip } from '@render/layouts/Loot/LootTooltip';
+import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
+import { useState } from 'react';
 
 interface LootItemProps {
   loot: LolLootV1PlayerLoot;
