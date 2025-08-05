@@ -22,7 +22,7 @@ import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export const CheckLeagueClient = ({ children }: PropsWithChildren) => {
   const navigate = useNavigate();

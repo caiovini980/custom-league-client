@@ -1,4 +1,4 @@
-import { LinearProgress, Stack, Typography } from '@mui/material';
+import { Divider, LinearProgress, Stack, Typography } from '@mui/material';
 import { CustomButton } from '@render/components/input';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
@@ -8,7 +8,7 @@ import { ClientEndpointKeys } from '@shared/typings/lol/clientEndpoint';
 import { LolChampSelectV1OngoingPositionSwap } from '@shared/typings/lol/response/lolChampSelectV1OngoingPositionSwap';
 import { useEffect } from 'react';
 
-interface PositionSwapProps {
+export interface PositionSwapProps {
   type: 'position' | 'pick_order' | 'champion';
   summonerName: string;
   swapId: number;
@@ -25,7 +25,7 @@ export const SwapNotification = ({
   actionDescription,
   onCompleteAction,
 }: PositionSwapProps) => {
-  const { time, startTimer, stopAndResetTimer, stopTimer } = useTimer();
+  const { time, startTimer, stopAndResetTimer } = useTimer();
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
@@ -34,8 +34,8 @@ export const SwapNotification = ({
   const timeAmount = 10;
 
   useEffect(() => {
-    if (time >= timeAmount) {
-      stopTimer();
+    if (time > timeAmount) {
+      stopAndResetTimer();
       doAction('cancel');
       onCompleteAction();
     }
@@ -73,10 +73,13 @@ export const SwapNotification = ({
   };
 
   const getAction = () => {
-    return rcpFeLolChampSelectTrans(
-      `swap_requested_${type}$html`,
-      actionDescription,
-    );
+    let text = actionDescription;
+    if (type === 'position') {
+      text = rcpFeLolChampSelectTrans(
+        `summoner_assigned_position_${actionDescription}`,
+      );
+    }
+    return rcpFeLolChampSelectTrans(`swap_requested_${type}$html`, text);
   };
 
   const doAction = (action: 'decline' | 'accept' | 'cancel') => {
@@ -118,20 +121,25 @@ export const SwapNotification = ({
   return (
     <Stack
       direction={'column'}
-      rowGap={2}
+      rowGap={1}
       position={'relative'}
       p={1}
       pb={2}
       sx={{
+        background: 'var(--mui-palette-background-paper)',
         '& span': {
-          color: (t) => t.palette.highlight,
+          color: (t) => t.palette.highlight.main,
         },
       }}
+      width={350}
     >
-      <Typography textAlign={'center'}>
+      <Typography textAlign={'center'} fontSize={'1.2rem'}>
         {rcpFeLolChampSelectTrans(`swap_request_title_${type}`)}
       </Typography>
-      <Typography>{getTitle()}</Typography>
+      <Divider />
+      <Typography fontSize={'0.8rem'} color={'textSecondary'}>
+        {getTitle()}
+      </Typography>
       <Typography dangerouslySetInnerHTML={{ __html: getAction() }} />
       <Stack direction={'row'} justifyContent={'space-evenly'}>
         {getButtons()}
@@ -144,6 +152,7 @@ export const SwapNotification = ({
           bottom: 0,
           left: 0,
           width: '100%',
+          height: 8,
         }}
       />
     </Stack>

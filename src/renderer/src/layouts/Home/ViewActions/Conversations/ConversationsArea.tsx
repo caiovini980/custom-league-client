@@ -48,6 +48,7 @@ export const ConversationsArea = ({
       ).then((res) => {
         if (res.ok) {
           setMessage('');
+          loadEventData();
         }
       });
       return;
@@ -65,10 +66,23 @@ export const ConversationsArea = ({
     }, delay);
   };
 
-  useLeagueClientEvent(
+  const { loadEventData } = useLeagueClientEvent(
     buildEventUrl('/lol-chat/v1/conversations/{id}/messages', conversation.id),
     (data) => {
       setConversationMessages(data);
+    },
+    {
+      deps: [conversation.id],
+    },
+  );
+
+  useLeagueClientEvent(
+    buildEventUrl(
+      '/lol-chat/v1/conversations/{id}/messages/{id}',
+      conversation.id,
+    ),
+    () => {
+      loadEventData();
     },
     {
       deps: [conversation.id],

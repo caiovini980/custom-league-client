@@ -1,28 +1,36 @@
 import { Stack, Typography } from '@mui/material';
-import CustomDialog, {
-  CustomDialogCloseFloatingButton,
-} from '@render/components/CustomDialog';
 import { CustomIconButton, CustomSelect } from '@render/components/input';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { RecommendedPerks } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RecommendedPerks';
-import { RuneEdit } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEdit';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import { FaShuffle } from 'react-icons/fa6';
+import {
+  RuneEditModal,
+  RuneEditModalRef,
+} from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes/RuneEditModal';
 
 export const Runes = () => {
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-  const { currentPlayer } = useChampSelectContext();
-  const lobby = lobbyStore.lobby.use();
+  const championId = champSelectStore.getCurrentSummonerData(
+    (s) => s.championId,
+    0,
+  );
+  const assignedPosition = champSelectStore.getCurrentSummonerData(
+    (s) => s.assignedPosition,
+    'NONE',
+  );
+  const mapId = lobbyStore.lobby.use((s) => s?.gameConfig.mapId ?? 0);
+
+  const runeEditModalRef = useRef<RuneEditModalRef>(null);
 
   const [runesPage, setRunesPage] = useState<LolPerksV1Pages[]>([]);
-  const [openModal, setOpenModal] = useState(false);
   const [openRecommendedPerkModal, setOpenRecommendedPerkModal] =
     useState(false);
   const [currentPageId, setCurrentPageId] = useState(0);
@@ -50,13 +58,14 @@ export const Runes = () => {
       <CustomIconButton
         size={'small'}
         onClick={() => setOpenRecommendedPerkModal(true)}
-        disabled={
-          !(currentPlayer.championId || currentPlayer.championPickIntent)
-        }
+        disabled={!championId}
       >
         <FaShuffle size={12} />
       </CustomIconButton>
-      <CustomIconButton size={'small'} onClick={() => setOpenModal(true)}>
+      <CustomIconButton
+        size={'small'}
+        onClick={() => runeEditModalRef.current?.open(currentPageId)}
+      >
         <FaEdit size={12} />
       </CustomIconButton>
       <CustomSelect
@@ -86,36 +95,14 @@ export const Runes = () => {
           ),
         }))}
       />
-      <CustomDialog
-        open={openModal}
-        fullWidth
-        maxWidth={'md'}
-        hiddenBtnConfirm
-        className={'theme-dark'}
-        dialogContentProps={{
-          sx: {
-            p: 0,
-            position: 'relative',
-            height: '80vh',
-          },
-        }}
-        actionsComponent={<div />}
-      >
-        <CustomDialogCloseFloatingButton
-          handleClose={() => setOpenModal(false)}
-        />
-        <RuneEdit />
-      </CustomDialog>
+      <RuneEditModal ref={runeEditModalRef} />
       <RecommendedPerks
         open={openRecommendedPerkModal}
-        onSelectPerk={() => setOpenModal(true)}
-        perkToChangeId={runesPage.find((r) => r.isTemporary)?.id}
+        onSelectPerk={(id) => runeEditModalRef.current?.open(id)}
         onClose={() => setOpenRecommendedPerkModal(false)}
-        position={currentPlayer.assignedPosition || 'middle'}
-        championId={
-          currentPlayer.championPickIntent || currentPlayer.championId
-        }
-        mapId={lobby?.gameConfig.mapId ?? 0}
+        position={assignedPosition}
+        championId={championId}
+        mapId={mapId}
       />
     </Stack>
   );

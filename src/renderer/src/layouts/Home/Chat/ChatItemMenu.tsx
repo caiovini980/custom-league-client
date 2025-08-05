@@ -2,10 +2,9 @@ import { List, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 
 interface LolPartyData {
   summoners: number[];
@@ -25,25 +24,26 @@ export const ChatItemMenu = ({
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolSocial } = useLeagueTranslate();
 
-  const lobby = lobbyStore.lobby.use();
-  const gameFlow = lobbyStore.gameFlow.use();
-  const currentSummoner = currentSummonerStore.info.use();
+  const partyId = lobbyStore.lobby.use((s) => s?.partyId ?? -1);
+  const hasLobby = lobbyStore.lobby.use((s) => !!s);
+  const allowedInviteOthers = lobbyStore.lobby.use(
+    (s) => s?.localMember.allowedInviteOthers ?? false,
+  );
+  const isFriendInGroup = lobbyStore.lobby.use(
+    (s) => s?.members.some((m) => m.puuid === friend.puuid) ?? false,
+  );
+  const gameFlowPhase = lobbyStore.gameFlow.use((s) => s?.phase ?? 'None');
 
   const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const disableInviteToGame = () => {
     const conditionsToDisable: boolean[] = [
       friend.availability === 'dnd',
-      !lobby,
+      !hasLobby,
     ];
 
-    if (lobby) {
-      conditionsToDisable.push(!lobby.localMember.allowedInviteOthers);
-      conditionsToDisable.push(
-        lobby.members.some((m) => m.puuid === friend.puuid),
-      );
-    }
-
+    conditionsToDisable.push(!allowedInviteOthers);
+    conditionsToDisable.push(isFriendInGroup);
     conditionsToDisable.push(friend.product !== 'league_of_legends');
 
     return conditionsToDisable.some(Boolean);
@@ -51,10 +51,9 @@ export const ChatItemMenu = ({
 
   const hiddenOpenParty = () => {
     if (!friend.lol?.pty) return true;
-    if (!currentSummoner) return true;
-    if (gameFlow?.phase === 'Matchmaking') return true;
+    if (gameFlowPhase === 'Matchmaking') return true;
     const data = JSON.parse(friend.lol.pty) as LolPartyData;
-    return data.partyId === lobby?.partyId;
+    return data.partyId === partyId;
   };
 
   const getPartyId = () => {
@@ -93,7 +92,7 @@ export const ChatItemMenu = ({
     },
     {
       label: rcpFeLolSocialTrans('context_menu_spectate_game'),
-      disabled: friend.lol?.gameStatus !== 'inGame' || !!lobby,
+      disabled: friend.lol?.gameStatus !== 'inGame' || hasLobby,
       onClick: () => {
         makeRequest('POST', '/lol-spectator/v1/spectate/launch', {
           puuid: friend.puuid,
@@ -124,7 +123,7 @@ export const ChatItemMenu = ({
     },
   ];
 
-  const ChatMenu = () => {
+  const chatMenu = useMemo(() => {
     return (
       <List dense sx={{ p: 0 }}>
         {menus
@@ -142,10 +141,10 @@ export const ChatItemMenu = ({
           })}
       </List>
     );
-  };
+  }, [menus]);
 
   return (
-    <Tooltip title={<ChatMenu />} placement="left" arrow>
+    <Tooltip title={chatMenu} placement="left" arrow>
       <span>{children}</span>
     </Tooltip>
   );

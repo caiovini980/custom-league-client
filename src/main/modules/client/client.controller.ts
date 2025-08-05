@@ -42,4 +42,9 @@ export class ClientController {
   async priorityApp() {
     return this.clientService.priorityApp();
   }
+
+  @IpcHandle('blink')
+  async blink() {
+    return this.clientService.blink();
+  }
 }

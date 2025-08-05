@@ -1,33 +1,46 @@
-import { useAudio, useAudioManager } from '@render/hooks/useAudioManager';
-import { ChampSelectionActions } from '@render/hooks/useChampSelect';
+import { useAudio } from '@render/hooks/useAudioManager';
+import {
+  ChampSelectionActions,
+  champSelectStore,
+} from '@render/zustand/stores/champSelectStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import { useEffect, useRef } from 'react';
 
 interface ChampSelectAudioProps {
-  session: LolChampSelectV1Session;
   time: number;
   action: ChampSelectionActions;
-  summonerData: LolChampSelectV1Summoners_Id | undefined;
-  summonersData: Record<number, LolChampSelectV1Summoners_Id>;
+  isActingNow: boolean;
 }
 
 export const ChampSelectAudio = ({
   action,
-  summonerData,
-  summonersData,
+  isActingNow,
   time,
 }: ChampSelectAudioProps) => {
-  const { playOnce } = useAudioManager();
+  const sfxDraft = useAudio('sfx-cs-draft-right-pick-single');
+  const sfxDraftBan = useAudio('sfx-cs-draft-notif-yourban');
+  const sfxDraftPick = useAudio('sfx-cs-draft-notif-yourpick');
+  const sfxTimerTick = useAudio('sfx-cs-timer-tick');
+  const sfxTimerTickSmall = useAudio('sfx-cs-timer-tick-small');
+  const sfxDraftIntro = useAudio('sfx-cs-draft-pick-intro');
+  const sfxBanIntro = useAudio('sfx-cs-draft-10ban-intro');
 
   const musicChampSelect = useAudio('music-cs-blindpick-default');
   const musicAramChampSelect = useAudio('music-cs-allrandom-howlingabyss');
   const musicDraftFinalization = useAudio('music-cs-draft-finalization-01');
 
-  const lobby = lobbyStore.lobby.use();
+  const summonersData = champSelectStore.summoners.use();
+  const lobbyGameMode = lobbyStore.lobby.use((s) => s?.gameConfig.gameMode);
+  const gameFlowPhase = lobbyStore.gameFlow.use((s) => s?.phase ?? 'None');
 
   const summonersChampionPicked = useRef<Record<number, boolean>>({});
+
+  const stopAll = () => {
+    musicChampSelect.stop();
+    musicAramChampSelect.stop();
+    musicDraftFinalization.stop();
+  };
 
   useEffect(() => {
     Object.keys(summonersData)
@@ -35,64 +48,60 @@ export const ChampSelectAudio = ({
       .forEach((cellId) => {
         const summoner = summonersData[cellId] as LolChampSelectV1Summoners_Id;
         if (summoner.championId !== 0 && summoner.areSummonerActionsComplete) {
-          playOnce('sfx-cs-draft-right-pick-single');
+          sfxDraft.play();
           summonersChampionPicked.current[cellId] = true;
         }
       });
-
-    const isFinished = Object.values(summonersData).every(
-      (summoner) => summoner.areSummonerActionsComplete,
-    );
-
-    if (isFinished) {
-      musicChampSelect.stop();
-      musicAramChampSelect.stop();
-      musicDraftFinalization.play(false);
-    }
   }, [summonersData]);
 
   useEffect(() => {
-    if (summonerData?.isActingNow) {
-      playOnce(
-        action === 'ban'
-          ? 'sfx-cs-draft-notif-yourban'
-          : 'sfx-cs-draft-notif-yourpick',
-      );
+    if (isActingNow) {
+      if (action === 'ban') {
+        sfxDraftBan.play();
+      } else {
+        sfxDraftPick.play();
+      }
     }
-  }, [summonerData?.isActingNow]);
+  }, [isActingNow]);
 
   useEffect(() => {
     if (action === 'pick') {
-      //playOnce('sfx-cs-draft-pick-intro');
+      sfxDraftIntro.play();
     }
     if (action === 'ban') {
-      //playOnce('sfx-cs-draft-10ban-intro');
+      sfxBanIntro.play();
     }
   }, [action]);
 
   useEffect(() => {
-    if (!lobby) return;
-    if (lobby.gameConfig.gameMode === 'ARAM') {
-      //musicAramChampSelect.play(false);
+    if (!lobbyGameMode) return;
+    if (lobbyGameMode === 'ARAM') {
+      musicAramChampSelect.play();
     } else {
-      //musicChampSelect.play(false);
+      musicChampSelect.play();
     }
-
-    return () => {
-      musicChampSelect.stop();
-      musicAramChampSelect.stop();
-    };
-  }, [lobby?.gameConfig.gameMode]);
+  }, [lobbyGameMode]);
 
   useEffect(() => {
     if (time <= 10) {
-      playOnce(
-        summonerData?.isActingNow
-          ? 'sfx-cs-timer-tick'
-          : 'sfx-cs-timer-tick-small',
-      );
+      if (isActingNow) {
+        sfxTimerTick.replay();
+      } else if (action === 'finalization') {
+        sfxTimerTickSmall.replay();
+      }
     }
-  }, [summonerData?.isActingNow, time]);
+    if (time <= 30 && action === 'finalization') {
+      musicChampSelect.stop();
+      musicAramChampSelect.stop();
+      musicDraftFinalization.play();
+    }
+  }, [time]);
+
+  useEffect(() => {
+    if (gameFlowPhase !== 'ChampSelect') {
+      stopAll();
+    }
+  }, [gameFlowPhase]);
 
   return null;
 };

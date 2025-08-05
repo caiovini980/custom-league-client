@@ -113,6 +113,10 @@ export class ClientService
     }, 5000);
   }
 
+  async blink() {
+    this.mainWin.flashFrame(true);
+  }
+
   async changeShowClient(value: boolean) {
     this.showClient = value;
     if (value) {

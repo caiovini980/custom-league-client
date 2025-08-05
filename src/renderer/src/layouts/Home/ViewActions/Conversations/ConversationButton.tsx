@@ -48,9 +48,6 @@ export const ConversationButton = ({
 
   const onClickItem = () => {
     onClick();
-    makeRequest('PUT', '/lol-chat/v1/conversations/active', {
-      id: conversation.id,
-    });
   };
 
   const getColor = () => {
@@ -98,6 +95,9 @@ export const ConversationButton = ({
   useEffect(() => {
     if (active) {
       setIsHighlight(false);
+      makeRequest('PUT', '/lol-chat/v1/conversations/active', {
+        id: conversation.id,
+      }).then();
     }
   }, [active]);
 
@@ -111,7 +111,7 @@ export const ConversationButton = ({
       sx={{
         height: 50,
         background: (t) =>
-          isHighlight ? alpha(t.palette.highlight, 0.6) : undefined,
+          isHighlight ? alpha(t.palette.highlight.main, 0.6) : undefined,
         '& svg.dot': {
           color: getColor(),
         },

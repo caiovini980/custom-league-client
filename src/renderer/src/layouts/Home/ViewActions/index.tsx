@@ -1,12 +1,14 @@
 import { Stack } from '@mui/material';
 import { Conversations } from '@render/layouts/Home/ViewActions/Conversations';
+import { ConversionListener } from '@render/layouts/Home/ViewActions/Conversations/ConversionListener';
 import { Missions } from '@render/layouts/Home/ViewActions/Missions';
 import { Notifications } from '@render/layouts/Home/ViewActions/Notifications';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MdChat, MdNotifications, MdTask } from 'react-icons/md';
 import { ViewActionButton, ViewActionButtonProps } from './ViewActionButton';
 
-interface Actions extends Pick<ViewActionButtonProps, 'icon' | 'component'> {
+interface Actions
+  extends Pick<ViewActionButtonProps, 'icon' | 'component' | 'listener'> {
   name: string;
   hidden?: boolean;
 }
@@ -18,24 +20,27 @@ export const ViewActions = () => {
     return (active: boolean) => setViewActive(active ? name : '');
   };
 
-  const actions: Actions[] = [
-    {
-      name: 'conversations',
-      component: <Conversations />,
-      icon: MdChat,
-    },
-    {
-      icon: MdTask,
-      name: 'missions',
-      component: <Missions />,
-    },
-    {
-      hidden: true,
-      name: 'notification',
-      component: <Notifications />,
-      icon: MdNotifications,
-    },
-  ];
+  const actions: Actions[] = useMemo(() => {
+    return [
+      {
+        name: 'conversations',
+        component: Conversations,
+        icon: MdChat,
+        listener: ConversionListener,
+      },
+      {
+        icon: MdTask,
+        name: 'missions',
+        component: Missions,
+      },
+      {
+        hidden: true,
+        name: 'notification',
+        component: Notifications,
+        icon: MdNotifications,
+      },
+    ];
+  }, []);
 
   return (
     <Stack
@@ -60,6 +65,7 @@ export const ViewActions = () => {
               icon={action.icon}
               active={viewActive === action.name}
               onClick={onChange(action.name)}
+              listener={action.listener}
             />
           );
         })}

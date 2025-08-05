@@ -20,7 +20,7 @@ export const LootItem = ({ loot }: LootItemProps) => {
   const border = () => {
     const b = (color: string) => `2px solid var(--mui-palette-${color})`;
     if (['SKIN', 'CHAMPION', 'WARDSKIN'].includes(loot.type)) {
-      return b('highlight');
+      return b('highlight-main');
     }
     return b('divider');
   };
@@ -54,12 +54,12 @@ export const LootItem = ({ loot }: LootItemProps) => {
             border: border(),
           }}
         >
-          <SquareIcon src={getLootImg(loot)} size={70} />
+          <SquareIcon src={getLootImg(loot)} size={120} />
           <Typography
             sx={{
               position: 'absolute',
-              bottom: 0,
-              right: 0,
+              bottom: 3,
+              right: 7,
             }}
           >
             {loot.count}

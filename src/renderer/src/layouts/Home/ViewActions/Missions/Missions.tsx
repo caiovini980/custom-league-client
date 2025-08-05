@@ -71,7 +71,7 @@ export const Missions = ({ missions }: MissionsProps) => {
       {missions.map((m) => {
         return (
           <Tooltip
-            key={m.id}
+            key={`${m.id}-${m.sequence}`}
             disableInteractive
             title={
               m.description ? (

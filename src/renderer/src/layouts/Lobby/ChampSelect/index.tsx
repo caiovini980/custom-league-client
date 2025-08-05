@@ -1,71 +1,64 @@
 import { Stack } from '@mui/material';
-import { LoadingScreen } from '@render/components/LoadingScreen';
+import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
 import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
 import { CenterArea } from '@render/layouts/Lobby/ChampSelect/CenterArea';
 import { Runes } from '@render/layouts/Lobby/ChampSelect/CenterArea/Runes';
-import { SpellSelect } from '@render/layouts/Lobby/ChampSelect/CenterArea/SpellSelect';
-import { ChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { SpellSelect } from '@render/layouts/Lobby/ChampSelect/CenterArea/SpellSelector/SpellSelect';
+import { ChampionSelectChatGroup } from '@render/layouts/Lobby/ChampSelect/ChampionSelectChatGroup';
+import { ChampionSelectWrapper } from '@render/layouts/Lobby/ChampSelect/ChampionSelectWrapper';
 import { Legacy } from '@render/layouts/Lobby/ChampSelect/Legacy';
 import { TeamPlayer } from '@render/layouts/Lobby/ChampSelect/TeamPlayer';
 import { Timer } from '@render/layouts/Lobby/ChampSelect/Timer';
-import { ChatGroup } from '@render/layouts/Lobby/ChatGroup';
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { memo } from 'react';
 
-interface ChampSelectProps {
-  gameMode: string;
-}
-
-export const ChampSelect = ({ gameMode }: ChampSelectProps) => {
-  const session = lobbyStore.champSelect.use();
-
-  if (!session) {
-    return <LoadingScreen fullArea />;
-  }
-
-  if (session.isLegacyChampSelect) {
-    return <Legacy gameMode={gameMode} />;
+export const ChampSelect = withChampSelectSession(({ isLegacy }) => {
+  if (isLegacy) {
+    return <Legacy />;
   }
 
   return (
-    <ChampSelectContext session={session} gameMode={gameMode}>
+    <ChampionSelectWrapper>
+      <Content />
+    </ChampionSelectWrapper>
+  );
+});
+
+const Content = memo(function ChampionSelectContent() {
+  return (
+    <Stack
+      direction={'column'}
+      height={'100%'}
+      width={'100%'}
+      overflow={'auto'}
+      p={1}
+      rowGap={1}
+    >
+      <Timer />
+      <AramBenchChampions />
       <Stack
-        direction={'column'}
+        direction={'row'}
+        columnGap={1}
+        justifyContent={'space-between'}
         height={'100%'}
-        width={'100%'}
         overflow={'auto'}
-        p={1}
-        rowGap={1}
       >
-        <Timer />
-        <AramBenchChampions />
+        <TeamPlayer />
+        <CenterArea />
+        <TeamPlayer isEnemyTeam />
+      </Stack>
+      <Stack direction={'row'} justifyContent={'space-between'}>
+        <ChampionSelectChatGroup />
         <Stack
           direction={'row'}
-          columnGap={1}
-          justifyContent={'space-between'}
-          height={'100%'}
-          overflow={'auto'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          columnGap={2}
         >
-          <TeamPlayer />
-          <CenterArea />
-          <TeamPlayer isEnemyTeam />
+          <Runes />
+          <SpellSelect />
         </Stack>
-        <Stack direction={'row'} justifyContent={'space-between'}>
-          <ChatGroup
-            mucJwtDto={session.chatDetails.mucJwtDto}
-            chatHeight={150}
-          />
-          <Stack
-            direction={'row'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            columnGap={2}
-          >
-            <Runes />
-            <SpellSelect />
-          </Stack>
-          <div style={{ width: '30%' }} />
-        </Stack>
+        <div style={{ width: '30%' }} />
       </Stack>
-    </ChampSelectContext>
+    </Stack>
   );
-};
+});

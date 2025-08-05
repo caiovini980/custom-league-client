@@ -2,22 +2,29 @@ import { CustomButton } from '@render/components/input';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 import { electronHandle } from '@render/utils/electronFunction.util';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { useEffect } from 'react';
 
 export const ActionButton = () => {
   const { makeRequest } = useLeagueClientRequest();
-  const {
-    session,
-    currentAction,
-    banPlayerActionId,
-    pickPlayerActionId,
-    isPlayerAction,
-    currentPlayer,
-    bans,
-  } = useChampSelectContext();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
+
+  const allowRerolling = champSelectStore.getSessionData(
+    (session) => session.allowRerolling,
+  );
+  const banPlayerActionId = champSelectStore.currentBanActionId.use();
+  const pickPlayerActionId = champSelectStore.currentPickActionId.use();
+  const bans = champSelectStore.bans.use();
+  const currentAction = champSelectStore.currentAction.use();
+  const isPlayerAction = champSelectStore.getCurrentSummonerData(
+    (s) => s.isActingNow,
+    false,
+  );
+  const summonerChampionId = champSelectStore.getCurrentSummonerData(
+    (s) => s.championId,
+    0,
+  );
 
   const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
@@ -29,7 +36,7 @@ export const ActionButton = () => {
 
   const onClickActionButton = () => {
     let actionId = pickPlayerActionId;
-    let championId = currentPlayer.championPickIntent;
+    let championId = summonerChampionId;
     if (currentAction === 'ban') {
       actionId = banPlayerActionId;
       championId = bans.banIntentChampionId;
@@ -60,12 +67,12 @@ export const ActionButton = () => {
       return bans.banIntentChampionId === 0;
     }
     if (currentAction === 'pick') {
-      return currentPlayer.championPickIntent === 0;
+      return summonerChampionId === 0;
     }
     return false;
   };
 
-  if (session.allowRerolling) return null;
+  if (allowRerolling) return null;
 
   if (!isPlayerAction) return null;
 

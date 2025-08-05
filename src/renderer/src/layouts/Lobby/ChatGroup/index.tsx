@@ -1,26 +1,29 @@
-import { CircularProgress, Paper, Stack, Typography } from '@mui/material';
-import { CustomTextField } from '@render/components/input';
+import { Paper, Stack, Typography } from '@mui/material';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { ChatTextField } from '@render/layouts/Lobby/ChatGroup/ChatTextField';
+import { LolChatV1Conversations } from '@shared/typings/lol/request/lolChatV1Conversations';
 import { LolChatV1Conversations_Id_Messages as LolChatV1Conversations_Id_MessagesRes } from '@shared/typings/lol/response/lolChatV1Conversations_Id_Messages';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface ChatGroupProps {
   connectWhen?: boolean;
   mucJwtDto: LolLobbyV2Lobby['mucJwtDto'];
   chatHeight?: number;
+  type: LolChatV1Conversations['type'];
 }
 
 export const ChatGroup = ({
   connectWhen,
   mucJwtDto,
   chatHeight = 200,
+  type,
 }: ChatGroupProps) => {
   const { rcpFeLolSocial } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
@@ -29,38 +32,17 @@ export const ChatGroup = ({
 
   const messagesContainerDivRef = useRef<HTMLDivElement>(null);
 
-  const [message, setMessage] = useState('');
   const [conversationMessages, setConversationMessages] = useState<
     LolChatV1Conversations_Id_MessagesRes[]
   >([]);
   const [participants, setParticipants] = useState<LolChatV1Friends[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const conversationId = (() => {
+  const conversationId = useMemo(() => {
     const { channelClaim, domain, targetRegion } = mucJwtDto;
     return `${channelClaim}@${domain}.${targetRegion}.pvp.net`;
-  })();
-
-  const handleSendMessage = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (!event.shiftKey && event.key === 'Enter') {
-      event.preventDefault();
-      makeRequest(
-        'POST',
-        buildEventUrl(
-          '/lol-chat/v1/conversations/{id}/messages',
-          conversationId,
-        ),
-        {
-          body: message,
-        },
-      ).then((res) => {
-        if (res.ok) {
-          setMessage('');
-        }
-      });
-      return;
-    }
-  };
+  }, [mucJwtDto.channelClaim, mucJwtDto.domain, mucJwtDto.targetRegion]);
 
   const getPlayerName = (pid: string) => {
     const participant = participants.find((p) => p.id === pid);
@@ -95,42 +77,16 @@ export const ChatGroup = ({
     }, delay);
   };
 
-  const { loadEventData: loadMessages } = useLeagueClientEvent(
+  const { loadEventData } = useLeagueClientEvent(
     buildEventUrl('/lol-chat/v1/conversations/{id}/messages', conversationId),
     (data) => {
-      setConversationMessages(data);
+      if (isConnected) {
+        setConversationMessages(data);
+      }
     },
     {
+      deps: [conversationId, isConnected],
       makeInitialRequest: false,
-      deps: [conversationId],
-    },
-  );
-
-  const { loadEventData: loadParticipants } = useLeagueClientEvent(
-    buildEventUrl(
-      '/lol-chat/v1/conversations/{id}/participants',
-      conversationId,
-    ),
-    (data) => {
-      setParticipants(data);
-    },
-    {
-      makeInitialRequest: false,
-      deps: [conversationId],
-    },
-  );
-
-  useLeagueClientEvent(
-    buildEventUrl(
-      '/lol-chat/v1/conversations/{id}/participants/{id}',
-      conversationId,
-    ),
-    () => {
-      loadParticipants();
-    },
-    {
-      makeInitialRequest: false,
-      deps: [conversationId],
     },
   );
 
@@ -140,24 +96,53 @@ export const ChatGroup = ({
       conversationId,
     ),
     () => {
-      loadMessages();
+      if (isConnected) {
+        loadEventData();
+      }
     },
     {
+      deps: [conversationId, isConnected],
       makeInitialRequest: false,
-      deps: [conversationId],
+    },
+  );
+
+  useLeagueClientEvent(
+    buildEventUrl(
+      '/lol-chat/v1/conversations/{id}/participants',
+      conversationId,
+    ),
+    (data) => {
+      if (isConnected) {
+        setParticipants((prev) => {
+          const newList = [...prev];
+          const listId = prev.map((p) => p.id);
+
+          data.forEach((p) => {
+            if (!listId.includes(p.id)) {
+              newList.push(p);
+            }
+          });
+
+          return newList;
+        });
+      }
+    },
+    {
+      deps: [conversationId, isConnected],
     },
   );
 
   const connectToChat = () => {
     setLoading(true);
     makeRequest('POST', '/lol-chat/v1/conversations', {
-      type: 'customGame',
+      id: mucJwtDto.channelClaim,
+      type,
       mucJwtDto,
+      password: mucJwtDto.jwt,
     }).then((res) => {
       if (res.ok) {
         setLoading(false);
-        loadParticipants();
-        loadMessages();
+        setIsConnected(true);
       } else {
         setTimeout(() => {
           connectToChat();
@@ -174,7 +159,7 @@ export const ChatGroup = ({
     if (connectWhen === false) return;
     connectToChat();
     return () => {
-      if (!participants.length) return;
+      if (!isConnected) return;
       makeRequest(
         'DELETE',
         buildEventUrl('/lol-chat/v1/conversations/{id}', conversationId),
@@ -233,25 +218,10 @@ export const ChatGroup = ({
           );
         })}
       </Stack>
-      <CustomTextField
-        maxRows={3}
-        multiline
-        placeholder={rcpFeLolSocialTrans(
-          'conversation_get_started_placeholder',
-        )}
-        value={message}
-        onChangeText={setMessage}
-        onKeyDown={handleSendMessage}
-        disabled={loading || !participants.length}
-        startIcon={loading ? <CircularProgress size={16} /> : null}
-        slotProps={{
-          input: {
-            sx: {
-              p: 1,
-              borderRadius: 0,
-            },
-          },
-        }}
+      <ChatTextField
+        loading={loading}
+        conversationId={conversationId}
+        disabled={!isConnected}
       />
     </Stack>
   );

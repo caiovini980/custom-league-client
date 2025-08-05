@@ -1,44 +1,70 @@
 import { CustomButton } from '@render/components/input';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { ErrorModal } from '@render/layouts/Lobby/GenericLobby/ErrorModal';
+import { MatchMakingErrorModal } from '@render/layouts/Lobby/GenericLobby/MatchMakingErrorModal';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 
-interface MatchMakingStatsProps {
-  canStartActivity: boolean;
-}
-
-export const MatchMakingStats = ({
-  canStartActivity,
-}: MatchMakingStatsProps) => {
+export const MatchMakingStats = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
 
-  const matchMaking = lobbyStore.matchMaking.use();
+  const canStartActivity = lobbyStore.canStartActivity.use();
+  const penaltyTimeRemaining = lobbyStore.matchMaking.use((s) => {
+    if (s?.errors.length) {
+      return s.errors[0].penaltyTimeRemaining;
+    }
+    return 0;
+  });
+  const isMatchMaking = lobbyStore.matchMaking.use((s) => !!s);
 
   const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
-  function onFindMatchButtonClicked() {
-    makeRequest('POST', '/lol-lobby/v2/lobby/matchmaking/search', undefined);
-  }
+  const onClickFindMatchButton = () => {
+    makeRequest(
+      'POST',
+      '/lol-lobby/v2/lobby/matchmaking/search',
+      undefined,
+    ).then();
+  };
+
+  const onClickQuitMatchmaking = () => {
+    makeRequest(
+      'DELETE',
+      '/lol-lobby/v2/lobby/matchmaking/search',
+      undefined,
+    ).then();
+  };
+
+  const onClickReturnMainMenu = () => {
+    makeRequest('DELETE', '/lol-lobby/v2/lobby', undefined).then();
+  };
 
   const isDisableStartPartyBtn = () => {
-    return !canStartActivity || !!matchMaking?.errors.length;
+    return !canStartActivity || !!penaltyTimeRemaining;
   };
 
   return (
     <>
       <CustomButton
         variant="contained"
-        onClick={onFindMatchButtonClicked}
+        onClick={onClickFindMatchButton}
         disabled={isDisableStartPartyBtn()}
       >
-        {matchMaking?.errors.length
-          ? secondsToDisplayTime(matchMaking?.errors[0].penaltyTimeRemaining)
+        {penaltyTimeRemaining
+          ? secondsToDisplayTime(penaltyTimeRemaining)
           : rcpFeLolPartiesTrans('parties_button_find_match')}
       </CustomButton>
-      <ErrorModal errors={matchMaking?.errors ?? []} />
+      {!isMatchMaking ? (
+        <CustomButton variant="outlined" onClick={onClickReturnMainMenu}>
+          {rcpFeLolPartiesTrans('parties_button_quit')}
+        </CustomButton>
+      ) : (
+        <CustomButton variant="outlined" onClick={onClickQuitMatchmaking}>
+          {rcpFeLolPartiesTrans('parties_button_quit_matchmaking')}
+        </CustomButton>
+      )}
+      <MatchMakingErrorModal />
     </>
   );
 };

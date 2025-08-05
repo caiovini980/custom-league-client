@@ -1,15 +1,14 @@
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { LoadingScreen } from '@render/components/LoadingScreen';
-import { lobbyStore } from '@render/zustand/stores/lobbyStore';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { FunctionComponent } from 'react';
 
 export interface ExtendProps {
-  useLoading?: boolean;
+  enabledLoadingScreen?: boolean;
 }
 
 export interface WithChampSelectSessionProps {
-  session: LolChampSelectV1Session;
+  isLegacy: boolean;
 }
 
 export const withChampSelectSession = <P,>(
@@ -18,10 +17,11 @@ export const withChampSelectSession = <P,>(
   >,
 ) => {
   return (props: P & ExtendProps) => {
-    const session = lobbyStore.champSelect.use();
+    const show = champSelectStore.hasSession.use();
+    const isLegacy = champSelectStore.isLegacy.use();
 
-    if (!session) {
-      if (props.useLoading) {
+    if (!show) {
+      if (props.enabledLoadingScreen) {
         return (
           <CentralizedStack>
             <LoadingScreen />
@@ -30,6 +30,6 @@ export const withChampSelectSession = <P,>(
       }
       return null;
     }
-    return <Component {...props} session={session} />;
+    return <Component {...props} isLegacy={isLegacy} />;
   };
 };

@@ -7,7 +7,10 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import {
+  ChampSelectionActions,
+  champSelectStore,
+} from '@render/zustand/stores/champSelectStore';
 import { LolChampSelectV1AllGridCampions } from '@shared/typings/lol/response/lolChampSelectV1AllGridChampions';
 import { LolChampSelectV1BannableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1BannableChampionIds';
 import { LolChampSelectV1DisabledChampionIds } from '@shared/typings/lol/response/lolChampSelectV1DisabledChampionIds';
@@ -19,12 +22,15 @@ import { MdClose } from 'react-icons/md';
 export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-  const {
-    currentAction,
-    disabledChampionList,
-    pickPlayerActionId,
-    banPlayerActionId,
-  } = useChampSelectContext();
+
+  const teams = champSelectStore.getSessionData((session) => [
+    ...session.myTeam,
+    ...session.theirTeam,
+  ]);
+  const currentAction = champSelectStore.currentAction.use();
+  const pickPlayerActionId = champSelectStore.currentPickActionId.use();
+  const banPlayerActionId = champSelectStore.currentBanActionId.use();
+  const disabledChampionList = champSelectStore.disabledChampions.use();
 
   const [championNameFilter, setChampionNameFilter] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
@@ -60,6 +66,7 @@ export const ChampionSelectList = () => {
     },
   );
 
+  const iconChampionSize = 60;
   const position = ['top', 'jungle', 'middle', 'bottom', 'utility'];
 
   const filterByPosition = (championId: number, position: string) => {
@@ -69,6 +76,10 @@ export const ChampionSelectList = () => {
     return championPosition.recommendedPositions
       .map((p) => p.toLowerCase())
       .includes(position);
+  };
+
+  const isChampionPicked = (championId: number) => {
+    return teams.some((t) => t.championId === championId);
   };
 
   const getChampionFiltered = () => {
@@ -89,11 +100,7 @@ export const ChampionSelectList = () => {
       return filtered.filter((c) => bannableChampion.includes(c.id));
     }
 
-    if (currentAction === 'pick') {
-      return filtered.filter((c) => pickableChampion.includes(c.id) && c.owned);
-    }
-
-    return filtered;
+    return filtered.filter((c) => pickableChampion.includes(c.id) && c.owned);
   };
 
   const positionIcon = (position: string) => {
@@ -119,8 +126,16 @@ export const ChampionSelectList = () => {
   };
 
   const disabled = (championId: number) => {
-    const active: boolean[] = [disabledChampionList.includes(championId)];
+    const active: boolean[] = [
+      disabledChampionList.includes(championId),
+      isChampionPicked(championId),
+    ];
     return active.some(Boolean);
+  };
+
+  const hiddenList = () => {
+    const hiddenAction: ChampSelectionActions[] = ['finalization', 'pick-done'];
+    return hiddenAction.includes(currentAction);
   };
 
   return (
@@ -128,7 +143,7 @@ export const ChampionSelectList = () => {
       direction={'column'}
       overflow={'auto'}
       height={'100%'}
-      display={currentAction === 'finalization' ? 'none' : 'flex'}
+      display={hiddenList() ? 'none' : 'flex'}
       p={1}
       sx={{
         background: 'rgba(0,0,0,0.7)',
@@ -149,7 +164,7 @@ export const ChampionSelectList = () => {
               onClick={() => onChangePositionFilter(p)}
               sx={{
                 background: (t) =>
-                  p === positionFilter ? t.palette.action.selected : '',
+                  p === positionFilter ? t.palette.grey['800'] : '',
               }}
             >
               <img src={positionIcon(p)} alt={p} height={'20px'} />
@@ -177,15 +192,15 @@ export const ChampionSelectList = () => {
                 rowGap={1}
                 component={ButtonBase}
                 alignItems={'center'}
-                justifyContent={'space-between'}
-                width={50}
+                justifyContent={'center'}
+                width={iconChampionSize}
                 disabled={disabled(c.id)}
                 onClick={() => onClickChampion(c)}
               >
                 <SquareIcon
                   src={championIcon(c.id)}
-                  size={50}
-                  grayScale={disabledChampionList.includes(c.id)}
+                  size={iconChampionSize}
+                  grayScale={disabled(c.id)}
                 />
                 <Typography fontSize={'0.75rem'}>{c.name}</Typography>
               </Stack>

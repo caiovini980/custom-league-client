@@ -20,8 +20,17 @@ const initialState: GameDataState = {
 export const gameDataStore = store(initialState, {
   name: 'gameData',
   devtools: { enabled: true },
-}).actions((store) => ({
-  setGameData: (value: GameDataState) => {
-    store.set(value);
-  },
-}));
+})
+  .actions((store) => ({
+    setGameData: (value: GameDataState) => {
+      store.set(value);
+    },
+  }))
+  .computed((store) => ({
+    queueNameById: (queueId: number) =>
+      store.queues.use((queues) => {
+        return queues.find((q) => q.id === queueId)?.name ?? '';
+      }),
+    mapById: (mapId: number) =>
+      store.maps.use((maps) => maps.find((m) => m.id === mapId)),
+  }));

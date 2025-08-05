@@ -1,7 +1,7 @@
 export interface LolLobbyV2ReceivedInvitations {
   canAcceptInvitation: boolean;
   fromSummonerId: number;
-  fromSummonerName: string;
+  fromSummonerName: '';
   gameConfig: {
     gameMode: string;
     inviteGameType: string;

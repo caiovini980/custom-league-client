@@ -250,7 +250,7 @@ export const Event = ({ eventId, progressEndDate }: EventProps) => {
                         width: 120,
                         background:
                           rewardSelected === Number(ri.threshold)
-                            ? 'radial-gradient(circle at center, var(--mui-palette-highlight) 0%, rgba(255, 255, 255, 0) 50%)'
+                            ? 'radial-gradient(circle at center, var(--mui-palette-highlight-main) 0%, rgba(255, 255, 255, 0) 50%)'
                             : 'radial-gradient(circle at center, var(--mui-palette-divider) 0%, rgba(255, 255, 255, 0) 50%)',
                       }}
                     >

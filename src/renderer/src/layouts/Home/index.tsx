@@ -62,7 +62,6 @@ export const Home = ({ children }: PropsWithChildren) => {
           <Minigame />
         </Box>
       </Stack>
-      <Invitations />
       <Stack
         direction={'column'}
         height={'100%'}
@@ -71,6 +70,7 @@ export const Home = ({ children }: PropsWithChildren) => {
         borderLeft={'1px solid var(--mui-palette-divider)'}
       >
         <SummonerInfo />
+        <Invitations />
         <ReadyCheck />
         <FriendInvite />
         <Chat />

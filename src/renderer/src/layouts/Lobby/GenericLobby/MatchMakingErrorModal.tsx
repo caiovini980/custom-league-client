@@ -4,18 +4,16 @@ import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
 import { secondsToDisplayTime } from '@shared/utils/date.util';
 import { useEffect, useState } from 'react';
 
-interface ErrorModalProps {
-  errors: LolMatchmakingV1Search['errors'];
-}
-
-export const ErrorModal = ({ errors }: ErrorModalProps) => {
+export const MatchMakingErrorModal = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
   const currentSummoner = currentSummonerStore.info.use();
+  const errors = lobbyStore.matchMaking.use((s) => s?.errors ?? []);
 
   const [openModal, setOpenModal] = useState(false);
   const [summonersName, setSummonersName] = useState<Record<string, string>>(
@@ -37,15 +35,11 @@ export const ErrorModal = ({ errors }: ErrorModalProps) => {
         undefined,
       ).then((res) => {
         if (res.ok) {
-          setSummonersName(
-            res.body.reduce(
-              (prev, curr) =>
-                Object.assign(prev, {
-                  [curr.summonerId]: curr.gameName,
-                }),
-              {},
-            ),
-          );
+          const summonerNameMap: Record<number, string> = {};
+          res.body.forEach((s) => {
+            summonerNameMap[s.summonerId] = s.gameName;
+          });
+          setSummonersName(summonerNameMap);
         }
       });
     }

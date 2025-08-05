@@ -3,7 +3,7 @@ import { CustomIconButton } from '@render/components/input';
 import { createContext, ReactElement, useContext, useState } from 'react';
 import { IconType } from 'react-icons';
 
-interface ViewActionButtonContext {
+export interface ViewActionButtonContext {
   forceOpen: () => void;
   forceClose: () => void;
   setBadge: (value: number) => void;
@@ -14,7 +14,8 @@ export interface ViewActionButtonProps {
   icon: IconType;
   active: boolean;
   onClick: (active: boolean) => void;
-  component: ReactElement;
+  component: () => ReactElement;
+  listener?: () => ReactElement;
 }
 
 const Context = createContext({} as ViewActionButtonContext);
@@ -25,7 +26,8 @@ export const ViewActionButton = ({
   icon: Icon,
   active,
   onClick,
-  component,
+  component: Component,
+  listener: Listener,
 }: ViewActionButtonProps) => {
   const [badge, setBadge] = useState(0);
 
@@ -38,6 +40,7 @@ export const ViewActionButton = ({
         isActive: active,
       }}
     >
+      {Listener && <Listener />}
       <CustomIconButton
         onClick={() => onClick(!active)}
         sx={{
@@ -51,9 +54,9 @@ export const ViewActionButton = ({
           sx={{ top: -10, right: -2 }}
         />
       </CustomIconButton>
-      {/* biome-ignore lint/style/noNonNullAssertion: <explanation> */}
+      {/* biome-ignore lint/style/noNonNullAssertion: none */}
       <Portal container={() => document.getElementById('view-container')!}>
-        <Grow in={active}>
+        <Grow in={active} unmountOnExit mountOnEnter>
           <Box
             display={'flex'}
             position={'absolute'}
@@ -61,7 +64,7 @@ export const ViewActionButton = ({
             right={0}
             zIndex={'var(--mui-zIndex-modal)'}
           >
-            {component}
+            <Component />
           </Box>
         </Grow>
       </Portal>

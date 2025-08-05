@@ -2,11 +2,13 @@ import { Stack } from '@mui/material';
 import { ActionButton } from '@render/layouts/Lobby/ChampSelect/CenterArea/ActionButton';
 import { ChampionSelectList } from '@render/layouts/Lobby/ChampSelect/CenterArea/ChampionSelectList';
 import { SubsetChampionPick } from '@render/layouts/Lobby/ChampSelect/CenterArea/SubsetChampionPick';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { SkinSelector } from 'src/layouts/Lobby/ChampSelect/CenterArea/SkinSelector';
 
 export const CenterArea = () => {
-  const { session } = useChampSelectContext();
+  const allowSubsetChampionPicks = champSelectStore.getSessionData(
+    (session) => session.allowSubsetChampionPicks,
+  );
 
   return (
     <Stack
@@ -17,7 +19,7 @@ export const CenterArea = () => {
       justifyContent={'flex-end'}
       overflow={'auto'}
     >
-      {session.allowSubsetChampionPicks ? (
+      {allowSubsetChampionPicks ? (
         <SubsetChampionPick />
       ) : (
         <ChampionSelectList />

@@ -234,7 +234,7 @@ export const LeagueClientImperativeModal = withSystemReady(
             textAlign={'center'}
             sx={{
               '& > b': {
-                color: 'var(--mui-palette-highlight)',
+                color: 'var(--mui-palette-highlight-main)',
               },
             }}
             dangerouslySetInnerHTML={{ __html: msg }}

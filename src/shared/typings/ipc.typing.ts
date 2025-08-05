@@ -14,8 +14,8 @@ import {
   ClientEndpointKeys,
   ClientEndpointResponse,
 } from '@shared/typings/lol/clientEndpoint';
-import { ProgressInfo } from 'electron-updater';
 import { EventMessage } from '@shared/typings/lol/eventMessage';
+import { ProgressInfo } from 'electron-updater';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -30,6 +30,7 @@ export interface IpcFunction {
     versionInfo: () => VersionInfo;
   };
   client: {
+    blink: () => void;
     priorityApp: () => void;
     changeShowClient: (value: boolean) => void;
     getPatchNotes: () => GetPatchNotesResponse;

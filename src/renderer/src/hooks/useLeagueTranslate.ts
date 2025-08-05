@@ -27,7 +27,7 @@ export const useLeagueTranslate = () => {
         return '';
       }
       return args.reduce<string>((prev, curr) => {
-        return prev.replace(/{{.+}}/, String(curr));
+        return prev.replace(/{{\w+}}/, String(curr));
       }, data[key]);
     };
   };

@@ -1,16 +1,16 @@
 import { store } from '@davstack/store';
 import { Null } from '@shared/typings/generic.typing';
-import { LolSummonerV1SummonerProfile } from '@shared/typings/lol/response/lolSummonerV1SummonerProfile';
+import { LolChampionsV1Inventories_Id_Champions } from '@shared/typings/lol/response/lolChampionsV1Inventories_Id_Champions';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 
 export interface CurrentSummonerState {
   info: Null<LolSummonerV1Summoners_Id>;
-  profile: Null<LolSummonerV1SummonerProfile>;
+  champions: LolChampionsV1Inventories_Id_Champions[];
 }
 
 const initialState: CurrentSummonerState = {
   info: null,
-  profile: null,
+  champions: [],
 };
 
 export const currentSummonerStore = store(initialState, {
@@ -20,4 +20,7 @@ export const currentSummonerStore = store(initialState, {
   resetState: () => {
     store.set(initialState);
   },
+  getChampionAvailable: () => {
+    return store.champions.filter((c) => c.active)
+  }
 }));

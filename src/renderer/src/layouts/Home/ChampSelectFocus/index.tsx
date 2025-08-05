@@ -1,53 +1,55 @@
 import { Stack, Typography } from '@mui/material';
 import { CircularIcon } from '@render/components/CircularIcon';
 import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
-import { useChampSelect } from '@render/hooks/useChampSelect';
 import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelectAudio } from '@render/layouts/Home/ChampSelectFocus/ChampSelectAudio';
+import { OngoingSwapMemo } from '@render/layouts/Home/ChampSelectFocus/OngoingSwap';
 import { electronHandle } from '@render/utils/electronFunction.util';
-import {
-  LolChampSelectV1Session,
-  LolChampSelectV1SessionAction,
-} from '@shared/typings/lol/response/lolChampSelectV1Session';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
+import { LolChampSelectV1SessionAction } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
-export const ChampSelectFocus = withChampSelectSession(({ session }) => {
+export const ChampSelectFocus = withChampSelectSession(() => {
   const navigate = useNavigate();
   const location = useLocation();
   const { rcpFeLolChampSelect, rcpFeLolSocial } = useLeagueTranslate();
-  const { summonerData, summonersData, getCurrentActionIndex, getAction } =
-    useChampSelect(session);
-  const { time, title } = useChampSelectTimer(session, getAction());
+
+  const isActingNow = champSelectStore.getCurrentSummonerData(
+    (s) => s.isActingNow,
+    false,
+  );
+  const currentActionIndex = champSelectStore.currentActionIndex.use();
+  const currentAction = champSelectStore.currentAction.use();
+  const actionsGroup = champSelectStore.sessionActions.use();
+
+  const { time, title } = useChampSelectTimer();
 
   const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
   const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   useEffect(() => {
-    if (summonerData?.isActingNow) {
+    if (isActingNow) {
       electronHandle.client.priorityApp();
       navigate('/lobby');
     }
-  }, [summonerData]);
+  }, [isActingNow]);
 
   useEffect(() => {
     navigate('/lobby');
-  }, [session.id]);
-
-  const currentActionIndex = getCurrentActionIndex();
+  }, []);
 
   const getPickingChampion = () => {
     if (currentActionIndex === -1) return [];
-
-    return session.actions[currentActionIndex];
+    return actionsGroup[currentActionIndex];
   };
 
   const getPickingChampionNext = () => {
     if (currentActionIndex === -1) return [];
 
-    const actions = session.actions[currentActionIndex + 1];
+    const actions = actionsGroup[currentActionIndex + 1];
     if (!actions) return [];
 
     return actions;
@@ -74,37 +76,33 @@ export const ChampSelectFocus = withChampSelectSession(({ session }) => {
           {rcpFeLolChampSelectTrans('picking_champion')}
         </Typography>
         {getPickingChampion().map((a) => {
-          return <Player key={a.actorCellId} action={a} session={session} />;
+          return <Player key={a.actorCellId} action={a} />;
         })}
         <Typography fontSize={'0.8rem'}>
           {rcpFeLolChampSelectTrans('picking_champion_next')}
         </Typography>
         {getPickingChampionNext().map((a) => {
-          return <Player key={a.actorCellId} action={a} session={session} />;
+          return <Player key={a.actorCellId} action={a} />;
         })}
       </Stack>
       <ChampSelectAudio
-        session={session}
         time={time}
-        action={getAction()}
-        summonerData={summonerData}
-        summonersData={summonersData}
+        action={currentAction}
+        isActingNow={isActingNow}
       />
+      <OngoingSwapMemo />
     </>
   );
 });
 
-const Player = (props: {
-  session: LolChampSelectV1Session;
-  action: LolChampSelectV1SessionAction;
-}) => {
+const Player = (props: { action: LolChampSelectV1SessionAction }) => {
   const { championIcon } = useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
-  const getName = () => {
-    const { session, action } = props;
+  const name = champSelectStore.getSessionData((session) => {
+    const { action } = props;
     const isEnemy = !action.isAllyAction;
     const cellId = action.actorCellId;
 
@@ -113,17 +111,16 @@ const Player = (props: {
       const index = cellId >= amount ? cellId - amount : cellId;
       return rcpFeLolChampSelectTrans('name_visibility_type_enemy', index + 1);
     }
+
     return (
-      [...session.myTeam, ...session.theirTeam].find(
-        (team) => team.cellId === cellId,
-      )?.gameName ?? ''
+      session.myTeam.find((team) => team.cellId === cellId)?.gameName ?? ''
     );
-  };
+  });
 
   return (
     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
       <CircularIcon src={championIcon(props.action.championId)} />
-      <Typography>{getName()}</Typography>
+      <Typography>{name}</Typography>
     </Stack>
   );
 };

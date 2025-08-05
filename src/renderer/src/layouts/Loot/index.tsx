@@ -89,41 +89,44 @@ export const Loot = withSystemReady('loot', () => {
 
   return (
     <LootContext loots={loot}>
-      <Stack direction={'row'} height={'100%'} width={'100%'} p={1}>
-        <Stack
-          direction={'column'}
-          overflow={'auto'}
-          height={'100%'}
-          width={'100%'}
-          rowGap={4}
-        >
-          {categories.map((lootTypeKey) => {
-            return (
-              <Stack key={lootTypeKey} direction={'column'} width={'100%'}>
-                <Stack
-                  direction={'row'}
-                  alignItems={'center'}
-                  width={'90%'}
-                  columnGap={1}
-                  mb={1}
-                >
-                  <Typography whiteSpace={'nowrap'}>
-                    {rcpFeLolLootTrans(`loot_category_${lootTypeKey}`)}
-                  </Typography>
-                  <Divider orientation={'horizontal'} sx={{ flex: 1 }} />
+      <Stack direction={'row'} height={'100%'} width={'100%'}>
+        <Stack direction={'column'} height={'100%'} width={'100%'}>
+          <Stack
+            direction={'column'}
+            overflow={'auto'}
+            height={'100%'}
+            width={'100%'}
+            rowGap={4}
+            p={1}
+          >
+            {categories.map((lootTypeKey) => {
+              return (
+                <Stack key={lootTypeKey} direction={'column'} width={'100%'}>
+                  <Stack
+                    direction={'row'}
+                    alignItems={'center'}
+                    width={'90%'}
+                    columnGap={1}
+                    mb={1}
+                  >
+                    <Typography whiteSpace={'nowrap'}>
+                      {rcpFeLolLootTrans(`loot_category_${lootTypeKey}`)}
+                    </Typography>
+                    <Divider orientation={'horizontal'} sx={{ flex: 1 }} />
+                  </Stack>
+                  <Grid container spacing={2} alignItems={'center'}>
+                    {getLootFiltered(lootTypeKey).map((l) => {
+                      return (
+                        <Grid key={l.lootId} id={`loot_${l.lootId}`}>
+                          <LootItem loot={l} />
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
                 </Stack>
-                <Grid container spacing={2} alignItems={'center'}>
-                  {getLootFiltered(lootTypeKey).map((l) => {
-                    return (
-                      <Grid key={l.lootId} id={`loot_${l.lootId}`}>
-                        <LootItem loot={l} />
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </Stack>
-            );
-          })}
+              );
+            })}
+          </Stack>
           <Stack
             direction={'row'}
             columnGap={3}

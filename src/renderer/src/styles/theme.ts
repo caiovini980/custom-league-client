@@ -15,7 +15,9 @@ const palette: PaletteOptions = {
   error: {
     main: '#e05252',
   },
-  highlight: '#e9a61e',
+  highlight: {
+    main: '#e1b93d',
+  },
   matchHistory: {
     win: '#2a8179',
     defeat: '#7d2727',
@@ -67,6 +69,7 @@ export const theme = responsiveFontSizes(
       MuiTooltip: {
         styleOverrides: {
           tooltip: {
+            border: '1px solid var(--mui-palette-divider)',
             boxShadow: 'var(--mui-shadows-2)',
             color: 'var(--mui-palette-text-primary)',
             background: 'var(--mui-palette-background-paper)',

@@ -32,17 +32,14 @@ export interface LolChampSelectV1Session {
   trades: LolChampSelectV1SessionTrade[];
 }
 
-export interface LolChampSelectV1SessionPickOrderSwap {
-  cellId: number;
-  id: number;
-  state: 'AVAILABLE' | 'INVALID' | 'BUSY';
-}
+export interface LolChampSelectV1SessionPickOrderSwap
+  extends LolChampSelectV1SessionSwap {}
 
-export interface LolChampSelectV1SessionPositionSwap {
-  cellId: number;
-  id: number;
-  state: 'AVAILABLE' | 'INVALID' | 'BUSY';
-}
+export interface LolChampSelectV1SessionPositionSwap
+  extends LolChampSelectV1SessionSwap {}
+
+export interface LolChampSelectV1SessionTrade
+  extends LolChampSelectV1SessionSwap {}
 
 export interface LolChampSelectV1SessionAction {
   actorCellId: number;
@@ -113,7 +110,7 @@ export interface LolChampSelectV1SessionBenchChampions {
   isPriority: boolean;
 }
 
-export interface LolChampSelectV1SessionTrade {
+export interface LolChampSelectV1SessionSwap {
   cellId: number;
   id: number;
   state: 'AVAILABLE' | 'INVALID' | 'BUSY';

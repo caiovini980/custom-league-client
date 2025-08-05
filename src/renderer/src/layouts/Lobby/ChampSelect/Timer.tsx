@@ -1,10 +1,8 @@
 import { Stack, Typography } from '@mui/material';
 import { useChampSelectTimer } from '@render/hooks/useChampSelectTimer';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
 
 export const Timer = () => {
-  const { session, currentAction } = useChampSelectContext();
-  const { title, time } = useChampSelectTimer(session, currentAction);
+  const { title, time } = useChampSelectTimer();
 
   return (
     <Stack direction={'column'} alignItems={'center'} justifyContent={'center'}>

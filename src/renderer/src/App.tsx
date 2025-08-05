@@ -10,10 +10,9 @@ import { Profile } from '@render/layouts/Profile';
 import { YourShop } from '@render/layouts/YourShop';
 import { CustomThemeProvider } from '@render/providers/CustomThemeProvider';
 import { SnackbarProvider } from 'notistack';
-import { JSX } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router';
 
-export const App = (): JSX.Element => {
+export const App = () => {
   return (
     <SnackbarProvider
       anchorOrigin={{

@@ -1,4 +1,5 @@
-import { Divider, List, Paper, Stack } from '@mui/material';
+import { Divider, List, Paper, Stack, Typography } from '@mui/material';
+import { useAudio } from '@render/hooks/useAudioManager';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { ConversationButton } from '@render/layouts/Home/ViewActions/Conversations/ConversationButton';
@@ -12,6 +13,9 @@ export const Conversations = () => {
   const { makeRequest } = useLeagueClientRequest();
   const actionButtonContext = useViewActionButtonContext();
 
+  const sfxChatClose = useAudio('sfx-soc-ui-chatwindow-close');
+  const sfxChatOpen = useAudio('sfx-soc-ui-chatwindow-open');
+
   const [conversations, setConversations] = useState<LolChatV1Conversations[]>(
     [],
   );
@@ -22,20 +26,24 @@ export const Conversations = () => {
     actionButtonContext.forceClose();
   };
 
+  const removeConversationActive = () => {
+    makeRequest('DELETE', '/lol-chat/v1/conversations/active', undefined);
+    setConversationActive(undefined);
+  };
+
   const { loadEventData } = useLeagueClientEvent(
     '/lol-chat/v1/conversations',
     (data) => {
       const filtered = orderBy(
-        data.filter((d) => d.type === 'chat'),
+        data.filter((d) => d.type === 'chat').filter((d) => d.gameName),
         (d) => d.unreadMessageCount,
         'desc',
       );
-      const unreadAmount = filtered.reduce(
-        (sum, curr) => sum + curr.unreadMessageCount,
-        0,
-      );
       setConversations(filtered);
-      actionButtonContext.setBadge(unreadAmount);
+
+      if (!filtered.length) {
+        removeConversationActive();
+      }
     },
   );
 
@@ -48,13 +56,10 @@ export const Conversations = () => {
     (data) => {
       loadEventData();
       if (data) {
-        actionButtonContext.forceOpen();
         const conversation = conversations.find((c) => c.id === data.id);
         if (conversation) {
           setConversationActive(conversation);
         }
-      } else {
-        actionButtonContext.forceClose();
       }
     },
     {
@@ -64,10 +69,23 @@ export const Conversations = () => {
   );
 
   useEffect(() => {
-    if (!actionButtonContext.isActive) {
-      makeRequest('DELETE', '/lol-chat/v1/conversations/active', undefined);
+    if (actionButtonContext.isActive) {
+      sfxChatOpen.replay();
+    } else {
+      sfxChatClose.replay();
+      removeConversationActive();
     }
   }, [actionButtonContext.isActive]);
+
+  useEffect(() => {
+    if (
+      !conversationActive &&
+      conversations.length &&
+      actionButtonContext.isActive
+    ) {
+      setConversationActive(conversations[0]);
+    }
+  }, [conversationActive, conversations.length, actionButtonContext.isActive]);
 
   return (
     <Stack
@@ -78,6 +96,9 @@ export const Conversations = () => {
       variant={'outlined'}
       overflow={'auto'}
     >
+      {!conversations.length && (
+        <Typography textAlign={'center'}>...</Typography>
+      )}
       <List
         disablePadding
         sx={{ height: '100%', flexShrink: 0, overflow: 'auto' }}
@@ -93,12 +114,14 @@ export const Conversations = () => {
           );
         })}
       </List>
-      <Divider orientation={'vertical'} flexItem />
       {conversationActive && (
-        <ConversationsArea
-          conversation={conversationActive}
-          onClose={onClose}
-        />
+        <>
+          <Divider orientation={'vertical'} flexItem />
+          <ConversationsArea
+            conversation={conversationActive}
+            onClose={onClose}
+          />
+        </>
       )}
     </Stack>
   );

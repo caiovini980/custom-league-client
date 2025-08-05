@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLobby } from '@render/hooks/useLobby';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
 import { Fragment, useEffect, useState } from 'react';
@@ -14,26 +14,24 @@ import { Fragment, useEffect, useState } from 'react';
 export const QueueList = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const { getQueueNameByQueueId, getLobby } = useLobby();
 
-  const gameFlow = lobbyStore.gameFlow.use();
+  const allowedChangeActivity = lobbyStore.lobby.use(
+    (s) => s?.localMember.allowedChangeActivity ?? false,
+  );
+  const gameFlowPhase = lobbyStore.gameFlow.use((s) => s?.phase);
+  const queueId = lobbyStore.gameFlow.use((s) => s?.gameData.queue.id);
 
   const [queueList, setQueueList] = useState<LolGameQueuesV1Queues[]>([]);
-
-  useEffect(() => {
-    makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
-      const gameMode = ['CLASSIC', 'ARAM', 'TFT'];
-      if (res.ok) {
-        setQueueList(res.body.filter((q) => gameMode.includes(q.gameMode)));
-      }
-    });
-  }, []);
 
   const onClickQueue = (queue: LolGameQueuesV1Queues) => {
     makeRequest('POST', '/lol-lobby/v2/lobby', {
       queueId: queue.id,
     }).then();
     return;
+  };
+
+  const getQueueNameByQueueId = (queueId: number) => {
+    return gameDataStore.queueNameById.get(queueId);
   };
 
   const queuesFiltered = queueList.filter(
@@ -102,15 +100,21 @@ export const QueueList = () => {
   };
 
   const disabledList = () => {
-    if (gameFlow) {
-      if (gameFlow.phase === 'None') return false;
-      return (
-        gameFlow.phase === 'Matchmaking' ||
-        !getLobby()?.localMember.allowedChangeActivity
-      );
+    if (gameFlowPhase) {
+      if (gameFlowPhase === 'None') return false;
+      return gameFlowPhase === 'Matchmaking' || !allowedChangeActivity;
     }
     return false;
   };
+
+  useEffect(() => {
+    makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
+      const gameMode = ['CLASSIC', 'ARAM', 'TFT'];
+      if (res.ok) {
+        setQueueList(res.body.filter((q) => gameMode.includes(q.gameMode)));
+      }
+    });
+  }, []);
 
   return (
     <List
@@ -137,8 +141,8 @@ export const QueueList = () => {
               <ListItemButton
                 key={q.id}
                 onClick={() => onClickQueue(q)}
-                selected={q.id === gameFlow?.gameData.queue.id}
-                disabled={gameFlow?.phase === 'Matchmaking'}
+                selected={q.id === queueId}
+                disabled={gameFlowPhase === 'Matchmaking'}
               >
                 <ListItemText>{getQueueNameByQueueId(q.id)}</ListItemText>
               </ListItemButton>

@@ -2,7 +2,7 @@ import type {} from '@mui/material/themeCssVarsAugmentation';
 
 declare module '@mui/material/styles' {
   interface Palette {
-    highlight: string;
+    highlight: Palette['primary'];
     matchHistory: {
       win: string;
       defeat: string;
@@ -16,7 +16,7 @@ declare module '@mui/material/styles' {
   }
 
   interface PaletteOptions {
-    highlight: string;
+    highlight: PaletteOptions['primary'];
     matchHistory: {
       win: string;
       defeat: string;
@@ -32,6 +32,7 @@ declare module '@mui/material/styles' {
 
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
+    highlight: true;
     chatAvailability: {
       chat: string;
       away: string;

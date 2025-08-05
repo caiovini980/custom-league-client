@@ -3,13 +3,13 @@ import {
   IpcFunctionObjectMapper,
   IpcMainToRendererObjectMapper,
 } from '@shared/typings/ipc.typing';
-import { contextBridge, ipcRenderer, shell } from 'electron';
-import { merge } from 'lodash-es';
-import { EventMessage } from '../../shared/typings/lol/eventMessage';
+import { EventMessage } from '@shared/typings/lol/eventMessage';
 import {
   buildRegexFromEvent,
   hasKeyRegex,
-} from '../../shared/utils/leagueClientEvent.util';
+} from '@shared/utils/leagueClientEvent.util';
+import { contextBridge, ipcRenderer, shell } from 'electron';
+import { merge } from 'lodash-es';
 
 export class IpcRendererImpl {
   static init() {
@@ -26,6 +26,7 @@ export class IpcRendererImpl {
         versionInfo: null,
       },
       client: {
+        blink: null,
         priorityApp: null,
         getClientStatus: null,
         startLeagueClient: null,

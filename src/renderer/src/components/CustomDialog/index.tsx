@@ -64,8 +64,8 @@ const CustomDialog = ({
   labelBtnCancel,
   handleConfirm,
   handleClose,
-  loading,
-  loadingText = 'Loading...',
+  loading = false,
+  loadingText = '',
   actionsComponent: ActionsComponent,
   hiddenTitle = false,
   closeOnClickBackDrop = false,
@@ -144,7 +144,12 @@ const CustomDialog = ({
         transition: Transition,
       }}
     >
-      {loading && <LoadingScreen backdrop loadingText={loadingText} />}
+      <LoadingScreen
+        loading={loading}
+        fullArea
+        backdrop
+        loadingText={loadingText}
+      />
       {!hiddenTitle &&
         (typeof title === 'string' ? (
           <DialogTitle

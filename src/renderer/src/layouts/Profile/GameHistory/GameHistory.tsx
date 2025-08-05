@@ -52,7 +52,7 @@ export const GameHistory = ({ puuid }: GameHistoryProps) => {
       }}
     >
       <LoadingScreen loading={loading} height={'100%'} fullArea />
-      {matchHistory.length === 0 && (
+      {!loading && matchHistory.length === 0 && (
         <ListItem>
           <ListItemText
             sx={{ textAlign: 'center' }}

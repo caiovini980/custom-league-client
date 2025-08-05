@@ -1,4 +1,5 @@
 import { ButtonBase, Paper, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import {
@@ -6,7 +7,6 @@ import {
   LolHonorV2V1BallotHonoredPlayer,
 } from '@shared/typings/lol/response/lolHonorV2V1Ballot';
 import { PropsWithChildren } from 'react';
-import { CircularIcon } from '@render/components/CircularIcon';
 
 interface HonorCardProps {
   eligiblePlayer: LolHonorV2V1BallotEligible;
@@ -89,7 +89,7 @@ export const HonorCardContainer = ({ children }: PropsWithChildren) => {
       direction={'row'}
       width={'100%'}
       height={'100%'}
-      justifyContent={'space-between'}
+      justifyContent={'space-evenly'}
       columnGap={2}
     >
       {children}

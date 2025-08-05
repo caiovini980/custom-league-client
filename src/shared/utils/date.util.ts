@@ -23,7 +23,7 @@ export const secondsToDisplayTime = (seconds: number, addDays = false) => {
   const minutes = Math.floor((seconds % 3600) / 60);
   const display: number[] = [];
 
-  if (addDays && days) display.push(days);
+  if (addDays) display.push(days);
   if (hours) display.push(hours);
   display.push(minutes);
   display.push(Math.floor(seconds % 60));

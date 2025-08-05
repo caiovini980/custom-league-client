@@ -6,12 +6,13 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { EditChatStatus } from '@render/layouts/Home/SummonerInfo/EditChatStatus';
+import { SummonerInfoListener } from '@render/layouts/Home/SummonerInfo/SummonerInfoListener';
 import { getChatAvailabilityColor } from '@render/utils/chat.util';
 import config from '@render/utils/config.util';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { MouseEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export const SummonerInfo = () => {
   const navigate = useNavigate();
@@ -118,6 +119,7 @@ export const SummonerInfo = () => {
           </Typography>
         </Stack>
       </Stack>
+      <SummonerInfoListener summonerId={currentSummoner.summonerId} />
       {chatData && (
         <EditChatStatus
           chatData={chatData}

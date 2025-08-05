@@ -2,19 +2,17 @@ import AlertBox from '@render/components/AlertBox';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
 
-interface RestrictionProps {
-  restrictions: NonNullable<LolLobbyV2Lobby['restrictions']>;
-}
-
-export const Restriction = ({ restrictions }: RestrictionProps) => {
+export const Restriction = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
 
   const { rcpFeLolPartiesTrans } = rcpFeLolParties;
+
+  const restrictions = lobbyStore.lobby.use((s) => s?.restrictions ?? []);
 
   const [summoners, setSummoners] = useState<LolSummonerV1Summoners_Id[]>([]);
 
@@ -37,7 +35,8 @@ export const Restriction = ({ restrictions }: RestrictionProps) => {
     if (firstRestriction) {
       const errorKey = `game_select_queue_restriction_party_${firstRestriction.restrictionCode.toLowerCase()}`;
       const playerNames = summoners.map((s) => s.gameName).join(', ');
-      return rcpFeLolPartiesTrans(errorKey, playerNames);
+      const restrictionArgs = Object.values(firstRestriction.restrictionArgs);
+      return rcpFeLolPartiesTrans(errorKey, ...restrictionArgs, playerNames);
     }
     return '';
   };

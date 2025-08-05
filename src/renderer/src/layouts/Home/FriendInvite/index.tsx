@@ -49,7 +49,7 @@ export const FriendInvite = () => {
           p: 1,
           borderBottom: '1px solid var(--mui-palette-divider)',
           '& > p': {
-            color: 'var(--mui-palette-highlight)',
+            color: 'var(--mui-palette-highlight-main)',
           },
         }}
       >

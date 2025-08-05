@@ -14,13 +14,13 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { ChromaSelector } from '@render/layouts/Lobby/ChampSelect/CenterArea/SkinSelector/ChromaSelector';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 
 export const SkinSelector = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { lolGameDataImg } = useLeagueImage();
   const carouselRef = useRef<Carousel>(null);
-  const { currentPlayer } = useChampSelectContext();
+  const skinId = champSelectStore.getCurrentSummonerData((s) => s.skinId, 0);
 
   const [skins, setSkins] = useState<LolChampSelectV1SkinCarouselSkins[]>([]);
 
@@ -52,11 +52,11 @@ export const SkinSelector = () => {
 
   const index = useMemo(() => {
     const skinIndex = skins.findIndex((s) => {
-      if (s.id === currentPlayer.selectedSkinId) return true;
-      return s.childSkins.some((cs) => cs.id === currentPlayer.selectedSkinId);
+      if (s.id === skinId) return true;
+      return s.childSkins.some((cs) => cs.id === skinId);
     });
     return skinIndex === -1 ? 0 : skinIndex;
-  }, [skins.map((s) => s.id).join(':'), currentPlayer.selectedSkinId]);
+  }, [skins.map((s) => s.id).join(':'), skinId]);
 
   if (!skins.length) return;
 

@@ -5,19 +5,18 @@ import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { electronHandle } from '@render/utils/electronFunction.util';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolMatchmakingV1ReadyCheck } from '@shared/typings/lol/response/lolMatchmakingV1ReadyCheck';
 import { useEffect, useState } from 'react';
 
-interface ReadyCheckModalProps {
-  autoAccept: boolean;
-}
-
-export const ReadyCheckModal = ({ autoAccept }: ReadyCheckModalProps) => {
+export const ReadyCheckModal = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolL10n } = useLeagueTranslate();
   const gameFound = useAudio('game_found');
 
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
+
+  const autoAccept = lobbyStore.autoAccept.use();
 
   const [matchReadyCheck, setMatchReadyCheck] =
     useState<LolMatchmakingV1ReadyCheck>();
