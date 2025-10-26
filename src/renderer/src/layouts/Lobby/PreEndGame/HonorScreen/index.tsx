@@ -24,10 +24,10 @@ interface HonorScreenProps {
 export const HonorScreen = ({ onClickContinue }: HonorScreenProps) => {
   useAudio('sfx-honor-votingceremony-intro', true);
 
-  const { rcpFeLolHonor } = useLeagueTranslate();
+  const { rcpFeLolPostgame } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
 
-  const { rcpFeLolHonorTrans } = rcpFeLolHonor;
+  const { rcpFeLolPostgameTrans } = rcpFeLolPostgame;
 
   const [honorData, setHonorData] = useState<LolHonorV2V1Ballot>();
   const [playersData, setPlayersData] = useState<LolSummonerV1Summoners_Id[]>(
@@ -59,7 +59,6 @@ export const HonorScreen = ({ onClickContinue }: HonorScreenProps) => {
       if (res.ok) {
         setPlayersData(res.body);
       } else {
-        // TODO: jump to EndGameScreen
         makeRequest('POST', '/lol-lobby/v2/play-again', undefined).then(
           (res) => {
             if (!res.ok) {
@@ -96,7 +95,7 @@ export const HonorScreen = ({ onClickContinue }: HonorScreenProps) => {
     >
       <Stack direction={'column'} alignItems={'center'}>
         <Typography>
-          {rcpFeLolHonorTrans('honor_prompted_voting_title')}
+          {rcpFeLolPostgameTrans('honor_prompted_voting_title')}
         </Typography>
         <Typography>
           {honorData.honoredPlayers.length} / {honorData.votePool.votes}

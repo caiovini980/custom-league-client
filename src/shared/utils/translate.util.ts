@@ -17,7 +17,6 @@ export const translateJsonMap = {
   'rcp-fe-lol-esports-spectate': ['trans'],
   'rcp-fe-lol-event-hub': ['trans'],
   'rcp-fe-lol-highlights': ['trans'],
-  'rcp-fe-lol-honor': ['trans'],
   'rcp-fe-lol-l10n': ['trans'],
   'rcp-fe-lol-leagues': ['trans'],
   'rcp-fe-lol-loot': ['trans'],
