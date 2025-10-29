@@ -1,4 +1,4 @@
-import { Stack, Switch } from '@mui/material';
+import { Stack } from '@mui/material';
 import { CustomIconButton } from '@render/components/input';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { useSnackNotification } from '@render/hooks/useSnackNotification';
@@ -31,14 +31,6 @@ export const GeneralTab = () => {
       });
   };
 
-  const onClickLightMode = () => {
-    const mode = getConfig('THEME_MODE') === 'DARK' ? 'LIGHT' : 'DARK';
-    appConfig.setConfig({
-      name: 'THEME_MODE',
-      value: mode,
-    });
-  };
-
   return (
     <Stack direction={'column'} rowGap={1} p={1}>
       <LabelAction
@@ -49,17 +41,6 @@ export const GeneralTab = () => {
             <FaEdit size={14} />
           </CustomIconButton>
         }
-      />
-      <LabelAction
-        label={localTranslate('light_mode')}
-        action={
-          <Switch
-            size={'small'}
-            checked={getConfig('THEME_MODE') === 'LIGHT'}
-            onChange={() => onClickLightMode()}
-          />
-        }
-        experimental
       />
     </Stack>
   );

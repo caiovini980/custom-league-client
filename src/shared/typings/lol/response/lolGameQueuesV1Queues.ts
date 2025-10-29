@@ -39,6 +39,7 @@ export interface LolGameQueuesV1Queues {
   showQuickPlaySlotSelection: boolean;
   spectatorEnabled: boolean;
   type: string;
+  isLimitedTimeQueue?: boolean;
 }
 
 interface GameTypeConfig {

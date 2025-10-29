@@ -51,8 +51,10 @@ const initialState: LeagueClientState = {
 export const leagueClientStore = store(initialState, {
   name: 'leagueClient',
   devtools: { enabled: true },
-}).actions((store) => ({
-  resetState: () => {
-    store.set(initialState);
-  },
-}));
+})
+  .actions((store) => ({
+    resetState: () => {
+      store.set(initialState);
+    },
+  }))
+  .create();

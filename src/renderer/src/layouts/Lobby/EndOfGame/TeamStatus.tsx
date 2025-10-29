@@ -167,7 +167,7 @@ export const TeamStatus = ({ team, gameLength }: TeamStatusProps) => {
         <TableBody>
           {team.players.map((player) => (
             <ChampionStatus
-              key={player.puuid}
+              key={player.summonerId}
               championStatus={player}
               gameLength={gameLength}
             />

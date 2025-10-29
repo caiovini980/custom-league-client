@@ -8,5 +8,9 @@ interface EndGameChatGroupProps {
 
 export const EndGameChatGroup = ({ mucJwtDto }: EndGameChatGroupProps) => {
   if (!mucJwtDto) return null;
-  return <ChatGroup mucJwtDto={mucJwtDto} type={'postGame'} chatHeight={160} />;
+  return (
+    <div style={{ width: 400 }}>
+      <ChatGroup mucJwtDto={mucJwtDto} type={'postGame'} chatHeight={160} />
+    </div>
+  );
 };

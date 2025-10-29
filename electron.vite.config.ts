@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
       'connect-src': [],
       'script-src': [],
       'style-src': ["'unsafe-inline'"],
-      'img-src': ['blob:', 'data:', 'https://ddragon.leagueoflegends.com', 'https://raw.communitydragon.org', 'https://cmsassets.rgpub.io'],
+      'img-src': ['blob:', 'data:', 'https://ddragon.leagueoflegends.com', 'https://raw.communitydragon.org', 'https://cmsassets.rgpub.io', '*.cloudfront.net'],
       'media-src': ['https://raw.communitydragon.org', 'https://cmsassets.rgpub.io', 'https://yoututbe.com'],
       'frame-src': ['https://embed.rgpub.io', 'https://www.youtube.com', 'https://youtube-nocookie.com', 'https://ftw.riotgames.com']
     }

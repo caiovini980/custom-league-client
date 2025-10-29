@@ -1,21 +1,18 @@
 import { ButtonBase, Paper, Tooltip, Typography } from '@mui/material';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { useLootContext } from '@render/layouts/Loot/LootContext';
-import { LootContextMenu } from '@render/layouts/Loot/LootContextMenu';
 import { LootTooltip } from '@render/layouts/Loot/LootTooltip';
 import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
 import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
-import { useState } from 'react';
 
 interface LootItemProps {
   loot: LolLootV1PlayerLoot;
+  onOpenContextMenu: (loot: LolLootV1PlayerLoot) => void;
 }
 
-export const LootItem = ({ loot }: LootItemProps) => {
+export const LootItem = ({ loot, onOpenContextMenu }: LootItemProps) => {
   const { getLootImg } = useLootUtil();
   const { behaviorToSlot, addLootInSlot } = useLootContext();
-
-  const [lootSelected, setLootSelected] = useState(false);
 
   const border = () => {
     const b = (color: string) => `2px solid var(--mui-palette-${color})`;
@@ -29,48 +26,46 @@ export const LootItem = ({ loot }: LootItemProps) => {
     if (behaviorToSlot(loot)) {
       addLootInSlot(loot);
     } else {
-      setLootSelected(true);
+      onOpenContextMenu(loot);
     }
   };
 
   return (
-    <>
-      <Tooltip
-        title={<LootTooltip loot={loot} />}
-        disableInteractive
-        leaveDelay={50}
-        slotProps={{
-          tooltip: {
-            sx: { p: 0, overflow: 'hidden' },
-          },
+    <Tooltip
+      title={<LootTooltip loot={loot} />}
+      disableInteractive
+      leaveDelay={50}
+      slotProps={{
+        tooltip: {
+          sx: { p: 0, overflow: 'hidden' },
+        },
+      }}
+    >
+      <Paper
+        variant={'outlined'}
+        component={ButtonBase}
+        onClick={onClickItem}
+        sx={{
+          position: 'relative',
+          border: border(),
         }}
       >
-        <Paper
-          variant={'outlined'}
-          component={ButtonBase}
-          onClick={onClickItem}
+        <SquareIcon src={getLootImg(loot)} size={120} />
+        <Typography
           sx={{
-            position: 'relative',
-            border: border(),
+            position: 'absolute',
+            bottom: 3,
+            right: 3,
+            background: 'var(--mui-palette-background-paper)',
+            borderRadius: '50%',
+            p: 0.3,
+            width: 30,
+            height: 30,
           }}
         >
-          <SquareIcon src={getLootImg(loot)} size={120} />
-          <Typography
-            sx={{
-              position: 'absolute',
-              bottom: 3,
-              right: 7,
-            }}
-          >
-            {loot.count}
-          </Typography>
-        </Paper>
-      </Tooltip>
-      <LootContextMenu
-        lootSelected={lootSelected}
-        handleClose={() => setLootSelected(false)}
-        loot={loot}
-      />
-    </>
+          {loot.count}
+        </Typography>
+      </Paper>
+    </Tooltip>
   );
 };

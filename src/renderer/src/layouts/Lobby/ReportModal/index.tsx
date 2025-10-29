@@ -21,11 +21,13 @@ export const ReportModal = forwardRef<ReportModalRef, ReportModalProps>(
   (props, ref) => {
     const { makeRequest } = useLeagueClientRequest();
     const { profileIcon } = useLeagueImage();
-    const { rcpFeLolSharedComponents } = useLeagueTranslate();
-    const { snackSuccess } = useSnackNotification();
+    const { rcpFeLolSharedComponents, rcpFeLolChampSelect } =
+      useLeagueTranslate();
+    const { snackSuccess, snackError } = useSnackNotification();
 
     const { rcpFeLolSharedComponentsTransReportModal } =
       rcpFeLolSharedComponents;
+    const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
     const [comment, setComment] = useState('');
     const [reportCategories, setReportCategories] = useState<string[]>([]);
@@ -99,7 +101,10 @@ export const ReportModal = forwardRef<ReportModalRef, ReportModalProps>(
     }, []);
 
     useEffect(() => {
-      if (!modalData.puuid) return;
+      if (!modalData.puuid) {
+        handleClose();
+        return;
+      }
       makeRequest(
         'GET',
         buildEventUrl(
@@ -115,6 +120,9 @@ export const ReportModal = forwardRef<ReportModalRef, ReportModalProps>(
             name: `${res.body.gameName} #${res.body.tagLine}`,
             profileIconId: res.body.profileIconId,
           }));
+        } else {
+          handleClose();
+          snackError(rcpFeLolChampSelectTrans('csr_report_submit_error'));
         }
       });
     }, [modalData.puuid]);

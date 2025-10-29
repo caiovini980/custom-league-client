@@ -4,6 +4,7 @@ import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
 import { CustomButton } from '@render/components/input';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
@@ -13,18 +14,14 @@ import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1Playe
 import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
-interface LootActionModalProps {
-  loot: LolLootV1PlayerLoot;
-}
-
 export interface LootActionModalRef {
-  open: (menu: LolLootV1PlayerLoot_Id_ContextMenu) => void;
+  open: (
+    loot: LolLootV1PlayerLoot,
+    menu: LolLootV1PlayerLoot_Id_ContextMenu,
+  ) => void;
 }
 
-export const LootActionModal = forwardRef<
-  LootActionModalRef,
-  LootActionModalProps
->(({ loot }, ref) => {
+export const LootActionModal = forwardRef<LootActionModalRef>((_, ref) => {
   const { makeRequest } = useLeagueClientRequest();
   const { genericImg } = useLeagueImage();
   const { rcpFeLolLoot } = useLeagueTranslate();
@@ -34,8 +31,31 @@ export const LootActionModal = forwardRef<
   const { rcpFeLolLootTrans } = rcpFeLolLoot;
 
   const [menu, setMenu] = useState<LolLootV1PlayerLoot_Id_ContextMenu>();
+  const [loot, setLoot] = useState<LolLootV1PlayerLoot>();
   const [openModal, setOpenModal] = useState(false);
   const [isAction, setIsAction] = useState(false);
+
+  const getButtonLabel = () => {
+    if (!menu) return '';
+    if (menu.actionType === 'redeem') {
+      return rcpFeLolLootTrans('redeem_button_redeem');
+    }
+    return rcpFeLolLootTrans(
+      `loot_recipe_button_${menu.actionType.toLowerCase()}`,
+    );
+  };
+
+  useImperativeHandle(ref, () => {
+    return {
+      open: (loot, menu) => {
+        setOpenModal(true);
+        setMenu(menu);
+        setLoot(loot);
+      },
+    };
+  }, []);
+
+  if (!loot) return null;
 
   const isSkinOrChampion = [
     'SKIN',
@@ -55,6 +75,9 @@ export const LootActionModal = forwardRef<
 
   const getActionText = () => {
     if (!menu) return '';
+    if (menu.actionType === 'redeem') {
+      return rcpFeLolLootTrans('loot_recipe_desc_champion_redeem');
+    }
     if (menu.actionType === 'DISENCHANT') {
       const desc = rcpFeLolLootTrans('loot_disenchant_description');
       return `${loot.disenchantValue}  ${desc}`;
@@ -68,16 +91,28 @@ export const LootActionModal = forwardRef<
     return '';
   };
 
-  const getButtonLabel = () => {
-    if (!menu) return '';
-    return rcpFeLolLootTrans(
-      `loot_recipe_button_${menu.actionType.toLowerCase()}`,
-    );
-  };
-
   const onClickAction = () => {
     if (!menu) return;
     setIsAction(true);
+
+    if (menu.actionType === 'redeem') {
+      makeRequest(
+        'POST',
+        buildEventUrl(
+          '/lol-loot/v1/player-loot/{string}/redeem',
+          loot.lootName,
+        ),
+        undefined,
+      ).then((res) => {
+        setIsAction(false);
+        if (res.ok) {
+          showLoots(res.body);
+          setOpenModal(false);
+        }
+      });
+      return;
+    }
+
     const lootNames = [loot.lootId];
 
     if (menu.actionType === 'UPGRADE') {
@@ -98,15 +133,6 @@ export const LootActionModal = forwardRef<
       }
     });
   };
-
-  useImperativeHandle(ref, () => {
-    return {
-      open: (menu) => {
-        setOpenModal(true);
-        setMenu(menu);
-      },
-    };
-  }, []);
 
   return (
     <CustomDialog
@@ -154,12 +180,14 @@ export const LootActionModal = forwardRef<
           <Typography fontSize={'1.6rem'}>{getLootName(loot)}</Typography>
         </Divider>
         <Stack direction={'row'} columnGap={0.5} alignItems={'center'}>
-          <CircularIcon
-            src={genericImg(
-              `plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/${loot.disenchantLootName.toLowerCase()}.png`,
-            )}
-            size={18}
-          />
+          {menu?.actionType !== 'redeem' && (
+            <CircularIcon
+              src={genericImg(
+                `plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/${loot.disenchantLootName.toLowerCase()}.png`,
+              )}
+              size={18}
+            />
+          )}
           <Typography>{getActionText()}</Typography>
         </Stack>
         <CustomButton

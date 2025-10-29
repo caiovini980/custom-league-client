@@ -5,7 +5,6 @@ import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ClientStatus } from '@render/layouts/Home/AppMenu/ClientStatus';
 import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
 import config from '@render/utils/config.util';
-import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { Null } from '@shared/typings/generic.typing';
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { SyntheticEvent, useState } from 'react';
@@ -22,7 +21,6 @@ export const AppMenu = () => {
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
-  const lootReady = leagueClientStore.systemReady.loot;
 
   useLeagueClientEvent('/lol-yourshop/v1/status', (data) => {
     setYourShopStatus(data);
@@ -54,13 +52,11 @@ export const AppMenu = () => {
       icon: FaStore,
       path: 'store',
       title: rcpFeLolL10nTrans('navbar_store'),
-      hidden: true,
     },
     {
       icon: FaBox,
       path: 'loot',
       title: rcpFeLolL10nTrans('navbar_loot'),
-      hidden: !lootReady,
     },
     {
       icon: FaTags,

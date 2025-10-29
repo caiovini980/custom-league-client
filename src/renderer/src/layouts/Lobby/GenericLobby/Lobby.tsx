@@ -23,7 +23,9 @@ export const Lobby = () => {
       width={'100%'}
       overflow={'auto'}
     >
-      <Typography textAlign={'center'}>{currentQueueName}</Typography>
+      <Typography textAlign={'center'} fontSize={'1.4rem'}>
+        {currentQueueName}
+      </Typography>
       <OpenPartyStatus />
       <PlayerList />
       <Restriction />

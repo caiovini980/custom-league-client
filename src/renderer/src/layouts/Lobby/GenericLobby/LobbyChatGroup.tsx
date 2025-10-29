@@ -9,10 +9,12 @@ export const LobbyChatGroup = () => {
   if (!mucJwtDto) return null;
 
   return (
-    <ChatGroup
-      type={'customGame'}
-      mucJwtDto={mucJwtDto}
-      connectWhen={hasMembers}
-    />
+    <div style={{ width: 400 }}>
+      <ChatGroup
+        type={'customGame'}
+        mucJwtDto={mucJwtDto}
+        connectWhen={hasMembers}
+      />
+    </div>
   );
 };

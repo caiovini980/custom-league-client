@@ -5,8 +5,10 @@ export const ChampionSelectChatGroup = () => {
   const mucJwtDto = champSelectStore.getSessionData(
     (s) => s.chatDetails.mucJwtDto,
   );
+
   if (!mucJwtDto) return null;
+
   return (
-    <ChatGroup mucJwtDto={mucJwtDto} chatHeight={150} type={'championSelect'} />
+    <ChatGroup mucJwtDto={mucJwtDto} chatHeight={200} type={'championSelect'} />
   );
 };

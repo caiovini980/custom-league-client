@@ -5,12 +5,15 @@ import { ClientStatusConnected } from '@shared/typings/ipc-function/to-renderer/
 import { LoadGameDataComplete } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
 import { Champion } from '@shared/typings/lol/json/champion';
 import { ChampionSummary } from '@shared/typings/lol/json/champion-summary';
+import { Emote } from '@shared/typings/lol/json/emote';
 import { Item } from '@shared/typings/lol/json/item';
 import { Map } from '@shared/typings/lol/json/map';
 import { Perk } from '@shared/typings/lol/json/perk';
 import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { Queue } from '@shared/typings/lol/json/queue';
+import { SummonerIcons } from '@shared/typings/lol/json/summoner-icons';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
+import { Ward } from '@shared/typings/lol/json/ward';
 import { translateJsonMap } from '@shared/utils/translate.util';
 import fs from 'fs-extra';
 
@@ -32,6 +35,9 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
         champions: this.readChampionData(info.locale),
         spells: this.readSpellData(info.locale),
         items: this.readItemData(info.locale),
+        emotes: this.readEmoteData(info.locale),
+        wards: this.readWardData(info.locale),
+        icons: this.readSummonerIconData(info.locale),
         maps: this.readMapData(info.locale),
         queues: this.readQueueData(info.locale),
         perks: this.readPerksData(info.locale),
@@ -47,6 +53,27 @@ export class LeagueClientDataReaderService extends ServiceAbstract {
       `plugins/rcp-be-lol-game-data/global/${locale}/v1/perks.json`,
     );
     return JSON.parse(perksString) as Perk[];
+  }
+
+  private readEmoteData(locale: string) {
+    const data = this.readFileDownloaded(
+      `plugins/rcp-be-lol-game-data/global/${locale}/v1/summoner-emotes.json`,
+    );
+    return JSON.parse(data) as Emote[];
+  }
+
+  private readWardData(locale: string) {
+    const data = this.readFileDownloaded(
+      `plugins/rcp-be-lol-game-data/global/${locale}/v1/ward-skins.json`,
+    );
+    return JSON.parse(data) as Ward[];
+  }
+
+  private readSummonerIconData(locale: string) {
+    const data = this.readFileDownloaded(
+      `plugins/rcp-be-lol-game-data/global/${locale}/v1/summoner-icons.json`,
+    );
+    return JSON.parse(data) as SummonerIcons[];
   }
 
   private readPerkStylesData(locale: string) {

@@ -126,12 +126,10 @@ export const SwapNotification = ({
       p={1}
       pb={2}
       sx={{
-        background: 'var(--mui-palette-background-paper)',
         '& span': {
           color: (t) => t.palette.highlight.main,
         },
       }}
-      width={350}
     >
       <Typography textAlign={'center'} fontSize={'1.2rem'}>
         {rcpFeLolChampSelectTrans(`swap_request_title_${type}`)}

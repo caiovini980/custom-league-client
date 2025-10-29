@@ -6,12 +6,25 @@ import { withSystemReady } from '@render/hoc/withSystemReady';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import {
+  LootActionModal,
+  LootActionModalRef,
+} from '@render/layouts/Loot/LootActionModal';
 import { LootContext } from '@render/layouts/Loot/LootContext';
+import {
+  LootContextMenu,
+  LootContextMenuRef,
+} from '@render/layouts/Loot/LootContextMenu';
 import { LootItem } from '@render/layouts/Loot/LootItem';
 import { LootSlot } from '@render/layouts/Loot/LootSlot';
 import { useLootUtil } from '@render/layouts/Loot/useLootUtil';
+import {
+  CatalogItemModal,
+  CatalogItemModalRef,
+} from '@render/layouts/Store/StoreCatalog/CatalogItemModal';
 import { LolLootV1PlayerLoot } from '@shared/typings/lol/response/lolLootV1PlayerLoot';
-import { useState } from 'react';
+import { LolLootV1PlayerLoot_Id_ContextMenu } from '@shared/typings/lol/response/lolLootV1PlayerLoot_Id_ContextMenu';
+import { useRef, useState } from 'react';
 
 export const Loot = withSystemReady('loot', () => {
   const { genericImg } = useLeagueImage();
@@ -22,6 +35,10 @@ export const Loot = withSystemReady('loot', () => {
 
   const [loot, setLoot] = useState<LolLootV1PlayerLoot[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+
+  const lootActionModalRef = useRef<LootActionModalRef>(null);
+  const catalogItemModalRef = useRef<CatalogItemModalRef>(null);
+  const contextMenuRef = useRef<LootContextMenuRef>(null);
 
   useLeagueClientEvent('/lol-loot/v1/player-loot', (data) => {
     setLoot(data);
@@ -79,6 +96,16 @@ export const Loot = withSystemReady('loot', () => {
     return [...otherLoot, { ...genericChest, count }];
   };
 
+  const onClickDisenchant = (
+    loot: LolLootV1PlayerLoot,
+    menu: LolLootV1PlayerLoot_Id_ContextMenu,
+  ) => {
+    lootActionModalRef.current?.open(loot, menu);
+  };
+  const onClickBuyChampion = (itemId: number) => {
+    catalogItemModalRef.current?.open('CHAMPION', itemId);
+  };
+
   if (!categories.length) {
     return (
       <CentralizedStack>
@@ -118,7 +145,12 @@ export const Loot = withSystemReady('loot', () => {
                     {getLootFiltered(lootTypeKey).map((l) => {
                       return (
                         <Grid key={l.lootId} id={`loot_${l.lootId}`}>
-                          <LootItem loot={l} />
+                          <LootItem
+                            loot={l}
+                            onOpenContextMenu={() =>
+                              contextMenuRef.current?.open(l)
+                            }
+                          />
                         </Grid>
                       );
                     })}
@@ -160,6 +192,13 @@ export const Loot = withSystemReady('loot', () => {
           </Stack>
         </Stack>
         <LootSlot />
+        <LootActionModal ref={lootActionModalRef} />
+        <CatalogItemModal ref={catalogItemModalRef} />
+        <LootContextMenu
+          ref={contextMenuRef}
+          onClickDisenchant={onClickDisenchant}
+          onClickBuyChampion={onClickBuyChampion}
+        />
       </Stack>
     </LootContext>
   );

@@ -1,5 +1,6 @@
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
@@ -33,7 +34,7 @@ export const LeagueClientObserverEvent = () => {
       lobbyStore.resetState();
     }
     if (data !== 'ChampSelect') {
-      lobbyStore.champSelect.set(null);
+      champSelectStore.resetState();
     }
     if (['ChampSelect', 'Lobby'].includes(data)) {
       setTimeout(() => {
@@ -42,12 +43,13 @@ export const LeagueClientObserverEvent = () => {
     }
   });
 
-  useLeagueClientEvent(
-    '/lol-lobby-team-builder/champ-select/v1/session',
-    (data) => {
-      lobbyStore.champSelect.set(data);
-    },
-  );
+  useLeagueClientEvent('/lol-champ-select/v1/session', (data) => {
+    champSelectStore.session.set(data);
+  });
+
+  useLeagueClientEvent('/lol-champ-select-legacy/v1/session', (data) => {
+    champSelectStore.legacySession.set(data);
+  });
 
   useLeagueClientEvent('/lol-activity-center/v1/ready', (data) => {
     leagueClientStore.systemReady.activeCenter.set(data);

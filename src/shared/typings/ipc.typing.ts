@@ -7,6 +7,10 @@ import {
   ClientMakeRequestResponse,
   GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
+import {
+  StoreResponse,
+  StoreView,
+} from '@shared/typings/ipc-function/handle/store.typing';
 import { VersionInfo } from '@shared/typings/ipc-function/handle/updater.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { LoadGameData } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
@@ -40,6 +44,9 @@ export interface IpcFunction {
     makeRequest: <K extends ClientEndpointKeys>(
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
+  };
+  store: {
+    getStoreData: (view: StoreView) => StoreResponse;
   };
 }
 

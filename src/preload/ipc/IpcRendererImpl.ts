@@ -35,6 +35,9 @@ export class IpcRendererImpl {
         changeShowClient: null,
         getPatchNotes: null,
       },
+      store: {
+        getStoreData: null,
+      },
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {
       onDownloadingUpdate: null,

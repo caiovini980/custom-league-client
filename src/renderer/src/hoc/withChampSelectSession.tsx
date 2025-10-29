@@ -30,6 +30,7 @@ export const withChampSelectSession = <P,>(
       }
       return null;
     }
+
     return <Component {...props} isLegacy={isLegacy} />;
   };
 };

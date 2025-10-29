@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
 import { CustomButton } from '@render/components/input';
 import { useVersionContext } from '@render/layouts/BottomBar/Version/VersionContext';
-import { marked } from 'marked';
-import { alpha } from '@mui/material/styles';
 import { formatOnlyDate } from '@shared/utils/date.util';
+import { marked } from 'marked';
 
 export const VersionModal = () => {
   const {
@@ -28,6 +28,7 @@ export const VersionModal = () => {
       dialogContentProps={{
         sx: {
           p: 0,
+          pl: 1,
           display: 'flex',
           background: 'var(--mui-palette-background-paper)',
         },

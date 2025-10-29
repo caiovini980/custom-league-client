@@ -5,12 +5,17 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { hiddenName } from '@render/utils/nameToHiddenSummonerName';
 import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { PropsWithChildren, useEffect } from 'react';
 
 export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
   const { loadChampionBackgroundImg, genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
+  const { rcpFeLolChampSelect } = useLeagueTranslate();
+
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
   const skinId = champSelectStore.getCurrentSummonerData((s) => s.skinId, 0);
   const championId = champSelectStore.getCurrentSummonerData(
@@ -46,8 +51,8 @@ export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    const summonerDataList = new Array(amountPlayer).fill(0).map((_, i) => {
-      const slotId = i;
+    const summonerDataList: { unsubscribe: () => void }[] = [];
+    for (let slotId = 0; slotId < amountPlayer; slotId++) {
       const url = buildEventUrl(
         '/lol-champ-select/v1/summoners/{digits}',
         slotId,
@@ -57,9 +62,17 @@ export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
           champSelectStore.summoners.assign({
             [slotId]: res.body,
           });
+          champSelectStore.summonerName.assign({
+            [res.body.obfuscatedSummonerId]:
+              res.body.nameVisibilityType === 'HIDDEN'
+                ? rcpFeLolChampSelectTrans(
+                    `name_visibility_type_team_hidden_${hiddenName[slotId]}`,
+                  )
+                : res.body.gameName,
+          });
         }
       });
-      return onLeagueClientEvent(
+      const ev = onLeagueClientEvent(
         url,
         (data) => {
           champSelectStore.summoners.assign({
@@ -68,14 +81,15 @@ export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
         },
         false,
       );
-    });
+      summonerDataList.push(ev);
+    }
 
     return () => {
       summonerDataList.forEach((sd) => {
         sd.unsubscribe();
       });
     };
-  }, [amountPlayer]);
+  }, []);
 
   return (
     <Box

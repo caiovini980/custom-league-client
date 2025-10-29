@@ -24,6 +24,7 @@ export interface LolChatV1Friends {
   statusMessage: string;
   summary: string;
   summonerId: number;
+  obfuscatedSummonerId?: number;
   time: number;
 }
 

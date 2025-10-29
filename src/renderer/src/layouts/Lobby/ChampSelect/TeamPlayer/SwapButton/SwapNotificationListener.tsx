@@ -1,4 +1,4 @@
-import { Fade, Popper } from '@mui/material';
+import { Fade, Paper, Popper } from '@mui/material';
 import { useAudio } from '@render/hooks/useAudioManager';
 import {
   PositionSwapProps,
@@ -63,7 +63,12 @@ export const SwapNotificationListener = ({
     >
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={250}>
-          <div>
+          <Paper
+            variant={'outlined'}
+            sx={{
+              width: 350,
+            }}
+          >
             {swapData && (
               <SwapNotification
                 type={getSwapType(swapData)}
@@ -74,7 +79,7 @@ export const SwapNotificationListener = ({
                 onCompleteAction={() => champSelectStore.removeSwapData(slotId)}
               />
             )}
-          </div>
+          </Paper>
         </Fade>
       )}
     </Popper>

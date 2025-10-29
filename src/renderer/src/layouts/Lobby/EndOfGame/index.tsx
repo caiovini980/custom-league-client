@@ -22,7 +22,7 @@ export const EndOfGame = () => {
       },
     );
   }, []);
-
+  console.log(data);
   return (
     <Stack p={1} direction={'column'} width={'100%'} alignItems={'center'}>
       {data ? (

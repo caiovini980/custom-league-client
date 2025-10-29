@@ -1,10 +1,13 @@
 import { Champion } from '@shared/typings/lol/json/champion';
+import { Emote } from '@shared/typings/lol/json/emote';
 import { Item } from '@shared/typings/lol/json/item';
 import { Map } from '@shared/typings/lol/json/map';
 import { Perk } from '@shared/typings/lol/json/perk';
 import { PerkStyles } from '@shared/typings/lol/json/perkStyles';
 import { Queue } from '@shared/typings/lol/json/queue';
+import { SummonerIcons } from '@shared/typings/lol/json/summoner-icons';
 import { SummonerSpells } from '@shared/typings/lol/json/summoner-spells';
+import { Ward } from '@shared/typings/lol/json/ward';
 import { TranslatePathKeys } from '@shared/utils/translate.util';
 
 export interface LoadGameDataError {
@@ -30,6 +33,9 @@ export interface LoadGameDataComplete {
   info: {
     champions: Champion[];
     spells: SummonerSpells[];
+    icons: SummonerIcons[];
+    emotes: Emote[];
+    wards: Ward[];
     items: Item[];
     maps: Map[];
     queues: Queue[];

@@ -18,6 +18,9 @@ export const useLeagueImage = () => {
   const champions = gameDataStore.champions.use();
   const spells = gameDataStore.spells.use();
   const items = gameDataStore.items.use();
+  const wards = gameDataStore.wards.use();
+  const emotes = gameDataStore.emotes.use();
+  const icons = gameDataStore.icons.use();
 
   const link = (path: string, isLocal = false) => {
     if (!path) return '';
@@ -31,7 +34,27 @@ export const useLeagueImage = () => {
 
   const profileIcon = (id: Undefined<Id>) => {
     if (id === undefined) id = 0;
-    return lolGameDataImg(`v1/profile-icons/${id}.jpg`);
+    const icon = icons.find((icon) => icon.id === id);
+    if (icon) {
+      return lolGameDataImg(icon.imagePath);
+    }
+    return '';
+  };
+
+  const wardIcon = (wardId: number) => {
+    const ward = wards.find((ward) => ward.id === wardId);
+    if (ward) {
+      return lolGameDataImg(ward.wardImagePath);
+    }
+    return '';
+  };
+
+  const emoteIcon = (emoteId: number) => {
+    const emote = emotes.find((emote) => emote.id === emoteId);
+    if (emote) {
+      return lolGameDataImg(emote.inventoryIcon);
+    }
+    return '';
   };
 
   const lolGameDataImg = (url: string) => {
@@ -91,15 +114,37 @@ export const useLeagueImage = () => {
       | 'splashVideoPath',
     championId: number,
     skinId = 0,
+    useSkinBase = false,
   ) => {
     const championSkins = champions.find((c) => c.id === championId)?.skins;
     if (championSkins) {
-      let skin = championSkins.find((s) => s.id === skinId);
+      let skin = championSkins.find(
+        (s) => s.id === skinId || s.chromas?.some((c) => c.id === skinId),
+      );
+
       if (!skin) {
         skin = championSkins[0];
+      } else if (skin.id !== skinId && !useSkinBase) {
+        const chroma = skin.chromas?.find((c) => c.id === skinId);
+        return lolGameDataImg(chroma?.chromaPath ?? '');
       }
       const skinPath = skin[art] ?? skin.splashPath;
       return lolGameDataImg(skinPath.slice(1));
+    }
+    return '';
+  };
+
+  const loadChampionSkin = (skinId: number) => {
+    const skin = champions
+      .flatMap((c) => c.skins)
+      .find((s) => s.id === skinId || s.chromas?.some((c) => c.id === skinId));
+
+    if (skin) {
+      if (skin.id !== skinId) {
+        const chroma = skin.chromas?.find((c) => c.id === skinId);
+        return lolGameDataImg(chroma?.chromaPath ?? '');
+      }
+      return lolGameDataImg(skin.splashPath);
     }
     return '';
   };
@@ -114,5 +159,8 @@ export const useLeagueImage = () => {
     genericImg,
     positionIcon,
     loadChampionBackgroundImg,
+    loadChampionSkin,
+    wardIcon,
+    emoteIcon,
   };
 };

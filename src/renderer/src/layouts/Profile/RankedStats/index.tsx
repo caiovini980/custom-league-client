@@ -4,6 +4,7 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { ChampionMostPlayer } from '@render/layouts/Profile/RankedStats/ChampionMostPlayer';
 import { RankedQueueStats } from '@render/layouts/Profile/RankedStats/RankedQueueStats';
 import { SummonerDetails } from '@render/layouts/Profile/RankedStats/SummonerDetails';
+import { SummonerEditBtn } from '@render/layouts/Profile/RankedStats/SummonerEdit/SummonerEditBtn';
 import { LolRankedV1RankedStats_Id } from '@shared/typings/lol/response/lolRankedV1RankedStats_Id';
 import { LolSummonerV1Summoners_Id } from '@shared/typings/lol/response/lolSummonerV1Summoners_Id';
 import { useEffect, useState } from 'react';
@@ -42,9 +43,10 @@ export const RankedStats = ({ summonerData }: RankedStatsProps) => {
       overflow={'auto'}
       sx={{
         background:
-          'linear-gradient(to bottom, transparent 15%, rgba(0,0,0,0.9) 55%)',
+          'linear-gradient(to bottom, transparent 25%, rgba(0,0,0,0.9) 55%)',
       }}
     >
+      <SummonerEditBtn summonerId={summonerData.summonerId} />
       <Stack
         direction={'row'}
         height={'35%'}

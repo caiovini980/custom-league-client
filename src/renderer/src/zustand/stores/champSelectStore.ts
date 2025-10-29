@@ -28,6 +28,7 @@ export interface ChampSelectState {
   legacySession: LolChampSelectV1Session;
   summoners: Record<number, LolChampSelectV1Summoners_Id>;
   swapData: Record<number, SwapType>;
+  summonerName: Record<string, string>;
 }
 
 const initialState: ChampSelectState = {
@@ -36,6 +37,7 @@ const initialState: ChampSelectState = {
   legacySession: {} as LolChampSelectV1Session,
   summoners: {},
   swapData: {},
+  summonerName: {},
 };
 
 export const champSelectStore = store(initialState, {
@@ -56,8 +58,13 @@ export const champSelectStore = store(initialState, {
     },
   }))
   .computed((store) => ({
-    hasSession: () => store.session.use((s) => !!s.id),
-    isLegacy: () => store.session.use((s) => Boolean(s.isLegacyChampSelect)),
+    hasSession: () => store.session.use((s) => !!Object.keys(s).length),
+    isLegacy: () =>
+      store.use(
+        (s) =>
+          s.session.isLegacyChampSelect &&
+          !!Object.keys(s.legacySession).length,
+      ),
     cellId: () => resolveSession(store, (session) => session.localPlayerCellId),
     slotId: (): number => resolveSession(store, getSlotId),
     summonerDataBySlotId: (
@@ -228,7 +235,8 @@ export const champSelectStore = store(initialState, {
       fn: (summoner: LolChampSelectV1Summoners_Id) => T,
       defaultValue: T,
     ) => getCurrentSummoner(store, fn, defaultValue),
-  }));
+  }))
+  .create();
 
 const getSlotId = (session: LolChampSelectV1Session) => {
   return session.myTeam.findIndex(
@@ -255,7 +263,7 @@ const resolveSession = <T>(
   equalityFn?: EqualityChecker<ChampSelectState>,
 ) => {
   return store.use((s) => {
-    if (s.session.isLegacyChampSelect) return fn(s.legacySession);
+    if (Object.keys(s.legacySession).length) return fn(s.legacySession);
     return fn(s.session);
   }, equalityFn);
 };

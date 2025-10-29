@@ -16,11 +16,19 @@ const initialState: CurrentSummonerState = {
 export const currentSummonerStore = store(initialState, {
   name: 'currentSummoner',
   devtools: { enabled: true },
-}).actions((store) => ({
-  resetState: () => {
-    store.set(initialState);
-  },
-  getChampionAvailable: () => {
-    return store.champions.filter((c) => c.active)
-  }
-}));
+})
+  .actions((store) => ({
+    resetState: () => {
+      store.set(initialState);
+    },
+  }))
+  .computed((store) => ({
+    skins: () =>
+      store.champions.use((champions) =>
+        champions
+          .map((c) => c.skins)
+          .filter((s) => !!s)
+          .flat(),
+      ),
+  }))
+  .create();

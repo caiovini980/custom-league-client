@@ -7,6 +7,7 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
+import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import {
   ChampSelectionActions,
   champSelectStore,
@@ -16,17 +17,22 @@ import { LolChampSelectV1BannableChampionIds } from '@shared/typings/lol/respons
 import { LolChampSelectV1DisabledChampionIds } from '@shared/typings/lol/response/lolChampSelectV1DisabledChampionIds';
 import { LolChampSelectV1PickableChampionIds } from '@shared/typings/lol/response/lolChampSelectV1PickableChampionIds';
 import { LolPerksV1RecommendedChampionPositions } from '@shared/typings/lol/response/lolPerksV1RecommendedChampionPositions';
+import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { MdClose } from 'react-icons/md';
 
 export const ChampionSelectList = () => {
   const { genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
+  const { rcpFeLolChampSelect } = useLeagueTranslate();
 
-  const teams = champSelectStore.getSessionData((session) => [
-    ...session.myTeam,
-    ...session.theirTeam,
-  ]);
+  const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
+
+  const championPickedIdList = champSelectStore.getSessionData(
+    (session) =>
+      [...session.myTeam, ...session.theirTeam].map((t) => t.championId),
+    isEqual,
+  );
   const currentAction = champSelectStore.currentAction.use();
   const pickPlayerActionId = champSelectStore.currentPickActionId.use();
   const banPlayerActionId = champSelectStore.currentBanActionId.use();
@@ -79,7 +85,7 @@ export const ChampionSelectList = () => {
   };
 
   const isChampionPicked = (championId: number) => {
-    return teams.some((t) => t.championId === championId);
+    return championPickedIdList.includes(championId);
   };
 
   const getChampionFiltered = () => {
@@ -144,9 +150,9 @@ export const ChampionSelectList = () => {
       overflow={'auto'}
       height={'100%'}
       display={hiddenList() ? 'none' : 'flex'}
-      p={1}
+      px={1}
       sx={{
-        background: 'rgba(0,0,0,0.7)',
+        background: 'rgba(0,0,0,0.5)',
       }}
       rowGap={2}
     >
@@ -173,7 +179,7 @@ export const ChampionSelectList = () => {
         })}
         <CustomTextField
           size={'small'}
-          placeholder={'Champion name'}
+          placeholder={rcpFeLolChampSelectTrans('search')}
           value={championNameFilter}
           onChangeText={setChampionNameFilter}
           endIcon={

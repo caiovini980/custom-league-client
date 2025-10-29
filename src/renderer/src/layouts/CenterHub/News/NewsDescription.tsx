@@ -45,13 +45,15 @@ const Container = ({
     <Stack
       direction={'column'}
       position={'absolute'}
-      bottom={15}
-      left={15}
-      width={'45%'}
+      bottom={0}
+      left={0}
+      right={0}
+      width={'100%'}
       alignItems={'center'}
       rowGap={1}
       sx={{
         p: 1,
+        pb: 4,
         background: (t) => alpha(t.palette.common.black, 0.4),
         '&:hover': {
           background: (t) => alpha(t.palette.common.black, 0.75),

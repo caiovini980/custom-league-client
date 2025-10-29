@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { HighEloPlayers } from './HighEloPlayers';
 import { News } from './News';
-import { Offers } from './Offers';
+import { Offers } from './Offers/Offers';
 import { PatchNotes } from './PatchNotes';
 
 export const CenterHub = () => {

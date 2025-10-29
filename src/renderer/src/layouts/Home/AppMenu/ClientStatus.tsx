@@ -45,10 +45,10 @@ export const ClientStatus = () => {
   };
 
   const getExclamationColor = () => {
-    const hasError = status.some((s) => s.severity === 'error')
-    if (hasError) return 'var(--mui-palette-error-main)'
-    return 'var(--mui-palette-info-main)'
-  }
+    const hasError = status.some((s) => s.severity === 'error');
+    if (hasError) return 'var(--mui-palette-error-main)';
+    return 'var(--mui-palette-info-main)';
+  };
 
   if (!status.length) return <div />;
 
@@ -62,7 +62,7 @@ export const ClientStatus = () => {
         p: 1,
       }}
     >
-      <FaCircleExclamation size={20} color={getExclamationColor()} />
+      <FaCircleExclamation size={25} color={getExclamationColor()} />
     </CustomIconButtonTooltip>
   );
 };

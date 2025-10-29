@@ -8,6 +8,8 @@ import { SwapButton } from '@render/layouts/Lobby/ChampSelect/TeamPlayer/SwapBut
 import { ReportModal, ReportModalRef } from '@render/layouts/Lobby/ReportModal';
 import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
+import { Undefined } from '@shared/typings/generic.typing';
+import { LolChampSelectV1Summoners_Id } from '@shared/typings/lol/response/lolChampSelectV1Summoners_Id';
 import { memo, useRef } from 'react';
 import { FaCircleExclamation } from 'react-icons/fa6';
 
@@ -23,13 +25,16 @@ export const TeamPlayerCard = ({
   amountPlayer,
 }: TeamPlayerCardProps) => {
   const champions = gameDataStore.champions.use();
+  const isLegacy = champSelectStore.isLegacy.use();
   const { championIcon, lolGameDataImg, loadChampionBackgroundImg } =
     useLeagueImage();
   const { rcpFeLolChampSelect } = useLeagueTranslate();
 
   const { rcpFeLolChampSelectTrans } = rcpFeLolChampSelect;
 
-  const summonerData = champSelectStore.summonerDataBySlotId.use(slotId);
+  const summonerData = champSelectStore.summonerDataBySlotId.use(
+    slotId,
+  ) as Undefined<LolChampSelectV1Summoners_Id>;
   const gameId = champSelectStore.session.use((s) => s.gameId);
 
   const reportModalRef = useRef<ReportModalRef>(null);
@@ -47,10 +52,20 @@ export const TeamPlayerCard = ({
     return champions.find((c) => c.id === summonerData?.championId)?.name ?? '';
   };
 
+  const getSummonerName = () => {
+    if (summonerData.nameVisibilityType === 'HIDDEN') {
+      return champSelectStore.summonerName.get(
+        (s) => s[summonerData.obfuscatedSummonerId],
+      );
+    }
+    return summonerData.gameName;
+  };
+
   const skinUrl = loadChampionBackgroundImg(
     'splashPath',
     summonerData?.championId ?? 0,
     summonerData?.skinId,
+    true,
   );
 
   return (
@@ -88,6 +103,39 @@ export const TeamPlayerCard = ({
     >
       <Stack
         direction={'column'}
+        justifyContent={'space-evenly'}
+        alignItems={'center'}
+        width={30}
+        flexShrink={0}
+      >
+        {!isEnemyTeam && (
+          <SwapButton
+            slotId={slotId}
+            cellId={summonerData.cellId}
+            summonerName={summonerData.gameName}
+            position={summonerData.assignedPosition.toLowerCase()}
+            championName={summonerData.championName}
+            showPickOrderSwap={summonerData.showSwaps}
+            showPositionSwap={summonerData.showPositionSwaps}
+            showChampionSwap={summonerData.showTrades}
+          />
+        )}
+        {!summonerData.isSelf && !isEnemyTeam && !isLegacy && (
+          <CustomIconButton
+            color={'error'}
+            onClick={() =>
+              reportModalRef.current?.open(summonerData.puuid, gameId)
+            }
+            sx={{
+              p: 0.5,
+            }}
+          >
+            <FaCircleExclamation size={20} />
+          </CustomIconButton>
+        )}
+      </Stack>
+      <Stack
+        direction={'column'}
         justifyContent={'space-between'}
         height={'100%'}
         display={isEnemyTeam ? 'none' : 'flex'}
@@ -122,7 +170,7 @@ export const TeamPlayerCard = ({
         }}
       >
         <Typography fontSize={'0.7rem'}>{getCurrentAction()}</Typography>
-        <Typography fontSize={'1rem'}>{getChampionName()}</Typography>
+        <Typography fontSize={'0.8rem'}>{getChampionName()}</Typography>
         {isEnemyTeam ? (
           <Typography fontSize={'0.6rem'}>
             {rcpFeLolChampSelectTrans(
@@ -132,46 +180,15 @@ export const TeamPlayerCard = ({
           </Typography>
         ) : (
           <>
-            <Typography fontSize={'1.2rem'}>
+            <Typography fontSize={'1rem'}>
               {rcpFeLolChampSelectTrans(
                 `summoner_assigned_position_${summonerData.assignedPosition.toLowerCase()}`,
               )}
             </Typography>
             <Typography fontSize={'0.6rem'} color={'textSecondary'}>
-              {summonerData.gameName}
+              {getSummonerName()}
             </Typography>
           </>
-        )}
-      </Stack>
-      <Stack
-        direction={'column'}
-        justifyContent={'space-evenly'}
-        alignItems={'center'}
-      >
-        {!isEnemyTeam && (
-          <SwapButton
-            slotId={slotId}
-            cellId={summonerData.cellId}
-            summonerName={summonerData.gameName}
-            position={summonerData.assignedPosition.toLowerCase()}
-            championName={summonerData.championName}
-            showPickOrderSwap={summonerData.showSwaps}
-            showPositionSwap={summonerData.showPositionSwaps}
-            showChampionSwap={summonerData.showTrades}
-          />
-        )}
-        {!summonerData.isSelf && (
-          <CustomIconButton
-            color={'error'}
-            onClick={() =>
-              reportModalRef.current?.open(summonerData.puuid, gameId)
-            }
-            sx={{
-              p: 0.2,
-            }}
-          >
-            <FaCircleExclamation size={20} />
-          </CustomIconButton>
         )}
       </Stack>
       <ReportModal type={'champ-select-reports'} ref={reportModalRef} />

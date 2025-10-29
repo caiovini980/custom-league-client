@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Grid, Stack } from '@mui/material';
 import { withChampSelectSession } from '@render/hoc/withChampSelectSession';
 import { AramBenchChampions } from '@render/layouts/Lobby/ChampSelect/AramBenchChampions';
 import { CenterArea } from '@render/layouts/Lobby/ChampSelect/CenterArea';
@@ -35,30 +35,50 @@ const Content = memo(function ChampionSelectContent() {
     >
       <Timer />
       <AramBenchChampions />
-      <Stack
+      <Grid
+        container
         direction={'row'}
         columnGap={1}
         justifyContent={'space-between'}
         height={'100%'}
+        wrap={'nowrap'}
         overflow={'auto'}
       >
-        <TeamPlayer />
-        <CenterArea />
-        <TeamPlayer isEnemyTeam />
-      </Stack>
-      <Stack direction={'row'} justifyContent={'space-between'}>
-        <ChampionSelectChatGroup />
-        <Stack
-          direction={'row'}
-          justifyContent={'center'}
-          alignItems={'center'}
-          columnGap={2}
-        >
-          <Runes />
-          <SpellSelect />
-        </Stack>
-        <div style={{ width: '30%' }} />
-      </Stack>
+        <Grid size={'auto'}>
+          <TeamPlayer />
+        </Grid>
+        <Grid size={'grow'}>
+          <CenterArea />
+        </Grid>
+        <Grid size={'auto'}>
+          <TeamPlayer isEnemyTeam />
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        direction={'row'}
+        wrap={'nowrap'}
+        height={200}
+        flexShrink={0}
+        columnGap={2}
+        alignItems={'center'}
+      >
+        <Grid size={'grow'}>
+          <ChampionSelectChatGroup />
+        </Grid>
+        <Grid size={'auto'}>
+          <Stack
+            direction={'row'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            columnGap={2}
+          >
+            <Runes />
+            <SpellSelect />
+          </Stack>
+        </Grid>
+        <Grid size={'grow'}></Grid>
+      </Grid>
     </Stack>
   );
 });

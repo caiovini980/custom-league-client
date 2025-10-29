@@ -2,7 +2,6 @@ import { store } from '@davstack/store';
 import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { Null } from '@shared/typings/generic.typing';
-import { LolChampSelectV1Session } from '@shared/typings/lol/response/lolChampSelectV1Session';
 import { LolGameflowV1Session } from '@shared/typings/lol/response/lolGameflowV1Session';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
 import { LolMatchmakingV1Search } from '@shared/typings/lol/response/lolMatchmakingV1Search';
@@ -12,7 +11,6 @@ export interface LobbyState {
   lobby: Null<LolLobbyV2Lobby>;
   gameFlow: Null<LolGameflowV1Session>;
   matchMaking: Null<LolMatchmakingV1Search>;
-  champSelect: Null<LolChampSelectV1Session>;
 }
 
 const initialState: LobbyState = {
@@ -20,7 +18,6 @@ const initialState: LobbyState = {
   lobby: null,
   gameFlow: null,
   matchMaking: null,
-  champSelect: null,
 };
 
 export const lobbyStore = store(initialState, {
@@ -63,12 +60,5 @@ export const lobbyStore = store(initialState, {
       store.gameFlow.onChange((value) => {
         champSelectStore.gameMode.set(value?.gameData.queue.gameMode ?? '');
       }),
-    onChangeChampSelect: () =>
-      store.champSelect.onChange((value) => {
-        if (value) {
-          champSelectStore.session.set(value);
-        } else {
-          champSelectStore.resetState();
-        }
-      }),
-  }));
+  }))
+  .create();

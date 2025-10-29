@@ -25,7 +25,9 @@ export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
   const { rcpFeLolSocial, rcpFeLolPostgame } = useLeagueTranslate();
   const { snackSuccess, snackError } = useSnackNotification();
 
-  const chat = chatStore.friends.use();
+  const isFriend = chatStore.friends.use((chat) =>
+    chat.some((c) => c.summonerId === summoner.summonerId),
+  );
   const currentSummoner = currentSummonerStore.info.use();
 
   const iconSize = 180;
@@ -38,7 +40,7 @@ export const SummonerDetails = ({ summoner }: SummonerDetailsProps) => {
 
   const isShowFriendInvite = () => {
     if (currentSummoner?.summonerId === summoner.summonerId) return false;
-    return !chat.some((c) => c.summonerId === summoner.summonerId);
+    return !isFriend;
   };
 
   const onClickAddFriend = () => {
