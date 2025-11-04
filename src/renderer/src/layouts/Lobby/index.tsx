@@ -1,7 +1,6 @@
 import { LinearProgress, Stack, Typography } from '@mui/material';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { LoadingScreen } from '@render/components/LoadingScreen';
-import { useAudio } from '@render/hooks/useAudioManager';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { ChampSelect } from '@render/layouts/Lobby/ChampSelect';
@@ -14,14 +13,13 @@ import { Reconnect } from '@render/layouts/Lobby/Reconnect';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { PatcherV1ProductsLeagueOfLegendStateComponent } from '@shared/typings/lol/response/patcherV1ProductsLeagueOfLegendState';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const Lobby = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
-  const sfxVignette = useAudio('sfx-vignette-celebration-intro');
 
   const isAvailable = leagueClientStore.isAvailable.use();
-  const gameFlow = lobbyStore.gameFlow.use();
+  const gameFlowPhase = lobbyStore.gameFlow.use((s) => s?.phase);
 
   const [patchingData, setPatchingData] =
     useState<PatcherV1ProductsLeagueOfLegendStateComponent['progress']>(null);
@@ -37,19 +35,9 @@ export const Lobby = () => {
     },
   );
 
-  useEffect(() => {
-    const unsubscribe = leagueClientStore.isAvailable.onChange(
-      (isAvailable) => {
-        if (isAvailable) {
-          sfxVignette.play(false);
-        }
-      },
-    );
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  useLeagueClientEvent('/lol-gameflow/v1/session', (data) => {
+    lobbyStore.gameFlow.set(data);
+  });
 
   if (patchingData) {
     const msg = rcpFeLolL10n.rcpFeLolL10nTrans(
@@ -102,7 +90,7 @@ export const Lobby = () => {
     );
   }
 
-  if (['WaitingForStats', 'GameStart'].includes(gameFlow?.phase ?? 'None')) {
+  if (['WaitingForStats', 'GameStart'].includes(gameFlowPhase ?? 'None')) {
     return (
       <CentralizedStack>
         <LoadingScreen height={'100%'} />
@@ -111,23 +99,23 @@ export const Lobby = () => {
     );
   }
 
-  if (gameFlow?.phase === 'ChampSelect') {
-    return <ChampSelect gameMode={gameFlow?.gameData.queue.gameMode} />;
+  if (gameFlowPhase === 'ChampSelect') {
+    return <ChampSelect enabledLoadingScreen />;
   }
 
-  if (gameFlow?.phase === 'InProgress') {
+  if (gameFlowPhase === 'InProgress') {
     return <InGame />;
   }
 
-  if (['FailedToLaunch', 'Reconnect'].includes(gameFlow?.phase ?? '')) {
+  if (['FailedToLaunch', 'Reconnect'].includes(gameFlowPhase ?? '')) {
     return <Reconnect />;
   }
 
-  if (gameFlow?.phase === 'PreEndOfGame') {
+  if (gameFlowPhase === 'PreEndOfGame') {
     return <PreEndGame />;
   }
 
-  if (gameFlow?.phase === 'EndOfGame') {
+  if (gameFlowPhase === 'EndOfGame') {
     return <EndOfGame />;
   }
 

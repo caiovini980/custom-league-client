@@ -35,6 +35,7 @@ export interface SlotData {
 
 interface LootContextState {
   isSlot: boolean;
+  loading: boolean;
   behaviorToSlot: (loot: LolLootV1PlayerLoot) => boolean;
   isAction: boolean;
   lootInSlots: SlotData[];
@@ -44,7 +45,7 @@ interface LootContextState {
   ) => void;
   addLootInSlot: (loot: LolLootV1PlayerLoot) => void;
   removeLootInSlot: (lootId: string) => void;
-  clearSlots: () => void;
+  closeSlot: () => void;
   finishSlot: () => Promise<ClientMakeRequestResponse>;
   showLoots: (craft: LolLootV1CraftMass) => void;
   buttonLabel: string;
@@ -68,6 +69,10 @@ export const LootContext = ({
 
   const viewLootRef = useRef<ViewLootModalRef>(null);
 
+  const [lootSlotContextData, setLootSlotContextData] = useState({
+    loading: false,
+    open: false,
+  });
   const [isAction, setIsAction] = useState(false);
   const [menu, setMenu] = useState<LolLootV1PlayerLoot_Id_ContextMenu>();
   const [lootInSlots, setLootInSlots] = useState<LolLootV1PlayerLoot[]>([]);
@@ -121,7 +126,10 @@ export const LootContext = ({
     loot: LolLootV1PlayerLoot,
     menu: LolLootV1PlayerLoot_Id_ContextMenu,
   ) => {
-    clearSlots(0);
+    setLootSlotContextData((prev) => ({
+      ...prev,
+      loading: true,
+    }));
     makeRequest(
       'GET',
       buildEventUrl('/lol-loot/v1/recipes/initial-item/{id}', loot.lootId),
@@ -133,6 +141,10 @@ export const LootContext = ({
           setLootInSlots([loot]);
           setMenu(menu);
           setSlotConfiguration(config);
+          setLootSlotContextData({
+            open: true,
+            loading: false,
+          });
         }
       }
     });
@@ -153,12 +165,11 @@ export const LootContext = ({
     setLootInSlots((prev) => prev.filter((l) => l.lootId !== lootId));
   };
 
-  const clearSlots = (timeout = 300) => {
-    setSlotConfiguration(undefined);
-    setTimeout(() => {
-      setLootInSlots([]);
-      setMenu(undefined);
-    }, timeout);
+  const closeSlot = () => {
+    setLootSlotContextData({
+      loading: false,
+      open: false,
+    });
   };
 
   const finishSlot = () => {
@@ -176,7 +187,7 @@ export const LootContext = ({
     ]).then((res) => {
       setIsAction(false);
       if (res.ok) {
-        clearSlots(0);
+        closeSlot();
         showLoots(res.body);
       }
       return res;
@@ -207,6 +218,7 @@ export const LootContext = ({
   };
 
   const behaviorToSlot = (loot: LolLootV1PlayerLoot) => {
+    if (!lootSlotContextData.open) return false;
     if (!slotConfiguration) return false;
     return slotConfiguration.slots
       .flatMap((s) => s.lootIds)
@@ -220,19 +232,20 @@ export const LootContext = ({
 
   useEffect(() => {
     if (lootInSlots.length === 0) {
-      clearSlots();
+      closeSlot();
     }
   }, [lootInSlots.length]);
 
   return (
     <Context.Provider
       value={{
-        isSlot: !!slotConfiguration,
+        isSlot: lootSlotContextData.open,
+        loading: lootSlotContextData.loading,
         behaviorToSlot,
         isAction,
         lootInSlots: getLootSlots,
         addLootInSlot,
-        clearSlots,
+        closeSlot: closeSlot,
         removeLootInSlot,
         setSlot,
         finishSlot,

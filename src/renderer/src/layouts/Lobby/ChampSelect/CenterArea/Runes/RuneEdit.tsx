@@ -1,9 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material';
 import { CustomIconButton, CustomTextField } from '@render/components/input';
-import {
-  buildEventUrl,
-  useLeagueClientEvent,
-} from '@render/hooks/useLeagueClientEvent';
+import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
@@ -25,7 +22,11 @@ export interface PerkEdit {
   statSlotPerksId: number[];
 }
 
-export const RuneEdit = () => {
+interface RuneEditProps {
+  pageRuneId: number;
+}
+
+export const RuneEdit = ({ pageRuneId }: RuneEditProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { genericImg } = useLeagueImage();
   const { rcpFeLolCollections } = useLeagueTranslate();
@@ -36,9 +37,17 @@ export const RuneEdit = () => {
 
   const { rcpFeLolCollectionsTransPerks } = rcpFeLolCollections;
 
-  useLeagueClientEvent('/lol-perks/v1/currentpage', (data) => {
-    setRune(data);
-  });
+  useEffect(() => {
+    makeRequest(
+      'GET',
+      buildEventUrl('/lol-perks/v1/pages/{digits}', pageRuneId),
+      undefined,
+    ).then((res) => {
+      if (res.ok) {
+        setRune(res.body);
+      }
+    });
+  }, [pageRuneId]);
 
   const handleEditPerk = (value: Partial<PerkEdit>) => {
     if (!perksEdit) return;

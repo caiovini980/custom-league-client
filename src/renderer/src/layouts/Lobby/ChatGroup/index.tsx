@@ -1,26 +1,33 @@
-import { CircularProgress, Paper, Stack, Typography } from '@mui/material';
-import { CustomTextField } from '@render/components/input';
+import { Paper, Stack, Typography } from '@mui/material';
 import {
   buildEventUrl,
   useLeagueClientEvent,
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LolChatV1Conversations_Id_Messages as LolChatV1Conversations_Id_MessagesRes } from '@shared/typings/lol/response/lolChatV1Conversations_Id_Messages';
+import { ChatTextField } from '@render/layouts/Lobby/ChatGroup/ChatTextField';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
+import { LolChatV1Conversations } from '@shared/typings/lol/request/lolChatV1Conversations';
+import {
+  LolChatV1Conversations_Id_Messages,
+  LolChatV1Conversations_Id_Messages as LolChatV1Conversations_Id_MessagesRes,
+} from '@shared/typings/lol/response/lolChatV1Conversations_Id_Messages';
 import { LolChatV1Friends } from '@shared/typings/lol/response/lolChatV1Friends';
 import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface ChatGroupProps {
   connectWhen?: boolean;
   mucJwtDto: LolLobbyV2Lobby['mucJwtDto'];
-  chatHeight?: number;
+  chatHeight?: number | string;
+  type: LolChatV1Conversations['type'];
 }
 
 export const ChatGroup = ({
   connectWhen,
   mucJwtDto,
   chatHeight = 200,
+  type,
 }: ChatGroupProps) => {
   const { rcpFeLolSocial } = useLeagueTranslate();
   const { makeRequest } = useLeagueClientRequest();
@@ -29,56 +36,48 @@ export const ChatGroup = ({
 
   const messagesContainerDivRef = useRef<HTMLDivElement>(null);
 
-  const [message, setMessage] = useState('');
   const [conversationMessages, setConversationMessages] = useState<
     LolChatV1Conversations_Id_MessagesRes[]
   >([]);
   const [participants, setParticipants] = useState<LolChatV1Friends[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const conversationId = (() => {
+  const conversationId = useMemo(() => {
     const { channelClaim, domain, targetRegion } = mucJwtDto;
     return `${channelClaim}@${domain}.${targetRegion}.pvp.net`;
-  })();
+  }, [mucJwtDto.channelClaim, mucJwtDto.domain, mucJwtDto.targetRegion]);
 
-  const handleSendMessage = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (!event.shiftKey && event.key === 'Enter') {
-      event.preventDefault();
-      makeRequest(
-        'POST',
-        buildEventUrl(
-          '/lol-chat/v1/conversations/{id}/messages',
-          conversationId,
-        ),
-        {
-          body: message,
-        },
-      ).then((res) => {
-        if (res.ok) {
-          setMessage('');
-        }
-      });
-      return;
+  const getPlayerName = (msg: LolChatV1Conversations_Id_Messages) => {
+    const participant = participants.find((p) => {
+      if (msg.fromPid) return msg.fromPid === p.id;
+      return p.obfuscatedSummonerId === msg.fromObfuscatedSummonerId;
+    });
+
+    if (participant) {
+      if (participant.gameName) {
+        return `${participant.gameName} #${participant.gameTag}`;
+      }
+      if (participant.obfuscatedSummonerId) {
+        return champSelectStore.summonerName.get(
+          (s) => s[participant.obfuscatedSummonerId ?? 0],
+        );
+      }
     }
-  };
-
-  const getPlayerName = (pid: string) => {
-    const participant = participants.find((p) => p.id === pid);
-    if (participant) return `${participant.gameName} #${participant.gameTag}:`;
     return '';
   };
 
-  const getSystemMessage = (body: string, pid: string) => {
-    if (body === 'joined_room') {
+  const getSystemMessage = (msg: LolChatV1Conversations_Id_Messages) => {
+    if (msg.body === 'joined_room') {
       return rcpFeLolSocialTrans(
         'system_message_joined_room',
-        getPlayerName(pid),
+        getPlayerName(msg),
       );
     }
-    if (body === 'left_room') {
+    if (msg.body === 'left_room') {
       return rcpFeLolSocialTrans(
         'system_message_left_room',
-        getPlayerName(pid),
+        getPlayerName(msg),
       );
     }
     return '';
@@ -95,42 +94,16 @@ export const ChatGroup = ({
     }, delay);
   };
 
-  const { loadEventData: loadMessages } = useLeagueClientEvent(
+  const { loadEventData } = useLeagueClientEvent(
     buildEventUrl('/lol-chat/v1/conversations/{id}/messages', conversationId),
     (data) => {
-      setConversationMessages(data);
+      if (isConnected) {
+        setConversationMessages(data);
+      }
     },
     {
+      deps: [conversationId, isConnected],
       makeInitialRequest: false,
-      deps: [conversationId],
-    },
-  );
-
-  const { loadEventData: loadParticipants } = useLeagueClientEvent(
-    buildEventUrl(
-      '/lol-chat/v1/conversations/{id}/participants',
-      conversationId,
-    ),
-    (data) => {
-      setParticipants(data);
-    },
-    {
-      makeInitialRequest: false,
-      deps: [conversationId],
-    },
-  );
-
-  useLeagueClientEvent(
-    buildEventUrl(
-      '/lol-chat/v1/conversations/{id}/participants/{id}',
-      conversationId,
-    ),
-    () => {
-      loadParticipants();
-    },
-    {
-      makeInitialRequest: false,
-      deps: [conversationId],
     },
   );
 
@@ -140,24 +113,54 @@ export const ChatGroup = ({
       conversationId,
     ),
     () => {
-      loadMessages();
+      if (isConnected) {
+        loadEventData();
+      }
     },
     {
+      deps: [conversationId, isConnected],
       makeInitialRequest: false,
-      deps: [conversationId],
+    },
+  );
+
+  const { loadEventData: loadEventDataParticipants } = useLeagueClientEvent(
+    buildEventUrl(
+      '/lol-chat/v1/conversations/{id}/participants',
+      conversationId,
+    ),
+    (data) => {
+      if (isConnected) {
+        setParticipants((prev) => {
+          const newList = [...prev];
+          const listId = prev.map((p) => p.id);
+
+          data.forEach((p) => {
+            if (!listId.includes(p.id)) {
+              newList.push(p);
+            }
+          });
+
+          return newList;
+        });
+      }
+    },
+    {
+      deps: [conversationId, isConnected],
     },
   );
 
   const connectToChat = () => {
+    if (!mucJwtDto.channelClaim) return;
     setLoading(true);
     makeRequest('POST', '/lol-chat/v1/conversations', {
-      type: 'customGame',
+      id: mucJwtDto.channelClaim,
+      type,
       mucJwtDto,
+      password: mucJwtDto.jwt,
     }).then((res) => {
       if (res.ok) {
         setLoading(false);
-        loadParticipants();
-        loadMessages();
+        setIsConnected(true);
       } else {
         setTimeout(() => {
           connectToChat();
@@ -174,7 +177,7 @@ export const ChatGroup = ({
     if (connectWhen === false) return;
     connectToChat();
     return () => {
-      if (!participants.length) return;
+      if (!isConnected) return;
       makeRequest(
         'DELETE',
         buildEventUrl('/lol-chat/v1/conversations/{id}', conversationId),
@@ -183,12 +186,16 @@ export const ChatGroup = ({
     };
   }, [conversationId, connectWhen]);
 
+  useEffect(() => {
+    loadEventDataParticipants();
+  }, [isConnected]);
+
   return (
     <Stack
       direction={'column'}
       component={Paper}
       height={chatHeight}
-      width={400}
+      width={'100%'}
       overflow={'auto'}
       variant={'outlined'}
     >
@@ -212,7 +219,7 @@ export const ChatGroup = ({
             >
               {m.type === 'system' && (
                 <Typography fontSize={'0.7rem'} color={'textDisabled'}>
-                  {getSystemMessage(m.body, m.fromPid)}
+                  {getSystemMessage(m)}
                 </Typography>
               )}
               {m.type === 'groupchat' && (
@@ -226,32 +233,17 @@ export const ChatGroup = ({
                     },
                   }}
                 >
-                  {getPlayerName(m.fromPid)} <span>{m.body}</span>
+                  {getPlayerName(m)}: <span>{m.body}</span>
                 </Typography>
               )}
             </Stack>
           );
         })}
       </Stack>
-      <CustomTextField
-        maxRows={3}
-        multiline
-        placeholder={rcpFeLolSocialTrans(
-          'conversation_get_started_placeholder',
-        )}
-        value={message}
-        onChangeText={setMessage}
-        onKeyDown={handleSendMessage}
-        disabled={loading || !participants.length}
-        startIcon={loading ? <CircularProgress size={16} /> : null}
-        slotProps={{
-          input: {
-            sx: {
-              p: 1,
-              borderRadius: 0,
-            },
-          },
-        }}
+      <ChatTextField
+        loading={loading}
+        conversationId={conversationId}
+        disabled={!isConnected}
       />
     </Stack>
   );

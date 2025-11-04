@@ -272,7 +272,6 @@ export const Minigame = () => {
         <Box
           ref={iFrameRef}
           component={'iframe'}
-          onLoad={() => console.log('lllll')}
           src={link.action.payload.url?.replace('{locale}', language)}
           sx={{
             p: 0,

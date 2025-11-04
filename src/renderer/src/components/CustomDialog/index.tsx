@@ -1,4 +1,4 @@
-import { Slide } from '@mui/material';
+import { Box, Slide } from '@mui/material';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent, { DialogContentProps } from '@mui/material/DialogContent';
@@ -64,8 +64,8 @@ const CustomDialog = ({
   labelBtnCancel,
   handleConfirm,
   handleClose,
-  loading,
-  loadingText = 'Loading...',
+  loading = false,
+  loadingText = '',
   actionsComponent: ActionsComponent,
   hiddenTitle = false,
   closeOnClickBackDrop = false,
@@ -144,7 +144,12 @@ const CustomDialog = ({
         transition: Transition,
       }}
     >
-      {loading && <LoadingScreen backdrop loadingText={loadingText} />}
+      <LoadingScreen
+        loading={loading}
+        fullArea
+        backdrop
+        loadingText={loadingText}
+      />
       {!hiddenTitle &&
         (typeof title === 'string' ? (
           <DialogTitle
@@ -242,19 +247,26 @@ export const CustomDialogCloseFloatingButton = ({
   };
 
   return (
-    <CustomIconButton
-      onClick={() => handleClose()}
+    <Box
       sx={{
         position: 'absolute',
         top: margin,
         right: margin,
-        zIndex: 2,
-        p: 1,
-        color: getColor(),
+        zIndex: 99,
+        background: 'var(--mui-palette-background-paper)',
+        borderRadius: '50%',
       }}
     >
-      <MdClose size={20} />
-    </CustomIconButton>
+      <CustomIconButton
+        onClick={() => handleClose()}
+        sx={{
+          p: 1,
+          color: getColor(),
+        }}
+      >
+        <MdClose size={20} />
+      </CustomIconButton>
+    </Box>
   );
 };
 

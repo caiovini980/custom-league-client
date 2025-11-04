@@ -1,27 +1,60 @@
 import { Box, Stack } from '@mui/material';
 import { CentralizedStack } from '@render/components/CentralizedStack';
 import { LoadingScreen } from '@render/components/LoadingScreen';
+import { useAudio } from '@render/hooks/useAudioManager';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { AppMenu } from '@render/layouts/Home/AppMenu';
-import { ChampSelectFocus } from '@render/layouts/Home/ChampSelectFocus';
-import { Chat } from '@render/layouts/Home/Chat';
-import { FriendInvite } from '@render/layouts/Home/FriendInvite';
-import { Invitations } from '@render/layouts/Home/Invitations';
 import { Minigame } from '@render/layouts/Home/Minigame';
-import { ReadyCheck } from '@render/layouts/Home/ReadyCheck';
-import { ViewActions } from '@render/layouts/Home/ViewActions';
+import { ChampSelectFocus } from '@render/layouts/Home/SideBar/ChampSelectFocus';
+import { Chat } from '@render/layouts/Home/SideBar/Chat';
+import { FriendRequest } from '@render/layouts/Home/SideBar/FriendRequest';
+import { Invitations } from '@render/layouts/Home/SideBar/Invitations';
+import { ReadyCheck } from '@render/layouts/Home/SideBar/ReadyCheck';
+import { ViewActions } from '@render/layouts/Home/SideBar/ViewActions';
+import { centerHubStore } from '@render/zustand/stores/centerHubStore';
+import { chatStore } from '@render/zustand/stores/chatStore';
+import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStore';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
-import { PropsWithChildren } from 'react';
-import { SummonerInfo } from './SummonerInfo';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { minigameStore } from '@render/zustand/stores/minigameStore';
+import { storeStore } from '@render/zustand/stores/storeStore';
+import { PropsWithChildren, useEffect } from 'react';
+import { SummonerInfo } from './SideBar/SummonerInfo';
 
 export const Home = ({ children }: PropsWithChildren) => {
   const { rcpFeLolSocial } = useLeagueTranslate();
+  const sfxVignette = useAudio('sfx-vignette-celebration-intro');
 
   const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
   const isStopping = leagueClientStore.isStopping.use();
   const initialConfigurationComplete =
     leagueClientStore.systemReady.platformConfig.use();
+
+  useEffect(() => {
+    if (!isStopping) return;
+    leagueClientStore.resetState();
+    lobbyStore.resetState();
+    chatStore.resetState();
+    storeStore.resetState();
+    currentSummonerStore.resetState();
+    minigameStore.resetState();
+    centerHubStore.resetState();
+  }, [isStopping]);
+
+  useEffect(() => {
+    const unsubscribe = leagueClientStore.isAvailable.onChange(
+      (isAvailable) => {
+        if (isAvailable) {
+          sfxVignette.play();
+        }
+      },
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   if (isStopping || !initialConfigurationComplete) {
     return (
@@ -62,7 +95,6 @@ export const Home = ({ children }: PropsWithChildren) => {
           <Minigame />
         </Box>
       </Stack>
-      <Invitations />
       <Stack
         direction={'column'}
         height={'100%'}
@@ -71,8 +103,9 @@ export const Home = ({ children }: PropsWithChildren) => {
         borderLeft={'1px solid var(--mui-palette-divider)'}
       >
         <SummonerInfo />
+        <Invitations />
         <ReadyCheck />
-        <FriendInvite />
+        <FriendRequest />
         <Chat />
         <ChampSelectFocus />
         <ViewActions />

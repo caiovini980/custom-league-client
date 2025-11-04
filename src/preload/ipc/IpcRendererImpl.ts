@@ -26,6 +26,7 @@ export class IpcRendererImpl {
         versionInfo: null,
       },
       client: {
+        blink: null,
         priorityApp: null,
         getClientStatus: null,
         startLeagueClient: null,
@@ -33,6 +34,9 @@ export class IpcRendererImpl {
         reloadGameData: null,
         changeShowClient: null,
         getPatchNotes: null,
+      },
+      store: {
+        getStoreData: null,
       },
     };
     const ipcFunctionFromMain: IpcMainToRendererObjectMapper = {

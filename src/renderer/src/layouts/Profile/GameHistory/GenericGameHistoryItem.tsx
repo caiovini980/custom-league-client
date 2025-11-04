@@ -1,22 +1,17 @@
 import { ListItemAvatar, Stack, Typography, useTheme } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { CustomIconButton } from '@render/components/input';
+import { ItemIconDescription } from '@render/components/League/ItemIconDescription';
+import { SummonerIconProfile } from '@render/components/League/SummonerIconProfile';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
 import { useSpriteImage } from '@render/hooks/useSpriteImage';
 import { IconValue } from '@render/layouts/Profile/GameHistory/IconValue';
-import { ItemIcon } from '@render/layouts/Profile/GameHistory/ItemIcon';
 import { SpellIcon } from '@render/layouts/Profile/GameHistory/SpellIcon';
-import {
-  ProfileModal,
-  ProfileModalRef,
-} from '@render/layouts/Profile/ProfileModal';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { formatDateTime, secondsToDisplayTime } from '@shared/utils/date.util';
 import { formatCurrency } from '@shared/utils/string.util';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren } from 'react';
 
 interface GenericGameHistoryItemProps {
   participantId: number;
@@ -45,8 +40,6 @@ export const GenericGameHistoryItem = ({
   });
   const maps = gameDataStore.maps.use();
   const queues = gameDataStore.queues.use();
-
-  const profileRef = useRef<ProfileModalRef>(null);
 
   const { rcpFeLolMatchHistoryTrans } = rcpFeLolMatchHistory;
 
@@ -79,7 +72,7 @@ export const GenericGameHistoryItem = ({
     return {
       win: team?.win === 'Win',
       queueName,
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: none
       player: game.participantIdentities.find(
         (pi) => pi.participantId === participantId,
       )!.player,
@@ -127,15 +120,13 @@ export const GenericGameHistoryItem = ({
           width: 90,
         }}
       >
-        <CustomIconButton
-          sx={{ p: 0.5 }}
+        <SummonerIconProfile
+          profileIconId={summaryGameData.player.profileIcon}
+          summonerId={summaryGameData.player.summonerId}
           disabled={!isOtherPlayer}
-          onClick={() =>
-            profileRef.current?.open(summaryGameData.player.summonerId)
-          }
-        >
-          <CircularIcon src={summaryGameData.championImg} />
-        </CustomIconButton>
+          iconSize={40}
+          overrideImg={summaryGameData.championImg}
+        />
         <Typography fontSize={'0.6rem !important'}>
           {summaryGameData.player.gameName}
         </Typography>
@@ -185,7 +176,7 @@ export const GenericGameHistoryItem = ({
       >
         <Stack direction={'row'}>
           {summaryGameData.items.map((i, index) => (
-            <ItemIcon key={index} itemId={i.itemId} src={i.src} />
+            <ItemIconDescription key={index} itemId={i.itemId} iconSize={38} />
           ))}
         </Stack>
         <Stack direction={'row'} justifyContent={'space-between'} width={265}>
@@ -221,7 +212,6 @@ export const GenericGameHistoryItem = ({
         <Typography>{summaryGameData.date}</Typography>
       </Stack>
       {children}
-      <ProfileModal ref={profileRef} />
     </Stack>
   );
 };

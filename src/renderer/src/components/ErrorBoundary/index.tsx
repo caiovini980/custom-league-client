@@ -1,7 +1,7 @@
 import { electronHandle } from '@render/utils/electronFunction.util';
 import { PropsWithChildren, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import ErrorScreen from './ErrorScreen';
 
 export interface CustomErrorBoundaryProps {

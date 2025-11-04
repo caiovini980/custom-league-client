@@ -20,7 +20,7 @@ export type ElectronModuleProviderValue =
 export interface ElectronModuleAsyncOptions {
   name?: string | string[];
   useFactory: (
-    ...args: unknown[]
+    ...args: any[]
   ) => Promise<ElectronModuleProviderValue> | ElectronModuleProviderValue;
   inject?: (InjectionToken | OptionalFactoryDependency)[];
   isGlobal?: boolean;

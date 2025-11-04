@@ -2,6 +2,7 @@ export interface LolChampSelectV1OngoingChampionSwap {
   id: number;
   initiatedByLocalPlayer: boolean;
   otherSummonerIndex: number;
+  requesterChampionId: number;
   requestorIndex: number;
   responderIndex: number;
   requesterChampionName: string;

@@ -3,25 +3,25 @@ import { CircularIcon } from '@render/components/CircularIcon';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { LolInventoryV1WalletAll } from '@shared/typings/lol/response/lolInventoryV1WalletAll';
+import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { formatCurrency } from '@shared/utils/string.util';
-import { useState } from 'react';
 
 export const Wallet = () => {
-  const [wallet, setWallet] = useState<LolInventoryV1WalletAll>();
+  const wallet = leagueClientStore.wallet.use();
 
   const { loadEventData } = useLeagueClientEvent(
     '/lol-inventory/v1/wallet/ALL',
     (data) => {
-      setWallet(data);
+      leagueClientStore.wallet.set({
+        rp: data.RP,
+        blueEssence: data.lol_blue_essence,
+      });
     },
   );
 
   useLeagueClientEvent('/lol-inventory/v1/wallet/{string}', () => {
     loadEventData();
   });
-
-  if (!wallet) return null;
 
   return (
     <Stack
@@ -34,12 +34,12 @@ export const Wallet = () => {
     >
       <Icon
         src={'icon-rp-24.png'}
-        value={wallet.RP}
+        value={wallet.rp}
         tooltipKey={'riotPoints'}
       />
       <Icon
         src={'icon-be-150.png'}
-        value={wallet.lol_blue_essence}
+        value={wallet.blueEssence}
         tooltipKey={'blueEssence'}
       />
     </Stack>

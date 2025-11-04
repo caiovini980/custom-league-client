@@ -6,15 +6,19 @@ import {
 } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
-import { useChampSelectContext } from '@render/layouts/Lobby/ChampSelect/ChampSelectContext';
+import { champSelectStore } from '@render/zustand/stores/champSelectStore';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { useState } from 'react';
 
 export const SubsetChampionPick = () => {
   const { loadChampionBackgroundImg, genericImg } = useLeagueImage();
   const { makeRequest } = useLeagueClientRequest();
-  const { pickPlayerActionId, areSummonerActionsComplete } =
-    useChampSelectContext();
+  const areSummonerActionsComplete = champSelectStore.getCurrentSummonerData(
+    (s) => s.areSummonerActionsComplete,
+    false,
+  );
+
+  const pickPlayerActionId = champSelectStore.currentPickActionId.use();
 
   const [subsetChampion, setSubsetChampion] = useState<number[]>([81, 101]);
 

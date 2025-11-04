@@ -3,6 +3,7 @@ import { withClientConnected } from '@render/hoc/withClientConnected';
 import { useLocalTranslate } from '@render/hooks/useLocalTranslate';
 import { useElectronHandle } from '@render/utils/electronFunction.util';
 import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
+import { useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 export const ShowClient = withClientConnected(() => {
@@ -14,6 +15,13 @@ export const ShowClient = withClientConnected(() => {
     leagueClientStore.isClientOpen.set(!isClientOpen);
     client.changeShowClient(!isClientOpen);
   };
+
+  useEffect(() => {
+    if (isClientOpen) {
+      leagueClientStore.isClientOpen.set(false);
+      client.changeShowClient(false);
+    }
+  }, []);
 
   return (
     <CustomIconButtonTooltip

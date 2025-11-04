@@ -6,17 +6,19 @@ import {
   Typography,
 } from '@mui/material';
 import { CustomButton, CustomIconButton } from '@render/components/input';
+import { LoadingScreen } from '@render/components/LoadingScreen';
 import { SquareIcon } from '@render/components/SquareIcon';
 import { useLootContext } from '@render/layouts/Loot/LootContext';
 import { MdClose } from 'react-icons/md';
 
 export const LootSlot = () => {
   const {
+    loading,
     isSlot,
     isAction,
     lootInSlots,
     removeLootInSlot,
-    clearSlots,
+    closeSlot,
     finishSlot,
     buttonLabel,
     buttonEnabled,
@@ -27,12 +29,15 @@ export const LootSlot = () => {
     <Collapse
       in={isSlot}
       orientation={'horizontal'}
+      timeout={200}
       sx={{
         '& .MuiCollapse-wrapperInner': {
           width: 430,
+          position: 'relative',
         },
       }}
     >
+      <LoadingScreen loading={loading} backdrop fullArea />
       <Stack
         direction={'column'}
         rowGap={4}
@@ -82,12 +87,12 @@ export const LootSlot = () => {
           <CustomButton
             variant={'outlined'}
             disabled={!buttonEnabled}
-            onClick={finishSlot}
+            onClick={() => finishSlot()}
             loading={isAction}
           >
             {buttonLabel}
           </CustomButton>
-          <CustomIconButton onClick={clearSlots} disabled={isAction}>
+          <CustomIconButton onClick={() => closeSlot()} disabled={isAction}>
             <MdClose size={18} />
           </CustomIconButton>
         </Stack>

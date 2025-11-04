@@ -1,24 +1,28 @@
 import { Grid } from '@mui/material';
 import { PlayerCard } from '@render/layouts/Lobby/GenericLobby/PlayerList/PlayerCard';
-import { LolLobbyV2Lobby } from '@shared/typings/lol/response/lolLobbyV2Lobby';
+import { lobbyStore } from '@render/zustand/stores/lobbyStore';
+import { isEqual } from 'lodash-es';
 
-interface PlayerListProps {
-  lobby: LolLobbyV2Lobby;
-}
+export const PlayerList = () => {
+  const members = lobbyStore.lobby.use((s) => s?.members ?? [], isEqual);
+  const summonerId = lobbyStore.lobby.use(
+    (s) => s?.localMember.summonerId ?? -1,
+  );
+  const showPositionSelector = lobbyStore.lobby.use(
+    (s) => s?.gameConfig.showPositionSelector ?? false,
+  );
 
-export const PlayerList = ({ lobby }: PlayerListProps) => {
   const isLeader =
-    lobby.members.find((m) => m.summonerId === lobby.localMember.summonerId)
-      ?.isLeader ?? false;
+    members.find((m) => m.summonerId === summonerId)?.isLeader ?? false;
 
   return (
     <Grid container spacing={2} justifyContent={'center'}>
-      {lobby.members.map((m) => (
+      {members.map((m) => (
         <Grid key={m.summonerId}>
           <PlayerCard
             member={m}
-            isOwner={m.summonerId === lobby.localMember.summonerId}
-            showPositionSelector={lobby.gameConfig.showPositionSelector}
+            isOwner={m.summonerId === summonerId}
+            showPositionSelector={showPositionSelector}
             isLeader={isLeader}
           />
         </Grid>

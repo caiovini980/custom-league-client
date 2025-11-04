@@ -6,28 +6,29 @@ import {
 } from '@mui/material';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { useLobby } from '@render/hooks/useLobby';
+import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { lobbyStore } from '@render/zustand/stores/lobbyStore';
 import { LolGameQueuesV1Queues } from '@shared/typings/lol/response/lolGameQueuesV1Queues';
 import { Fragment, useEffect, useState } from 'react';
+import { FaClock } from 'react-icons/fa6';
+
+interface QueueGroup {
+  name: string;
+  queues: LolGameQueuesV1Queues[];
+  hidden?: boolean;
+}
 
 export const QueueList = () => {
   const { makeRequest } = useLeagueClientRequest();
   const { rcpFeLolParties } = useLeagueTranslate();
-  const { getQueueNameByQueueId, getLobby } = useLobby();
 
-  const gameFlow = lobbyStore.gameFlow.use();
+  const allowedChangeActivity = lobbyStore.lobby.use(
+    (s) => s?.localMember.allowedChangeActivity ?? false,
+  );
+  const gameFlowPhase = lobbyStore.gameFlow.use((s) => s?.phase ?? 'None');
+  const queueId = lobbyStore.gameFlow.use((s) => s?.gameData.queue.id);
 
   const [queueList, setQueueList] = useState<LolGameQueuesV1Queues[]>([]);
-
-  useEffect(() => {
-    makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
-      const gameMode = ['CLASSIC', 'ARAM', 'TFT'];
-      if (res.ok) {
-        setQueueList(res.body.filter((q) => gameMode.includes(q.gameMode)));
-      }
-    });
-  }, []);
 
   const onClickQueue = (queue: LolGameQueuesV1Queues) => {
     makeRequest('POST', '/lol-lobby/v2/lobby', {
@@ -36,14 +37,17 @@ export const QueueList = () => {
     return;
   };
 
+  const getQueueNameByQueueId = (queueId: number) => {
+    return gameDataStore.queueNameById.get(queueId);
+  };
+
   const queuesFiltered = queueList.filter(
     (q) => q.queueAvailability === 'Available' && q.isVisible,
   );
 
   const getQueuesGrouped = () => {
     if (!queuesFiltered.length) return [];
-    const queuesGrouped: { name: string; queues: LolGameQueuesV1Queues[] }[] =
-      [];
+    const queuesGrouped: QueueGroup[] = [];
 
     const { rcpFeLolPartiesTrans } = rcpFeLolParties;
 
@@ -65,6 +69,11 @@ export const QueueList = () => {
       (q) =>
         q.gameSelectModeGroup === 'kAlternativeLeagueGameModes' &&
         q.gameSelectCategory === 'kPvP',
+    );
+    const trainingQueue = queuesFiltered.filter(
+      (q) =>
+        q.gameSelectModeGroup === 'kAlternativeLeagueGameModes' &&
+        q.gameSelectCategory === 'kTraining',
     );
 
     const coopVsAiQueues = queuesFiltered.filter(
@@ -98,19 +107,28 @@ export const QueueList = () => {
       queues: coopVsAiQueues,
     });
 
+    queuesGrouped.push({
+      name: rcpFeLolPartiesTrans('parties_game_category_ktraining'),
+      queues: trainingQueue,
+      hidden: true,
+    });
+
     return queuesGrouped;
   };
 
   const disabledList = () => {
-    if (gameFlow) {
-      if (gameFlow.phase === 'None') return false;
-      return (
-        gameFlow.phase === 'Matchmaking' ||
-        !getLobby()?.localMember.allowedChangeActivity
-      );
-    }
-    return false;
+    if (['None', 'Lobby'].includes(gameFlowPhase)) return false;
+    return gameFlowPhase === 'Matchmaking' || !allowedChangeActivity;
   };
+
+  useEffect(() => {
+    makeRequest('GET', '/lol-game-queues/v1/queues', undefined).then((res) => {
+      const gameMode = ['CLASSIC', 'ARAM', 'TFT', 'PRACTICETOOL', 'KIWI'];
+      if (res.ok) {
+        setQueueList(res.body.filter((q) => gameMode.includes(q.gameMode)));
+      }
+    });
+  }, []);
 
   return (
     <List
@@ -127,6 +145,7 @@ export const QueueList = () => {
       disablePadding
     >
       {getQueuesGrouped()
+        .filter((q) => !q.hidden)
         .filter((q) => q.queues.length)
         .map((qGrouped) => (
           <Fragment key={qGrouped.name}>
@@ -137,10 +156,11 @@ export const QueueList = () => {
               <ListItemButton
                 key={q.id}
                 onClick={() => onClickQueue(q)}
-                selected={q.id === gameFlow?.gameData.queue.id}
-                disabled={gameFlow?.phase === 'Matchmaking'}
+                selected={q.id === queueId}
+                disabled={gameFlowPhase === 'Matchmaking'}
               >
                 <ListItemText>{getQueueNameByQueueId(q.id)}</ListItemText>
+                {q.isLimitedTimeQueue && <FaClock />}
               </ListItemButton>
             ))}
           </Fragment>

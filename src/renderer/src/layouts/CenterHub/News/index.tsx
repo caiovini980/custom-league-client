@@ -1,5 +1,6 @@
 import { Box, Stack } from '@mui/material';
 import { CentralizedStack } from '@render/components/CentralizedStack';
+import { CustomCarousel } from '@render/components/CustomCarousel';
 import { LoadingScreen } from '@render/components/LoadingScreen';
 import { withSystemReady } from '@render/hoc/withSystemReady';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
@@ -9,7 +10,6 @@ import { NewsDescription } from '@render/layouts/CenterHub/News/NewsDescription'
 import { NewsMedia } from '@render/layouts/CenterHub/News/NewsMedia';
 import { centerHubStore } from '@render/zustand/stores/centerHubStore';
 import { useEffect } from 'react';
-import { Carousel } from 'react-responsive-carousel';
 
 export const News = withSystemReady('activeCenter', () => {
   const { makeRequest } = useLeagueClientRequest();
@@ -52,16 +52,7 @@ export const News = withSystemReady('activeCenter', () => {
         },
       }}
     >
-      <Carousel
-        key={news.blades[0].items.length}
-        autoPlay={true}
-        infiniteLoop
-        stopOnHover
-        showStatus={false}
-        showThumbs={false}
-        swipeable={false}
-        interval={5000}
-      >
+      <CustomCarousel autoplay infinite pauseOnHover autoplaySpeed={5000} dots>
         {news.blades[0].items.map((item, i) => {
           return (
             <Stack
@@ -77,7 +68,7 @@ export const News = withSystemReady('activeCenter', () => {
             </Stack>
           );
         })}
-      </Carousel>
+      </CustomCarousel>
     </Box>
   );
 });

@@ -7,6 +7,10 @@ import {
   ClientMakeRequestResponse,
   GetPatchNotesResponse,
 } from '@shared/typings/ipc-function/handle/client.typing';
+import {
+  StoreResponse,
+  StoreView,
+} from '@shared/typings/ipc-function/handle/store.typing';
 import { VersionInfo } from '@shared/typings/ipc-function/handle/updater.typing';
 import { ClientStatusResponse } from '@shared/typings/ipc-function/to-renderer/client-status.typing';
 import { LoadGameData } from '@shared/typings/ipc-function/to-renderer/load-game-data.typing';
@@ -14,8 +18,8 @@ import {
   ClientEndpointKeys,
   ClientEndpointResponse,
 } from '@shared/typings/lol/clientEndpoint';
-import { ProgressInfo } from 'electron-updater';
 import { EventMessage } from '@shared/typings/lol/eventMessage';
+import { ProgressInfo } from 'electron-updater';
 
 type RVoid = (...arg: never[]) => void;
 
@@ -30,6 +34,7 @@ export interface IpcFunction {
     versionInfo: () => VersionInfo;
   };
   client: {
+    blink: () => void;
     priorityApp: () => void;
     changeShowClient: (value: boolean) => void;
     getPatchNotes: () => GetPatchNotesResponse;
@@ -39,6 +44,9 @@ export interface IpcFunction {
     makeRequest: <K extends ClientEndpointKeys>(
       data: ClientMakeRequestPayload<K>,
     ) => ClientMakeRequestResponse<ClientEndpointResponse[K]>;
+  };
+  store: {
+    getStoreData: (view: StoreView) => StoreResponse;
   };
 }
 

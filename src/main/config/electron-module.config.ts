@@ -1,16 +1,43 @@
 import { join } from 'node:path';
 import { optimizer } from '@electron-toolkit/utils';
 import { ElectronModule } from '@main/ipc';
+import { CommonLogger } from '@main/logger/common-logger.abstract';
 import { DynamicModule } from '@nestjs/common';
-import { app, BrowserWindow, Menu, nativeImage, shell } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  nativeImage,
+  session,
+  shell,
+} from 'electron';
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+} from 'electron-devtools-installer';
 import appIcon from '../../../resources/icon.png?asset';
 
 export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
   {
     isGlobal: true,
-    useFactory: async () => {
+    useFactory: async (logger: CommonLogger) => {
+      const isDev = !app.isPackaged;
+      if (isDev) {
+        try {
+          const extensionsDir = join(app.getPath('userData'), 'extensions');
+          const reactPath = join(extensionsDir, REACT_DEVELOPER_TOOLS.id);
+
+          await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS]);
+          // Load manual
+          await session.defaultSession.loadExtension(reactPath, {
+            allowFileAccess: true,
+          });
+          logger.info('React & Redux DevTools instaladas');
+        } catch (e) {
+          logger.error('Erro ao instalar DevTools:', e);
+        }
+      }
       function createWindow() {
-        const isDev = !app.isPackaged;
         const win = new BrowserWindow({
           icon: nativeImage.createFromPath(appIcon),
           title: 'Decent League Client',
@@ -20,6 +47,7 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
           autoHideMenuBar: false,
           webPreferences: {
             contextIsolation: true,
+            session: session.defaultSession,
             sandbox: false,
             preload: join(__dirname, '../preload/index.js'),
           },
@@ -29,6 +57,10 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
           {
             label: 'Open DevTool',
             click: () => win.webContents.openDevTools(),
+          },
+          {
+            label: 'Reload Vite',
+            click: () => win.reload(),
           },
         ]);
 
@@ -84,5 +116,6 @@ export const electronModuleConfig: DynamicModule = ElectronModule.registerAsync(
 
       return { win };
     },
+    inject: [CommonLogger],
   },
 );

@@ -43,7 +43,7 @@ export const onLeagueClientEvent = <K extends keyof EventMessageMap>(
   event: K,
   cb: Cb<K>,
   showDeleted: boolean,
-) => {
+): { unsubscribe: () => void } => {
   const regex = buildRegexFromEvent(event);
   return electronListen.onLeagueClientEvent((message) => {
     readMessage(regex, message, cb, showDeleted);

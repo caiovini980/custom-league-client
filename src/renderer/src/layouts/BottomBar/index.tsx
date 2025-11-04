@@ -2,9 +2,8 @@ import { Box, Paper, Stack } from '@mui/material';
 import { AppConfigModal } from '@render/layouts/BottomBar/AppConfigModal';
 import { CloseClient } from '@render/layouts/BottomBar/CloseClient';
 import { ShowClient } from '@render/layouts/BottomBar/ShowClient';
-import { ThemeModeShortcut } from '@render/layouts/BottomBar/ThemeModeShortcut';
-import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
 import { Version } from '@render/layouts/BottomBar/Version/Version';
+import { VolumeBarShortcut } from '@render/layouts/BottomBar/VolumeBarShortcut';
 
 export const BottomBar = () => {
   const iconSize = 16;
@@ -36,7 +35,6 @@ export const BottomBar = () => {
             },
           }}
         >
-          <ThemeModeShortcut />
           <CloseClient />
           <ShowClient />
           <VolumeBarShortcut />

@@ -1,9 +1,9 @@
 {
   "name": "decent-league-client",
-  "version": "0.6.0",
+  "version": "0.8.1",
   "description": "A decent League Client",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "Alessandro Santos, Caio Aguiar",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
@@ -37,7 +37,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/serve-static": "^5.0.3",
     "@nestjs/typeorm": "^11.0.0",
-    "axios": "^1.10.0",
+    "axios": "^1.12.0",
     "better-sqlite3": "^11.10.0",
     "cheerio": "^1.1.0",
     "class-transformer": "^0.5.1",
@@ -80,6 +80,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
+    "@types/react-slick": "^0.23.13",
     "@vitejs/plugin-react": "^4.6.0",
     "electron": "^35.7.2",
     "electron-builder": "^26.0.12",
@@ -91,11 +92,13 @@
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.0",
     "react-icons": "^5.5.0",
-    "react-responsive-carousel": "^3.2.23",
-    "react-router-dom": "^7.6.3",
+    "react-router": "^7.9.4",
+    "react-slick": "^0.31.0",
+    "react-virtuoso": "^4.14.1",
+    "slick-carousel": "^1.8.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "vite": "^7.0.4",
+    "vite": "^7.1.5",
     "vite-plugin-checker": "^0.10.0",
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-static-copy": "^3.1.1",
@@ -110,5 +113,5 @@
       "optional": true
     }
   },
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
 }

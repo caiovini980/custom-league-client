@@ -1,6 +1,6 @@
 import { debounce, Slider, Stack } from '@mui/material';
 import { CustomIconButton } from '@render/components/input';
-import { useAudioManager } from '@render/hooks/useAudioManager';
+import { useAudio } from '@render/hooks/useAudioManager';
 import { electronHandle } from '@render/utils/electronFunction.util';
 import { appConfigStore } from '@render/zustand/stores/appConfigStore';
 import { delay } from 'lodash-es';
@@ -10,7 +10,7 @@ import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from 'react-icons/fa6';
 export const VolumeBar = () => {
   const volume = appConfigStore.VOLUME.use();
   const cachedVolume = useRef<number>(0);
-  const { play } = useAudioManager();
+  const { play } = useAudio('mute_unmute');
 
   const iconSize = 18;
 
@@ -38,12 +38,12 @@ export const VolumeBar = () => {
 
       // setar posição do slider para 0
       // setar volume como 0
-      play('mute_unmute');
+      play();
       delay(() => {
         changeVolume(0);
       }, 50);
     } else {
-      play('mute_unmute');
+      play();
       changeVolume(cachedVolume.current);
     }
   };

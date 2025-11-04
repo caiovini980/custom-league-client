@@ -1,7 +1,9 @@
 import { ButtonBase, Stack, Typography } from '@mui/material';
+import { CircularIcon } from '@render/components/CircularIcon';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
+import { SquareIcon } from '@render/components/SquareIcon';
 import {
   buildEventUrl,
   useLeagueClientEvent,
@@ -10,19 +12,17 @@ import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueImage } from '@render/hooks/useLeagueImage';
 import { gameDataStore } from '@render/zustand/stores/gameDataStore';
 import { LolPerksV1Pages_Id } from '@shared/typings/lol/request/lolPerksV1Pages_Id';
+import { LolPerksV1Pages } from '@shared/typings/lol/response/lolPerksV1Pages';
 import { LolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id } from '@shared/typings/lol/response/lolPerksV1RecommendedPagesChampion_Id_Position_Id_Map_Id';
 import { useState } from 'react';
-import { CircularIcon } from '@render/components/CircularIcon';
-import { SquareIcon } from '@render/components/SquareIcon';
 
 interface RecommendedPerksProps {
-  perkToChangeId?: number;
   open: boolean;
   onClose: () => void;
   championId: number;
   position: string;
   mapId: number;
-  onSelectPerk?: () => void;
+  onSelectPerk?: (runePageId: number) => void;
 }
 
 export const RecommendedPerks = ({
@@ -32,7 +32,6 @@ export const RecommendedPerks = ({
   championId,
   position,
   mapId,
-  perkToChangeId,
 }: RecommendedPerksProps) => {
   const { makeRequest } = useLeagueClientRequest();
   const { loadChampionBackgroundImg, lolGameDataImg, spellIcon } =
@@ -56,7 +55,7 @@ export const RecommendedPerks = ({
     buildEventUrl(
       '/lol-perks/v1/recommended-pages/champion/{digits}/position/{string}/map/{digits}',
       championId,
-      position.toLowerCase(),
+      position.toLowerCase() || 'NONE',
       mapId,
     ),
     (data) => {
@@ -82,25 +81,31 @@ export const RecommendedPerks = ({
     const championName = champions.find((c) => c.id === championId)?.name ?? '';
     const data: LolPerksV1Pages_Id = {
       isTemporary: true,
-      name: `${championName}: ${perk.keystone.name}`,
+      isRecommendationOverride: false,
+      name: `${championName} - ${perk.keystone.name}`,
       primaryStyleId: perk.primaryPerkStyleId,
       subStyleId: perk.secondaryPerkStyleId,
       selectedPerkIds: perk.perks.map((p) => p.id),
+      recommendationChampionId: perk.recommendationChampionId,
+      runeRecommendationId: perk.recommendationId,
+      recommendationIndex: index,
+      order: 0,
     };
 
-    onClose();
+    makeRequest('PATCH', '/lol-champ-select/v1/session/my-selection', {
+      spell1Id: perk.summonerSpellIds[0],
+      spell2Id: perk.summonerSpellIds[1],
+    }).then();
 
-    if (perkToChangeId) {
-      makeRequest(
-        'PUT',
-        buildEventUrl('/lol-perks/v1/pages/{digits}', perkToChangeId),
-        data,
-      ).then(() => onSelectPerk?.());
-    } else {
-      makeRequest('POST', '/lol-perks/v1/pages', data).then(() =>
-        onSelectPerk?.(),
-      );
-    }
+    makeRequest('POST', '/lol-perks/v1/pages', data).then((res) => {
+      if (res.ok) {
+        // In this case, res.body is LolPerksV1Pages only and not a list
+        const id = (res.body as unknown as LolPerksV1Pages).id;
+        makeRequest('PUT', '/lol-perks/v1/currentpage', id).then();
+        onSelectPerk?.(id);
+        onClose();
+      }
+    });
   };
 
   return (
@@ -193,7 +198,7 @@ export const RecommendedPerks = ({
                   size={iconSize.ternary}
                 />
               </Stack>
-              <Stack direction={'row'} columnGap={2} display={'none'}>
+              <Stack direction={'row'} columnGap={2}>
                 <SquareIcon
                   src={spellIcon(rp.summonerSpellIds[0])}
                   size={iconSize.spell}

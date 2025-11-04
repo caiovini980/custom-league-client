@@ -1,8 +1,8 @@
 import { store } from '@davstack/store';
 import { Null } from '@shared/typings/generic.typing';
 import { GetPatchNotesResponse } from '@shared/typings/ipc-function/handle/client.typing';
+import { LolActivityCenterV1Content_Id } from '@shared/typings/lol/response/lolActivityCenterV1Content_Id';
 import { LolStoreV1Catalog_InventoryType } from '@shared/typings/lol/response/lolStoreV1Catalog_InventoryType';
-import {LolActivityCenterV1Content_Id} from "@shared/typings/lol/response/lolActivityCenterV1Content_Id";
 
 export interface CenterHubState {
   patchNotes: Null<GetPatchNotesResponse>;

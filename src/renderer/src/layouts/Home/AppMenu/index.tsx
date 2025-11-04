@@ -1,34 +1,33 @@
-import { BottomNavigation, BottomNavigationAction, Box } from '@mui/material';
-import { useAudioManager } from '@render/hooks/useAudioManager';
+import { BottomNavigation, BottomNavigationAction, Stack } from '@mui/material';
+import { useAudio } from '@render/hooks/useAudioManager';
 import { useLeagueClientEvent } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
+import { ClientStatus } from '@render/layouts/Home/AppMenu/ClientStatus';
 import { Wallet } from '@render/layouts/Home/AppMenu/Wallet';
 import config from '@render/utils/config.util';
-import { leagueClientStore } from '@render/zustand/stores/leagueClientStore';
 import { Null } from '@shared/typings/generic.typing';
 import { LolYourShopV1Status } from '@shared/typings/lol/response/lolYourShopV1Status';
 import { SyntheticEvent, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
 import { FaBox, FaGamepad, FaStore, FaTags, FaUser } from 'react-icons/fa6';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 export const AppMenu = () => {
   const { rcpFeLolL10n } = useLeagueTranslate();
-  const { play } = useAudioManager();
+  const { play } = useAudio('tab_change');
   const navigate = useNavigate();
   const location = useLocation();
 
   const { rcpFeLolL10nTrans } = rcpFeLolL10n;
 
   const [yourShopStatus, setYourShopStatus] = useState<LolYourShopV1Status>();
-  const lootReady = leagueClientStore.systemReady.loot;
 
   useLeagueClientEvent('/lol-yourshop/v1/status', (data) => {
     setYourShopStatus(data);
   });
 
   const handleChange = (_event: Null<SyntheticEvent>, newValue: string) => {
-    play('tab_change');
+    play();
     navigate(`/${newValue}`);
   };
 
@@ -53,13 +52,11 @@ export const AppMenu = () => {
       icon: FaStore,
       path: 'store',
       title: rcpFeLolL10nTrans('navbar_store'),
-      hidden: true,
     },
     {
       icon: FaBox,
       path: 'loot',
       title: rcpFeLolL10nTrans('navbar_loot'),
-      hidden: !lootReady,
     },
     {
       icon: FaTags,
@@ -70,34 +67,41 @@ export const AppMenu = () => {
   ];
 
   return (
-    <BottomNavigation
+    <Stack
+      direction={'row'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
       sx={{
-        position: 'relative',
-        height: config.topBarHeight,
-        backgroundColor: 'transparent',
-        flexShrink: 0,
-        overflow: 'hidden',
-        zIndex: (t) => t.zIndex.fab,
         borderBottom: '1px solid var(--mui-palette-divider)',
       }}
-      value={location.pathname.substring(1)}
-      onChange={handleChange}
-      showLabels
     >
-      {menus
-        .filter((m) => !m.hidden)
-        .map((m) => (
-          <BottomNavigationAction
-            key={m.path}
-            label={m.title}
-            value={m.path}
-            icon={<m.icon />}
-            sx={{ maxWidth: 'fit-content' }}
-          />
-        ))}
-      <Box position={'absolute'} right={0} top={0} height={'100%'}>
-        <Wallet />
-      </Box>
-    </BottomNavigation>
+      <ClientStatus />
+      <BottomNavigation
+        sx={{
+          position: 'relative',
+          height: config.topBarHeight,
+          backgroundColor: 'transparent',
+          flexShrink: 0,
+          overflow: 'hidden',
+          zIndex: (t) => t.zIndex.fab,
+        }}
+        value={location.pathname.substring(1)}
+        onChange={handleChange}
+        showLabels
+      >
+        {menus
+          .filter((m) => !m.hidden)
+          .map((m) => (
+            <BottomNavigationAction
+              key={m.path}
+              label={m.title}
+              value={m.path}
+              icon={<m.icon />}
+              sx={{ maxWidth: 'fit-content' }}
+            />
+          ))}
+      </BottomNavigation>
+      <Wallet />
+    </Stack>
   );
 };

@@ -2,7 +2,6 @@ import { Box, Collapse, Stack } from '@mui/material';
 import {
   CustomIconButton,
   CustomIconButtonTooltip,
-  CustomIconButtonTooltipProps,
 } from '@render/components/input';
 import {
   buildEventUrl,
@@ -16,7 +15,7 @@ import { currentSummonerStore } from '@render/zustand/stores/currentSummonerStor
 import { LolMatchHistoryV1Games_Id } from '@shared/typings/lol/response/lolMatchHistoryV1Games_Id';
 import { LolMatchHistoryV1productsLol_Id_Matches } from '@shared/typings/lol/response/lolMatchHistoryV1ProductsLol_Id_Matches';
 import { LolReplaysV1Metadata_Id } from '@shared/typings/lol/response/lolReplaysV1Metadata_Id';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   FaChevronDown,
   FaChevronUp,
@@ -43,7 +42,7 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
   });
   const [gameData, setGameData] = useState<LolMatchHistoryV1Games_Id>();
 
-  const replayBtn = (): CustomIconButtonTooltipProps => {
+  const replayBtn = () => {
     const iconSize = 16;
 
     const title = rcpFeLolSharedComponentsTransReplays(
@@ -101,12 +100,12 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
     };
   };
 
-  const getCurrentParticipantId = () => {
+  const currentParticipantId = useMemo(() => {
     return (
       gameData?.participantIdentities.find((p) => p.player.puuid === puuid)
         ?.participantId ?? -1
     );
-  };
+  }, [gameData?.participantIdentities.length, puuid]);
 
   useLeagueClientEvent(
     buildEventUrl('/lol-match-history/v1/games/{digits}', game.gameId),
@@ -163,7 +162,7 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
     >
       <GenericGameHistoryItem
         game={gameData}
-        participantId={getCurrentParticipantId()}
+        participantId={currentParticipantId}
       >
         <Box
           position={'absolute'}
@@ -209,11 +208,12 @@ export const GameHistoryItem = ({ game, puuid }: GameHistoryItemProps) => {
       <Collapse
         in={showMoreDetail}
         mountOnEnter
+        unmountOnExit
         sx={{
           width: '100%',
         }}
       >
-        <Stack direction={'column'} p={2} borderLeft={'4px solid white'}>
+        <Stack direction={'column'} py={1} borderLeft={'4px solid white'}>
           <TeamHistory game={gameData} teamIndex={1} />
           <TeamHistory game={gameData} teamIndex={2} />
         </Stack>

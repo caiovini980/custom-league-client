@@ -18,6 +18,10 @@ export interface LeagueClientState {
     yourShop: boolean;
     platformConfig: boolean;
   };
+  wallet: {
+    rp: number;
+    blueEssence: number;
+  };
 }
 
 const initialState: LeagueClientState = {
@@ -37,6 +41,10 @@ const initialState: LeagueClientState = {
     store: false,
     ranked: false,
     yourShop: false,
+  },
+  wallet: {
+    blueEssence: 0,
+    rp: 0,
   },
 };
 
