@@ -25,8 +25,6 @@ const initialState: CenterHubState = {
 export const centerHubStore = store(initialState, {
   name: 'centerHub',
   devtools: { enabled: true },
-})
-  .actions((store) => ({
-    resetState: () => store.set(initialState),
-  }))
-  .create();
+}).actions((store) => ({
+  resetState: () => store.set(initialState),
+}));

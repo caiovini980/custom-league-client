@@ -19,8 +19,6 @@ export const storeStore = store(initialState, {
   devtools: {
     enabled: true,
   },
-})
-  .actions((store) => ({
-    resetState: () => store.set(initialState),
-  }))
-  .create();
+}).actions((store) => ({
+  resetState: () => store.set(initialState),
+}));

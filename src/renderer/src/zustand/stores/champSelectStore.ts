@@ -235,8 +235,7 @@ export const champSelectStore = store(initialState, {
       fn: (summoner: LolChampSelectV1Summoners_Id) => T,
       defaultValue: T,
     ) => getCurrentSummoner(store, fn, defaultValue),
-  }))
-  .create();
+  }));
 
 const getSlotId = (session: LolChampSelectV1Session) => {
   return session.myTeam.findIndex(

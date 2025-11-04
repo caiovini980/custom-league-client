@@ -12,4 +12,4 @@ const initialState: AppConfigState = {
 export const appConfigStore = store(initialState, {
   name: 'appConfig',
   devtools: { enabled: true },
-}).create();
+});

@@ -36,5 +36,4 @@ export const gameDataStore = store(initialState, {
       }),
     mapById: (mapId: number) =>
       store.maps.use((maps) => maps.find((m) => m.id === mapId)),
-  }))
-  .create();
+  }));

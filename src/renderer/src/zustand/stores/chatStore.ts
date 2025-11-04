@@ -18,23 +18,21 @@ const initialState: ChatState = {
 export const chatStore = store(initialState, {
   name: 'chat',
   devtools: { enabled: true },
-})
-  .actions((state) => ({
-    resetState: () => {
-      state.set(initialState);
-    },
-    selectConversationActive: (conversationId: Null<string>) => {
-      if (conversationId === null) {
-        state.conversationActive.set(null);
-        return;
-      }
-      const con = state.conversations.get((con) =>
-        con.find((c) => c.id === conversationId),
-      );
-      const currentConversation = state.conversationActive.get();
-      if (currentConversation?.id !== con?.id) {
-        state.conversationActive.set(con ?? null);
-      }
-    },
-  }))
-  .create();
+}).actions((state) => ({
+  resetState: () => {
+    state.set(initialState);
+  },
+  selectConversationActive: (conversationId: Null<string>) => {
+    if (conversationId === null) {
+      state.conversationActive.set(null);
+      return;
+    }
+    const con = state.conversations.get((con) =>
+      con.find((c) => c.id === conversationId),
+    );
+    const currentConversation = state.conversationActive.get();
+    if (currentConversation?.id !== con?.id) {
+      state.conversationActive.set(con ?? null);
+    }
+  },
+}));

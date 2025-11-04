@@ -3,7 +3,8 @@ import CustomDialog, {
 } from '@render/components/CustomDialog';
 import CustomTab, { CustomTabPanel } from '@render/components/CustomTab';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
-import { SummonerBackgroundChange } from '@render/layouts/Profile/RankedStats/SummonerEdit/BackgroundChange/SummonerBackgroundChange';
+import { SummonerBackgroundChange } from '@render/layouts/Profile/RankedStats/SummonerEdit/BackgroundChange';
+import { IconChange } from '@render/layouts/Profile/RankedStats/SummonerEdit/IconChange';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
 export interface SummonerEditModalRef {
@@ -47,7 +48,9 @@ export const SummonerEditModal = forwardRef<SummonerEditModalRef>((_, ref) => {
             'challenges_identity_customizer_title',
           )}
           name={'icon'}
-        ></CustomTabPanel>
+        >
+          <IconChange />
+        </CustomTabPanel>
         <CustomTabPanel
           label={rcpFeLolProfilesTrans(
             'profile_backdrop_picker_button_tooltip',

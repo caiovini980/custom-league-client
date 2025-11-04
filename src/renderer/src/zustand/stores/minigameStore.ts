@@ -17,8 +17,6 @@ const initialState: MinigameState = {
 export const minigameStore = store(initialState, {
   name: 'minigame',
   devtools: { enabled: true },
-})
-  .actions((store) => ({
-    resetState: () => store.set(initialState),
-  }))
-  .create();
+}).actions((store) => ({
+  resetState: () => store.set(initialState),
+}));

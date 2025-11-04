@@ -60,5 +60,4 @@ export const lobbyStore = store(initialState, {
       store.gameFlow.onChange((value) => {
         champSelectStore.gameMode.set(value?.gameData.queue.gameMode ?? '');
       }),
-  }))
-  .create();
+  }));
