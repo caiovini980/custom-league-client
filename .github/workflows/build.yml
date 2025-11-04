@@ -12,25 +12,30 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest] # opcional: multiplataforma
+        os: [ windows-latest ] # opcional: multiplataforma
 
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Electron App
-        run: npm run build:win:publish
+        run: pnpm run build:win:publish
 
       # Opcional: salvar os artefatos gerados
       - name: Upload artifacts
