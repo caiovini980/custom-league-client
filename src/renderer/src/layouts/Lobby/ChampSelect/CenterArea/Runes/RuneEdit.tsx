@@ -65,6 +65,11 @@ export const RuneEdit = ({ pageRuneId }: RuneEditProps) => {
         name: newValue.name,
         primaryStyleId: newValue.primaryPerkId,
         subStyleId: newValue.secondaryPerkId,
+        runeRecommendationId: '',
+        recommendationIndex: -1,
+        recommendationChampionId: 0,
+        isRecommendationOverride: false,
+        order: 0,
         selectedPerkIds: [
           ...newValue.primarySlotPerksId,
           ...newValue.secondarySlotPerksId,

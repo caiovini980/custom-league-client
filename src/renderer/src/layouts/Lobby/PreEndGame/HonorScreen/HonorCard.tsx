@@ -73,7 +73,7 @@ export const HonorCard = ({
       {isHonored && (
         <CircularIcon
           src={genericImg(
-            'plugins/rcp-fe-lol-honor/global/default/assets/voting_heart.png',
+            'plugins/rcp-fe-lol-static-assets/global/default/honor/voting_heart.png',
           )}
         />
       )}

@@ -92,10 +92,12 @@ export const RecommendedPerks = ({
       order: 0,
     };
 
+    /*
     makeRequest('PATCH', '/lol-champ-select/v1/session/my-selection', {
       spell1Id: perk.summonerSpellIds[0],
       spell2Id: perk.summonerSpellIds[1],
     }).then();
+         */
 
     makeRequest('POST', '/lol-perks/v1/pages', data).then((res) => {
       if (res.ok) {
@@ -198,7 +200,7 @@ export const RecommendedPerks = ({
                   size={iconSize.ternary}
                 />
               </Stack>
-              <Stack direction={'row'} columnGap={2}>
+              <Stack direction={'row'} columnGap={2} display={'none'}>
                 <SquareIcon
                   src={spellIcon(rp.summonerSpellIds[0])}
                   size={iconSize.spell}

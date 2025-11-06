@@ -62,6 +62,7 @@ export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
           champSelectStore.summoners.assign({
             [slotId]: res.body,
           });
+          if (res.body.obfuscatedSummonerId) {
           champSelectStore.summonerName.assign({
             [res.body.obfuscatedSummonerId]:
               res.body.nameVisibilityType === 'HIDDEN'
@@ -70,6 +71,8 @@ export const ChampionSelectWrapper = ({ children }: PropsWithChildren) => {
                   )
                 : res.body.gameName,
           });
+
+          }
         }
       });
       const ev = onLeagueClientEvent(

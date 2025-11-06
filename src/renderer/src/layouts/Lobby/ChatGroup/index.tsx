@@ -34,6 +34,8 @@ export const ChatGroup = ({
 
   const { rcpFeLolSocialTrans } = rcpFeLolSocial;
 
+  const summonersName = champSelectStore.summonerName.use();
+
   const messagesContainerDivRef = useRef<HTMLDivElement>(null);
 
   const [conversationMessages, setConversationMessages] = useState<
@@ -59,9 +61,7 @@ export const ChatGroup = ({
         return `${participant.gameName} #${participant.gameTag}`;
       }
       if (participant.obfuscatedSummonerId) {
-        return champSelectStore.summonerName.get(
-          (s) => s[participant.obfuscatedSummonerId ?? 0],
-        );
+        return summonersName[participant.obfuscatedSummonerId ?? 0];
       }
     }
     return '';
@@ -131,16 +131,15 @@ export const ChatGroup = ({
     (data) => {
       if (isConnected) {
         setParticipants((prev) => {
-          const newList = [...prev];
-          const listId = prev.map((p) => p.id);
-
-          data.forEach((p) => {
-            if (!listId.includes(p.id)) {
-              newList.push(p);
+          const newPar = data.filter((d) => {
+            if (d.obfuscatedSummonerId) {
+              return !prev.some(
+                (p) => p.obfuscatedSummonerId === d.obfuscatedSummonerId,
+              );
             }
+            return !prev.some((p) => p.id === d.id);
           });
-
-          return newList;
+          return [...prev, ...newPar];
         });
       }
     },
