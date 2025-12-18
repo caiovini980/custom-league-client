@@ -29,6 +29,8 @@ Download latest version in [Release](https://github.com/caiovini980/custom-leagu
 
 ![Riot Client Path](docs/img/riot_client_path.png)
 
+> ATTENTION: To better experience, you need close "Riot Client" and "League of Legend" and start by Custom Client(First image). If not do this, your League Client will appear sometimes.
+
 ## Project Setup (To developers)
 
 > It's need of [Pnpm](https://pnpm.io/) with package manager
