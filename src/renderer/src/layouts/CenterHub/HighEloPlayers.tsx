@@ -114,7 +114,7 @@ export const HighEloPlayers = withSystemReady('ranked', () => {
       ),
       undefined,
     );
-
+    console.log(playersDataRes);
     if (!playersDataRes.ok) {
       error();
       return;

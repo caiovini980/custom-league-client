@@ -51,24 +51,29 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
 
   const getPrice = (saleData: LolStoreV1Catalog_InventoryType) => {
     const prices: {
-      currency: 'RP';
+      currency: 'RP' | 'IP';
       price: number;
       discount: number;
       priceWithDiscount: number;
     }[] = [];
-    const currentRpPrice = saleData.prices.find((p) => p.currency === 'RP');
-    const discountRpPrice = saleData.sale?.prices.find(
-      (p) => p.currency === 'RP',
-    );
+    ['RP', 'IP'].forEach((currency) => {
+      const currentRpPrice = saleData.prices.find(
+        (p) => p.currency === currency,
+      );
+      const discountRpPrice = saleData.sale?.prices.find(
+        (p) => p.currency === currency,
+      );
 
-    if (currentRpPrice) {
-      prices.push({
-        currency: 'RP',
-        price: currentRpPrice.cost,
-        discount: discountRpPrice?.discount ?? 0,
-        priceWithDiscount: discountRpPrice?.cost ?? currentRpPrice.cost,
-      });
-    }
+      if (currentRpPrice && discountRpPrice) {
+        const priceWithDiscount = discountRpPrice.cost;
+        prices.push({
+          currency: currency as 'IP',
+          price: currentRpPrice.cost,
+          discount: 100 - (priceWithDiscount * 100) / currentRpPrice.cost,
+          priceWithDiscount,
+        });
+      }
+    });
 
     return prices;
   };
@@ -80,13 +85,14 @@ export const Offers = withSystemReady('store', (props: GridProps) => {
       undefined,
     );
     if (!sales.ok) return;
-
+    const baseSkinIdList = champions.flatMap((c) => c.skins).map((c) => c.id);
     const championSales = sales.body
       .filter((s) => s.item.inventoryType === 'CHAMPION')
       .map((s) => s.item.itemId);
     const championSkinSales = sales.body
       .filter((s) => s.item.inventoryType === 'CHAMPION_SKIN')
-      .map((s) => s.item.itemId);
+      .map((s) => s.item.itemId)
+      .filter((id) => baseSkinIdList.includes(id));
     makeRequest(
       'GET',
       buildEventUrl(

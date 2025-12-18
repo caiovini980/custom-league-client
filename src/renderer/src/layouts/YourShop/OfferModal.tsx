@@ -107,9 +107,9 @@ export const OfferModal = forwardRef<OfferModalRef>((_, ref) => {
         <Stack
           direction={'column'}
           alignItems={'center'}
-          justifyContent={'flex-start'}
+          justifyContent={'center'}
           height={'100%'}
-          rowGap={1}
+          rowGap={0.5}
           sx={{
             p: 2,
           }}

@@ -2,6 +2,7 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 import CustomDialog, {
   CustomDialogCloseFloatingButton,
 } from '@render/components/CustomDialog';
+import { DiscountLabel } from '@render/components/League/DiscountLabel';
 import { buildEventUrl } from '@render/hooks/useLeagueClientEvent';
 import { useLeagueClientRequest } from '@render/hooks/useLeagueClientRequest';
 import { useLeagueTranslate } from '@render/hooks/useLeagueTranslate';
@@ -9,7 +10,6 @@ import { useSnackNotification } from '@render/hooks/useSnackNotification';
 import { DependencyItems } from '@render/layouts/Store/StoreCatalog/CatalogItemModal/DependencyItems';
 import { PurchaseButton } from '@render/layouts/Store/StoreCatalog/CatalogItemModal/PurchaseButton';
 import { ValidationError } from '@render/layouts/Store/StoreCatalog/CatalogItemModal/ValidationError';
-import { DiscountLabel } from '@render/layouts/Store/StoreCatalog/DiscountLabel';
 import { useStoreCatalog } from '@render/layouts/Store/useStoreCatalog';
 import { LolPurchaseWidgetV1PurchasableItem } from '@shared/typings/lol/response/lolPurchaseWidgetV1PurchasableItem';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
