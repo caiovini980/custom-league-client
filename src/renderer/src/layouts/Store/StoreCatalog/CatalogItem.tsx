@@ -1,6 +1,6 @@
 import { Box, ButtonBase, Paper, Stack, Typography } from '@mui/material';
 import { Countdown } from '@render/components/Countdown';
-import { DiscountLabel } from '@render/layouts/Store/StoreCatalog/DiscountLabel';
+import { DiscountLabel } from '@render/components/League/DiscountLabel';
 import { ItemIconValue } from '@render/layouts/Store/StoreCatalog/ItemIconValue';
 import { useStoreCatalog } from '@render/layouts/Store/useStoreCatalog';
 import { StoreResponseCatalog } from '@shared/typings/ipc-function/handle/store.typing';

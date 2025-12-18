@@ -25,12 +25,13 @@ export const ItemIconValue = ({
     <Stack direction={'row'} alignItems={'center'} columnGap={0.5}>
       <CircularIcon src={icon()} size={18} />
       {!!discount && (
-        <Typography fontSize={'0.8rem'}>
+        <Typography fontSize={'1rem'} color={'highlight'}>
           {formatCurrency(discount, 0)}
         </Typography>
       )}
       <Typography
         fontSize={'0.8rem'}
+        color={!discount ? 'textPrimary' : 'textDisabled'}
         sx={{
           textDecoration: !!discount ? 'line-through' : undefined,
         }}

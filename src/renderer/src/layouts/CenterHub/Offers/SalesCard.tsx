@@ -10,7 +10,7 @@ interface SaleCardProps {
   title: string;
   alreadyEnabled: boolean;
   prices: {
-    currency: 'RP';
+    currency: 'RP' | 'IP';
     price: number;
     discount: number;
     priceWithDiscount: number;
@@ -28,6 +28,11 @@ export const SaleCard = ({
   const { rcpFeLolPaw } = useLeagueTranslate();
 
   const { rcpFeLolPawTrans } = rcpFeLolPaw;
+
+  const icon = (type: string) => {
+    const src = type === 'RP' ? 'icon-rp-24.png' : 'icon-be-150.png';
+    return genericImg(`plugins/rcp-fe-lol-static-assets/global/default/${src}`);
+  };
 
   return (
     <Stack
@@ -91,14 +96,9 @@ export const SaleCard = ({
                 alignItems={'center'}
                 justifyContent={'center'}
               >
-                <CircularIcon
-                  src={genericImg(
-                    'plugins/rcp-fe-lol-static-assets/global/default/icon-rp-24.png',
-                  )}
-                  size={16}
-                />
+                <CircularIcon src={icon(p.currency)} size={16} />
                 <Typography color={'textPrimary'} fontSize={'0.75rem'}>
-                  {Math.floor(p.discount * 100)}%
+                  {Math.floor(p.discount)}%
                 </Typography>
               </Stack>
               <Stack direction={'column'}>

@@ -1,4 +1,5 @@
 import { ButtonBase, Divider, Paper, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { withSystemReady } from '@render/hoc/withSystemReady';
 import {
   buildEventUrl,
@@ -78,6 +79,9 @@ export const YourShop = withSystemReady('yourShop', () => {
           return (
             <Paper
               key={offer.id}
+              component={ButtonBase}
+              onClick={() => onClickOffer(offer)}
+              disabled={offer.owned}
               sx={{
                 position: 'relative',
                 width: 180,
@@ -86,7 +90,7 @@ export const YourShop = withSystemReady('yourShop', () => {
                 transition: 'transform 0.6s',
                 transformStyle: 'preserve-3d',
                 transform: offer.revealed ? 'rotateY(540deg)' : 'rotateY(0deg)',
-                '& > button': {
+                '& > div': {
                   backfaceVisibility: 'hidden',
                   position: 'absolute',
                   width: '100%',
@@ -96,17 +100,15 @@ export const YourShop = withSystemReady('yourShop', () => {
               }}
             >
               <Stack
-                component={ButtonBase}
-                onClick={() => onClickOffer(offer)}
-                disabled={offer.owned}
                 direction={'column'}
-                rowGap={1}
+                rowGap={0}
                 alignItems={'center'}
                 justifyContent={'flex-end'}
                 p={1}
                 sx={{
                   transform: 'rotateY(180deg)',
-                  background: `url(${loadChampionBackgroundImg('splashPath', offer.championId, offer.skinId)})`,
+                  background: (t) =>
+                    `linear-gradient(0deg, ${alpha(t.palette.common.black, 0.75)} 10%, rgba(0,0,0,0) 50%), url(${loadChampionBackgroundImg('splashPath', offer.championId, offer.skinId)})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
@@ -114,27 +116,37 @@ export const YourShop = withSystemReady('yourShop', () => {
                 <Typography>{offer.skinName}</Typography>
                 {!offer.owned ? (
                   <>
-                    <Typography fontWeight={'bold'} color={'highlight'}>
-                      -{100 - (offer.discountPrice * 100) / offer.originalPrice}
-                      %
+                    <Divider flexItem>
+                      <Typography
+                        fontWeight={'bold'}
+                        color={'highlight'}
+                        fontSize={'0.8rem'}
+                      >
+                        -
+                        {100 -
+                          (offer.discountPrice * 100) / offer.originalPrice}
+                        %
+                      </Typography>
+                    </Divider>
+                    <Typography
+                      color={'highlight'}
+                      fontWeight={'bold'}
+                      fontSize={'1.4rem'}
+                    >
+                      {rcpFeLolYourshopTrans(
+                        'yourshop_original_price_rp',
+                        offer.discountPrice,
+                      )}
                     </Typography>
                     <Typography
-                      fontSize={'0.8rem'}
+                      fontSize={'0.7rem'}
+                      color={'textDisabled'}
+                      lineHeight={0.5}
                       sx={{ textDecoration: 'line-through' }}
                     >
                       {rcpFeLolYourshopTrans(
                         'yourshop_original_price_rp',
                         offer.originalPrice,
-                      )}
-                    </Typography>
-                    <Typography
-                      color={'highlight'}
-                      fontWeight={'bold'}
-                      fontSize={'1.2rem'}
-                    >
-                      {rcpFeLolYourshopTrans(
-                        'yourshop_original_price_rp',
-                        offer.discountPrice,
                       )}
                     </Typography>
                   </>
